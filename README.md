@@ -47,5 +47,5 @@ Please see the particular source files for details.
 CoPilot is a Free Software initiative by [Gil Ferreira](http://gferreira.me)
 and licensed under [MIT](http://opensource.org/licenses/MIT).
 
-CoPilit is based on the [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
+CoPilot is based on the [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 template.
