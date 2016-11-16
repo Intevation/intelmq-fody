@@ -10,32 +10,38 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> <!-- /.row -->
 
-    <div class="row center-block">
-      <h2>Examine sent CERT-Bund Report</h2>
-      <div>
-          Search for</br>
-          Ticket#
-      </div>
-      <input
-        v-model:title="ticketID"
-        v-on:keyup.enter="lookupIDs"
-        placeholder="20161020-10000004"
-      >
-    </div>
+    <div class='row'>
+      <div class='col-xs-12'>
+        <div class='box'>
+          <div class='box-header with-border'>
+            <h2>Examine sent CERT-Bund Report</h2>
+          </div>
+          <div>
+              Search for Ticket#
+          </div>
+          <input
+            v-model:title="ticketID"
+            v-on:keyup.enter="lookupIDs"
+            placeholder="20161020-10000004"
+          >
 
-  <p v-if="eventIDs.length === 0">
-    Not found.
-  </p>
+          <p v-if="eventIDs.length === 0">
+            Not found.
+          </p>
 
-  <p v-if="eventIDs.length === 1">
-    Found one event:
-  </p>
+          <p v-if="eventIDs.length === 1">
+            Found one event:
+          </p>
 
-  <p v-if="eventIDs.length > 1">
-  Found {{ eventIDs.length }} events:
-  </p>
+          <p v-if="eventIDs.length > 1">
+          Found {{ eventIDs.length }} events:
+          </p>
+
+        </div> <!-- .box -->
+      </div> <!-- .col... -->
+    </div> <!-- /.row -->
 
   </section>
 </template>
