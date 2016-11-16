@@ -196,6 +196,9 @@
 
     <!-- Main Footer -->
     <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <strong>Version: {{ this.$parent.version }}</strong>
+        </div>
         <a href="https://github.com/Intevation/intelmq-fody">Fody Source Code</a>
     </footer>
   </div>
