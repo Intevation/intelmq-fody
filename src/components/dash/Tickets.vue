@@ -18,27 +18,31 @@
           <div class='box-header with-border'>
             <h2>Examine sent CERT-Bund Report</h2>
           </div>
-          <div>
-              Search for Ticket#
+
+          <div class="box-body">
+            <div class="input-group" v-bind:class='ticketInputClass'>
+              <span class="input-group-addon"><i class="fa fa-ticket"></span>
+              <input class="form-control"
+                v-model:title="ticketID"
+                v-on:keyup.enter="lookupIDs"
+                placeholder="20161020-10000004"
+              >
+              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            </div>
+
+            <p v-if="eventIDs.length === 0">
+              Not found.
+            </p>
+
+            <p v-if="eventIDs.length === 1">
+              Found one event:
+            </p>
+
+            <p v-if="eventIDs.length > 1">
+            Found {{ eventIDs.length }} events:
+            </p>
+
           </div>
-          <input
-            v-model:title="ticketID"
-            v-on:keyup.enter="lookupIDs"
-            placeholder="20161020-10000004"
-          >
-
-          <p v-if="eventIDs.length === 0">
-            Not found.
-          </p>
-
-          <p v-if="eventIDs.length === 1">
-            Found one event:
-          </p>
-
-          <p v-if="eventIDs.length > 1">
-          Found {{ eventIDs.length }} events:
-          </p>
-
         </div> <!-- .box -->
       </div> <!-- .col... -->
     </div> <!-- /.row -->
@@ -59,6 +63,13 @@ module.exports = {
       eventIDs: [],  // list of corresponding ids for the ticket
       events: [],  // list of events details
       lastTicketNumber: '' // (approximately) the most recent server ticket#
+    }
+  },
+  computed: {
+    ticketInputClass: function () {
+      return {
+        'has-error': this.eventIDs.length === 0
+      }
     }
   },
   methods: {
