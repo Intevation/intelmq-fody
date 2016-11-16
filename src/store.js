@@ -6,11 +6,11 @@ Vue.use(Vuex)
 const state = {
   callingAPI: false,
   searching: '',
-  serverURI: 'http://10.110.1.136:8080',
+  serverURI: '',
   user: null,
   token: null,
   userInfo: {
-    messages: [{1: 'test', 2: 'test'}],
+    messages: [],
     notifications: [],
     tasks: []
   }
