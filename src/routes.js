@@ -33,7 +33,7 @@ const routes = [
         path: '/tickets',
         component: TicketsView,
         name: 'Tickets',
-        description: 'Show sended reports'
+        description: 'Show send reports'
       }, {
         path: '/contacts',
         component: ContactsView,
