@@ -141,7 +141,7 @@
         </div>
 
         <!-- search form (Optional) -->
-        <form v-on:submit.prevent class="sidebar-form">
+        <form v-if="withMenuSearch" v-on:submit.prevent class="sidebar-form">
           <div class="input-group">
             <input type="text" name="search" id="search" class="search form-control" data-toggle="hideseek" placeholder="Search Menus" data-list=".sidebar-menu">
                 <span class="input-group-btn">
@@ -215,6 +215,7 @@ module.exports = {
       section: 'Dash',
       me: '',
       error: '',
+      withMenuSearch: false,
       api: {
         servers: {
           url: '', // Back end server
