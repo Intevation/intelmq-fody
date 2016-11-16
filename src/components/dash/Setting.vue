@@ -6,20 +6,25 @@
         <div class="col-md-12">
           <div class="box box-info">
             <!-- Input Addons -->
+            <!--
             <div class="box-header with-border">
               <h3 class="box-title">Inputs</h3>
             </div>
 
             <div class="box-body">
+            -->
               <!-- calendar group -->
+            <!--
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                   <datepicker :readonly="true" format="MMM/D/YYYY" id="dateInput" width="100%"></datepicker>
               </div>
               <br />
               <br />
+            -->
 
               <!-- with characthers -->
+            <!--
               <div class="input-group">
                 <span class="input-group-addon">@</span>
                 <input class="form-control" placeholder="Username" type="text">
@@ -31,8 +36,10 @@
                 <span class="input-group-addon">.00</span>
               </div>
               <br />
+            -->
 
               <!-- with icons from font awesome -->
+            <!--
               <h4>With icons</h4>
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
@@ -44,8 +51,10 @@
                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
               </div>
               <br>
+            -->
 
               <!-- Success/Error heads up input -->
+            <!--
               <h4>With border indicator</h4>
               <div class="form-group has-success">
                 <label class="control-label" for="inputSuccess"><i class="fa fa-check"></i> Input with success</label>
@@ -58,20 +67,19 @@
                 <input class="form-control" id="inputError" placeholder="Enter ..." type="text">
                 <span class="help-block">Help block with error</span>
               </div>
+            -->
 
               <!-- select examples -->
-              <h4>Select Options</h4>
+              <h4>Profile</h4>
               <div class="form-group">
-                <label>Select</label>
-                <select class="form-control">
-                  <option>option 1</option>
-                  <option>option 2</option>
-                  <option>option 3</option>
-                  <option>option 4</option>
-                  <option>option 5</option>
+                <label>Select new (temporary) Avatar</label>
+                <select class="form-control"  v-model="$parent.demo.avatar">
+                  <option value="/static/img/avatar_rodrigues_fody.jpg">Bird</option>
+                  <option value="/static/img/logo_sm.png">Logo</option>
                 </select>
               </div>
               <br />
+            <!--
               <div class="form-group">
                 <label>Select Multiple</label>
                 <select multiple="" class="form-control">
@@ -82,6 +90,7 @@
                   <option>option 5</option>
                 </select>
               </div>
+            -->
 
               <!-- /input-group -->
             </div>
