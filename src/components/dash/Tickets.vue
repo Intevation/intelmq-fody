@@ -1,5 +1,17 @@
 <template>
   <section class="content">
+    <div class='row'>
+      <div class='col-md-6 col-sm-6 col-xs-12'>
+        <div class="info-box" v-if='lastTicketNumber' v-on:click='useLastTicket'>
+          <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
+          <div class='info-box-content'>
+            <span class='info-box-text'>recently send</span>
+            <span class='info-box-number'>{{ lastTicketNumber }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row center-block">
       <h2>Examine send CERT-Bund Report</h2>
       <div>
@@ -12,13 +24,6 @@
         placeholder="20161020-10000004"
       >
     </div>
-
-  <div class="ui padded message" v-if='lastTicketNumber'>
-    <div class="header">
-      A recent ticket#:
-    </div>
-    {{ lastTicketNumber }}
-  </div>
 
   <p v-if="eventIDs.length === 0">
     Not found.
@@ -103,6 +108,10 @@ module.exports = {
         // failure
         this.events = []
       })
+    },
+    useLastTicket: function () {
+      this.ticketID = this.lastTicketNumber
+      this.lookupIDs()
     }
   },  // methods
   mounted: function () {
