@@ -8,21 +8,8 @@
           <span class='info-box-icon bg-aqua'><i class='ion ion-ios-gear-outline'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>CPU Traffic</span>
-            <span class='info-box-number'>90<small>%</small></span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
-      <div class='col-md-3 col-sm-6 col-xs-12'>
-        <div class='info-box'>
-          <span class='info-box-icon bg-red'><i class='fa fa-google-plus'></i></span>
-
-          <div class='info-box-content'>
-            <span class='info-box-text'>Likes</span>
-            <span class='info-box-number'>41,410</span>
+            <span class='info-box-text'>Example CPU Traffic</span>
+            <span class='info-box-number'>30<small>%</small></span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -33,32 +20,6 @@
       <!-- fix for small devices only -->
       <div class='clearfix visible-sm-block'></div>
 
-      <div class='col-md-3 col-sm-6 col-xs-12'>
-        <div class='info-box'>
-          <span class='info-box-icon bg-green'><i class='ion ion-ios-cart-outline'></i></span>
-
-          <div class='info-box-content'>
-            <span class='info-box-text'>Sales</span>
-            <span class='info-box-number'>760</span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
-      <div class='col-md-3 col-sm-6 col-xs-12'>
-        <div class='info-box'>
-          <span class='info-box-icon bg-yellow'><i class='ion ion-ios-people-outline'></i></span>
-
-          <div class='info-box-content'>
-            <span class='info-box-text'>New Members</span>
-            <span class='info-box-number'>2,000</span>
-          </div>
-          <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-      </div>
-      <!-- /.col -->
     </div>
     <!-- /.row -->
 
@@ -69,16 +30,9 @@
           <div class="box-body">
             <div class="col-sm-6 col-xs-12">
               <p class="text-center">
-                <strong>Web Traffic Overview</strong>
+                <strong>Example Web Traffic Overview</strong>
               </p>
               <canvas id="trafficBar" ></canvas>
-            </div>
-            <hr class="visible-xs">
-            <div class="col-sm-6 col-xs-12">
-              <p class="text-center">
-                <strong>Language Overview</strong>
-              </p>
-              <canvas id="languagePie"></canvas>
             </div>
           </div>
         </div>
@@ -88,7 +42,7 @@
     <!-- /.row -->
 
     <!-- Main row -->
-    <div class='row'>
+    <div v-if="false" class='row'>
       <div class='col-md-3 col-sm-6 col-xs-12'>
         <div class='info-box bg-yellow'>
           <span class='info-box-icon'><i class='ion ion-ios-pricetag-outline'></i></span>
@@ -229,29 +183,6 @@ module.exports = {
       }
 
       new Chart(ctx, config) // eslint-disable-line no-new
-
-      var pieChartCanvas = document.getElementById('languagePie').getContext('2d')
-      var pieConfig = {
-        type: 'pie',
-        data: {
-          labels: ['HTML', 'JavaScript', 'CSS'],
-          datasets: [{
-            data: [56.6, 37.7, 4.1],
-            backgroundColor: ['#00a65a', '#f39c12', '#00c0ef'],
-            hoverBackgroundColor: ['#00a65a', '#f39c12', '#00c0ef']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          legend: {
-            position: 'bottom',
-            display: true
-          }
-        }
-      }
-
-      new Chart(pieChartCanvas, pieConfig) // eslint-disable-line no-new
     })
   }
 }
