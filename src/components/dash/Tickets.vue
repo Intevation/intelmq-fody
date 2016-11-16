@@ -5,7 +5,7 @@
         <div class="info-box" v-if='lastTicketNumber' v-on:click='useLastTicket'>
           <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
           <div class='info-box-content'>
-            <span class='info-box-text'>recently send</span>
+            <span class='info-box-text'>recently sent</span>
             <span class='info-box-number'>{{ lastTicketNumber }}</span>
           </div>
         </div>
@@ -13,7 +13,7 @@
     </div>
 
     <div class="row center-block">
-      <h2>Examine send CERT-Bund Report</h2>
+      <h2>Examine sent CERT-Bund Report</h2>
       <div>
           Search for</br>
           Ticket#
