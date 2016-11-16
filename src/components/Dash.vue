@@ -228,6 +228,11 @@ module.exports = {
           url: '', // Back end server
           result: []
         }
+      },
+      demo: {
+        displayName: 'Rodrigues Fody',
+        avatar: '/static/img/avatar_rodrigues_fody.jpg',
+        email: 'rodrigues.fody@example.org'
       }
     }
   },
@@ -240,13 +245,6 @@ module.exports = {
     },
     callAPI: function () {
       return this.$parent.callAPI
-    },
-    demo: function () {
-      return {
-        displayName: 'Rodrigues Fody',
-        avatar: '/static/img/avatar_rodrigues_fody.jpg',
-        email: 'rodrigues.fody@example.org'
-      }
     }
   },
   methods: {
