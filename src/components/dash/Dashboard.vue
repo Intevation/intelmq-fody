@@ -3,7 +3,7 @@
   <section class='content'>
     <!-- Info boxes -->
     <div class='row'>
-      <div class='col-md-3 col-sm-6 col-xs-12'>
+      <div class='col-md-6 col-sm-6 col-xs-12'>
         <div class='info-box'>
           <span class='info-box-icon bg-aqua'><i class='ion ion-ios-gear-outline'></i></span>
 
@@ -28,7 +28,7 @@
         <div class="box-header with-border">
           <h3 class="box-title"></h3>
           <div class="box-body">
-            <div class="col-sm-6 col-xs-12">
+            <div class="col-sm-12 col-xs-12">
               <p class="text-center">
                 <strong>Example Web Traffic Overview</strong>
               </p>
