@@ -47,12 +47,68 @@
       </div> <!-- .col... -->
     </div> <!-- /.row -->
 
+    <div class="row">
+    <!-- <div class="row" v-if="eventIDs.length > 0 && events.length > 0">
+    -->
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Events</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="dataTables_wrapper form-inline dt-bootstrap" id="events_wrapper">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div id="events_length" class="dataTables_length">
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <table aria-describedby="events_info" role="grid" id="events" class="table table-bordered table-striped dataTable">
+                    <thead>
+                      <tr role="row">
+                        <th aria-label="Source IP: activate to sort column descending" aria-sort="ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting_asc">Source IP</th>
+                        <th aria-label="Source Port: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting">Source Port</th>
+                        <th aria-label="Classfication Type: activate to sort column ascending" style="width: 182px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting">Classification Type</th>
+                        <th aria-label="Observation Time: activate to sort column ascending" style="width: 182px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting">Observation Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for='event in events' role="row">
+                        <td v-for="column in ['source.ip', 'source.port', 'classification.type', 'time.observation' ]">
+                            {{ event[column] || '' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th colspan="1" rowspan="1">Source IP</th>
+                        <th colspan="1" rowspan="1">Source Port</th>
+                        <th colspan="1" rowspan="1">Classification Type</th>
+                        <th colspan="1" rowspan="1">Observation Time</th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div> <!-- .col... -->
+    </div> <!-- .row -->
+
   </section>
 </template>
 
 <script>
-// only if needed:
-// import $ from 'jquery'
+import $ from 'jquery'
+
+require('datatables.net')
+require('datatables.net-bs')
 
 module.exports = {
   name: 'Tickets',
@@ -82,8 +138,8 @@ module.exports = {
             this.eventIDs = value
             this.events = []
             // directly load events, if we only have a few
-            if (this.eventIDs.length < 50) {
-              console.log('less than 50 events, triggering loading directly')
+            if (this.eventIDs.length < 100) {
+              console.log('less than 100 events, triggering loading directly')
               this.loadDetails()
             }
           } else {
@@ -132,6 +188,9 @@ module.exports = {
     }
   },  // methods
   mounted: function () {
+    this.$nextTick(function () {
+      $('#events').DataTable()
+    })
   },
   created: function () {
     this.getLastTicketNumber()
