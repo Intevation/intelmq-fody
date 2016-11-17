@@ -20,19 +20,19 @@
           </div>
 
           <div class="box-body">
-            <div class="input-group" v-bind:class='ticketInputClass'>
-              <span class="input-group-addon"><i class="fa fa-ticket"></span>
-              <input class="form-control"
-                v-model:title="ticketID"
-                v-on:keyup.enter="lookupIDs"
-                placeholder="20161020-10000004"
-              >
-              <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            <div class="forum-control" v-bind:class='ticketInputClass'>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-ticket"></span>
+                <input class="form-control"
+                  v-model:title="ticketID"
+                  v-on:keyup.enter="lookupIDs"
+                  placeholder="20161020-10000004"
+                >
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+              <span class="help-block" v-if="eventIDs.length === 0">Not found.</span>
             </div>
 
-            <p v-if="eventIDs.length === 0">
-              Not found.
-            </p>
 
             <p v-if="eventIDs.length === 1">
               Found one event:
