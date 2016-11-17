@@ -35,11 +35,11 @@
 
 
             <p v-if="eventIDs.length === 1">
-              Found one event:
+              Found one event.
             </p>
 
             <p v-if="eventIDs.length > 1">
-            Found {{ eventIDs.length }} events:
+            Found {{ eventIDs.length }} events.
             </p>
 
           </div>
