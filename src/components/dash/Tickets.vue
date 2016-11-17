@@ -48,7 +48,8 @@
     </div> <!-- /.row -->
 
     <div class="row">
-    <!-- <div class="row" v-if="eventIDs.length > 0 && events.length > 0">
+    <!--
+    <div class="row" v-if="eventIDs.length > 0 && events.length > 0">
     -->
       <div class="col-md-12">
         <div class="box">
@@ -78,11 +79,6 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for='event in events' role="row">
-                        <td v-for="column in ['source.ip', 'source.port', 'classification.type', 'time.observation' ]">
-                            {{ event[column] || '' }}
-                        </td>
-                      </tr>
                     </tbody>
                     <tfoot>
                       <tr>
@@ -118,7 +114,8 @@ module.exports = {
       ticketID: '',  // ticket to be examined
       eventIDs: [],  // list of corresponding ids for the ticket
       events: [],  // list of events details
-      lastTicketNumber: '' // (approximately) the most recent server ticket#
+      lastTicketNumber: '', // (approximately) the most recent server ticket#
+      eventsTable: {} // datatables object
     }
   },
   computed: {
@@ -145,12 +142,31 @@ module.exports = {
           } else {
             this.eventIDs = []
             this.events = []
+            this.updateEventsTable()
           }
         })
       }, (response) => {
         this.eventIDs = []
         this.events = []
+        this.updateEventsTable()
       })
+    },
+    initEventsTable: function () {
+      this.eventsTable = $('#events').DataTable()
+    },
+    updateEventsTable: function () {
+      // loads the events into the datatable and triggers a redraw
+      var r
+
+      this.eventsTable.clear()
+      for (var e of this.events) {
+        r = []
+        for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
+          if (e[column]) { r.push(e[column]) } else { r.push('') }
+        }
+        this.eventsTable.row.add(r)
+      }
+      this.eventsTable.draw()
     },
     loadDetails: function () {
       var url = this.queryURL + 'getEvents?'
@@ -164,10 +180,12 @@ module.exports = {
         console.log('Result: ' + response.body)
         response.json().then((value) => {
           this.events = value
+          this.updateEventsTable()
         })
       }, (response) => {
         // failure
         this.events = []
+        this.updateEventsTable()
       })
     },
     getLastTicketNumber: function () {
@@ -189,7 +207,7 @@ module.exports = {
   },  // methods
   mounted: function () {
     this.$nextTick(function () {
-      $('#events').DataTable()
+      this.initEventsTable()
     })
   },
   created: function () {
