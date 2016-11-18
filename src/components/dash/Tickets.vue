@@ -159,6 +159,7 @@ module.exports = {
       var r
 
       this.eventsTable.clear()
+      this.eventsTable.search('')
       for (var e of this.events) {
         r = []
         for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
