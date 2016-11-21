@@ -69,26 +69,7 @@
 
               <div class="row">
                 <div class="col-sm-12">
-                  <table aria-describedby="events_info" role="grid" id="events" class="table table-bordered table-striped dataTable">
-                    <thead>
-                      <tr role="row">
-                        <th aria-label="Source IP: activate to sort column descending" aria-sort="ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting_asc">Source IP</th>
-                        <th aria-label="Source Port: activate to sort column ascending" style="width: 150px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting">Source Port</th>
-                        <th aria-label="Classfication Type: activate to sort column ascending" style="width: 182px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting">Classification Type</th>
-                        <th aria-label="Observation Time: activate to sort column ascending" style="width: 182px;" colspan="1" rowspan="1" aria-controls="events" tabindex="0" class="sorting">Observation Time</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <th colspan="1" rowspan="1">Source IP</th>
-                        <th colspan="1" rowspan="1">Source Port</th>
-                        <th colspan="1" rowspan="1">Classification Type</th>
-                        <th colspan="1" rowspan="1">Observation Time</th>
-                      </tr>
-                    </tfoot>
-                  </table>
+                  <table id="events" class="display"></table>
                 </div>
               </div>
             </div>
@@ -105,6 +86,10 @@ import $ from 'jquery'
 
 require('datatables.net')
 require('datatables.net-bs')
+
+function formatEventDetailRow (d) {
+  return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;"><tr><td>Details for row ' + d + '</td></tr></table>'
+}
 
 module.exports = {
   name: 'Tickets',
@@ -152,7 +137,40 @@ module.exports = {
       })
     },
     initEventsTable: function () {
-      this.eventsTable = $('#events').DataTable()
+      var table
+      this.eventsTable = $('#events').DataTable({
+        'data': [],
+        'columns': [
+          {
+            'className': 'details-control',
+            'orderable': false,
+            'title': '',
+            'defaultContent': ''
+          },
+          { 'title': 'Source IP' },
+          { 'title': 'Source Port' },
+          { 'title': 'Classification Type' },
+          { 'title': 'Observation Time' }
+        ],
+        'order': [[1, 'asc']]
+      })
+
+      table = this.eventsTable
+
+      $('#events tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr')
+        var row = table.row(tr)
+
+        if (row.child.isShown()) {
+          // This row is already open - close it
+          row.child.hide()
+          tr.removeClass('shown')
+        } else {
+          // Open this row
+          row.child(formatEventDetailRow(row.data())).show()
+          tr.addClass('shown')
+        }
+      })
     },
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
@@ -161,7 +179,7 @@ module.exports = {
       this.eventsTable.clear()
       this.eventsTable.search('')
       for (var e of this.events) {
-        r = []
+        r = ['x']  // first column (for child selection)
         for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
           if (e[column]) { r.push(e[column]) } else { r.push('') }
         }
@@ -244,4 +262,9 @@ table.dataTable thead .sorting_asc:after {
 table.dataTable thead .sorting_desc:after {
   content: "\f0de";
 }
+
+td.details-control {
+  cursor: pointer;
+}
+
 </style>
