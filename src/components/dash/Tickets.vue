@@ -174,11 +174,12 @@ module.exports = {
     },
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
-      var r
+      var e, r
 
       this.eventsTable.clear()
       this.eventsTable.search('')
-      for (var e of this.events) {
+      for (var i = 0; i < this.events.length; i++) {
+        e = this.events[i]
         r = ['x']  // first column (for child selection)
         for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
           if (e[column]) { r.push(e[column]) } else { r.push('') }
