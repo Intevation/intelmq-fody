@@ -141,6 +141,7 @@ module.exports = {
       this.eventsTable = $('#events').DataTable({
         'data': [],
         'columns': [
+          { visible: false },  // internal index to this.events array
           {
             'className': 'details-control',
             'orderable': false,
@@ -180,7 +181,7 @@ module.exports = {
       this.eventsTable.search('')
       for (var i = 0; i < this.events.length; i++) {
         e = this.events[i]
-        r = ['x']  // first column (for child selection)
+        r = [i, 'x']  // first columns: internal index, child row expansion
         for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
           if (e[column]) { r.push(e[column]) } else { r.push('') }
         }
