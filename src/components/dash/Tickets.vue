@@ -87,10 +87,6 @@ import $ from 'jquery'
 require('datatables.net')
 require('datatables.net-bs')
 
-function formatEventDetailRow (d) {
-  return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;"><tr><td>Details for row ' + d + '</td></tr></table>'
-}
-
 module.exports = {
   name: 'Tickets',
   data: function () {
@@ -136,8 +132,12 @@ module.exports = {
         this.updateEventsTable()
       })
     },
+    formatEventDetailRow: function (d) {
+      return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;"><tr><td>Details for row ' + d[0] + '</td><tr><td> feed.name:' + this.events[d[0]]['feed.name'] + '</td></tr></tr></table>'
+    },
     initEventsTable: function () {
-      var table
+      var that = this
+
       this.eventsTable = $('#events').DataTable({
         'data': [],
         'columns': [
@@ -156,11 +156,9 @@ module.exports = {
         'order': [[1, 'asc']]
       })
 
-      table = this.eventsTable
-
       $('#events tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr')
-        var row = table.row(tr)
+        var row = that.eventsTable.row(tr)
 
         if (row.child.isShown()) {
           // This row is already open - close it
@@ -168,7 +166,7 @@ module.exports = {
           tr.removeClass('shown')
         } else {
           // Open this row
-          row.child(formatEventDetailRow(row.data())).show()
+          row.child(that.formatEventDetailRow(row.data())).show()
           tr.addClass('shown')
         }
       })
