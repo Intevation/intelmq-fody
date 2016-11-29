@@ -69,7 +69,7 @@
 
               <div class="row">
                 <div class="col-sm-12">
-                  <table id="events" class="display"></table>
+                  <table id="events" class="display" width="100%"></table>
                 </div>
               </div>
             </div>
@@ -133,7 +133,32 @@ module.exports = {
       })
     },
     formatEventDetailRow: function (d) {
-      return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;"><tr><td>Details for row ' + d[0] + '</td><tr><td> feed.name:' + this.events[d[0]]['feed.name'] + '</td></tr></tr></table>'
+      var myEvent = this.events[d[0]]
+      var html = ''
+      var counter = 0
+
+      html += '<div class="well">'
+      html += '  <div class="row">'
+      for (var column of Object.keys(myEvent).sort()) {
+        if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
+          if (counter > 0 && counter % 6 === 0) {
+            html += '  </div>'
+            html += '  <div class="row">'
+          }
+          // TODO: left align instead of center for xs
+          html += '    <div class="col-md-4 col-sm-6 col-xs-12">'
+          // TODO prevent javascript injection
+          html += '      <strong>' + column + ':</strong> ' + myEvent[column]
+          html += '    </div>'
+
+          counter++
+        }
+      }
+      html += '  </div>'
+      html += '</div>'
+
+      console.log(html)
+      return html
     },
     initEventsTable: function () {
       var that = this
