@@ -134,31 +134,38 @@ module.exports = {
     },
     formatEventDetailRow: function (d) {
       var myEvent = this.events[d[0]]
-      var html = ''
+      var div, currentRow
       var counter = 0
 
-      html += '<div class="well">'
-      html += '  <div class="row">'
+      div = document.createElement('div')
+      div.classList.add('well')
+
+      currentRow = document.createElement('div')
+      currentRow.classList.add('row')
+
       for (var column of Object.keys(myEvent).sort()) {
         if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
           if (counter > 0 && counter % 6 === 0) {
-            html += '  </div>'
-            html += '  <div class="row">'
+            div.appendChild(currentRow)
+            currentRow = document.createElement('div')
+            currentRow.classList.add('row')
           }
-          // TODO: left align instead of center for xs
-          html += '    <div class="col-md-4 col-sm-6 col-xs-12">'
-          // TODO prevent javascript injection
-          html += '      <strong>' + column + ':</strong> ' + myEvent[column]
-          html += '    </div>'
+          var el = document.createElement('div')
+          var c = document.createElement('strong')
+          var v = document.createElement('span')
 
+          el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
+          c.textContent = column + ': '
+          el.appendChild(c)
+          v.textContent = myEvent[column]
+          el.appendChild(v)
+          currentRow.appendChild(el)
           counter++
         }
       }
-      html += '  </div>'
-      html += '</div>'
+      div.appendChild(currentRow)
 
-      console.log(html)
-      return html
+      return div
     },
     initEventsTable: function () {
       var that = this
@@ -290,6 +297,10 @@ table.dataTable thead .sorting_desc:after {
 
 td.details-control {
   cursor: pointer;
+}
+
+div.child-row-el {
+  text-align: left;
 }
 
 </style>
