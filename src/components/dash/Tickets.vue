@@ -115,8 +115,8 @@ module.exports = {
             this.eventIDs = value
             this.events = []
             // directly load events, if we only have a few
-            if (this.eventIDs.length < 100) {
-              console.log('less than 100 events, triggering loading directly')
+            if (this.eventIDs.length < 1000) {
+              console.log('less than 1000 events, triggering loading directly')
               this.loadDetails()
             }
           } else {
@@ -223,11 +223,9 @@ module.exports = {
       for (var i = 0, size = this.eventIDs.length; i < size; i++) {
         url += 'ids=' + this.eventIDs[i] + '&'
       }
-      console.log('Trying to load ' + url)
 
       this.$http.get(url).then((response) => {
         // success
-        console.log('Result: ' + response.body)
         response.json().then((value) => {
           this.events = value
           this.updateEventsTable()
