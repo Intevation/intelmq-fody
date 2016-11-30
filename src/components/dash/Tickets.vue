@@ -30,19 +30,17 @@
                 >
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
               </div>
-              <span class="help-block" v-if="eventIDs.length === 0">Not found.</span>
+              <span class="help-block" v-if="eventIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block" v-if="eventIDs.length === 1">
+                Found one event.
+              </span>
+              <span class="help-block"  v-if="eventIDs.length > 1">
+                Found {{ eventIDs.length }} events.
+              </span>
             </div>
-
-
-            <p v-if="eventIDs.length === 1">
-              Found one event.
-            </p>
-
-            <p v-if="eventIDs.length > 1">
-            Found {{ eventIDs.length }} events.
-            </p>
-
-          </div>
+          </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div> <!-- .col... -->
     </div> <!-- /.row -->
@@ -102,7 +100,8 @@ module.exports = {
   computed: {
     ticketInputClass: function () {
       return {
-        'has-error': this.eventIDs.length === 0
+        'has-error': this.eventIDs.length === 0,
+        'has-success': this.eventIDs.length > 0
       }
     }
   },
@@ -185,7 +184,7 @@ module.exports = {
           { 'title': 'Classification Type' },
           { 'title': 'Observation Time' }
         ],
-        'order': [[1, 'asc']]
+        'order': [[2, 'asc']]
       })
 
       $('#events tbody').on('click', 'td.details-control', function () {
@@ -280,18 +279,22 @@ module.exports = {
 @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
 
 table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after {
+  top : 2px;
   font-family: 'FontAwesome';
 }
 
 table.dataTable thead .sorting:after {
+  top : 2px;
   content: "\f0dc";
 }
 
 table.dataTable thead .sorting_asc:after {
+  top : 2px;
   content: "\f0dd";
 }
 
 table.dataTable thead .sorting_desc:after {
+  top : 2px;
   content: "\f0de";
 }
 
