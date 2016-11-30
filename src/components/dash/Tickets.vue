@@ -173,7 +173,7 @@ module.exports = {
       this.eventsTable = $('#events').DataTable({
         'data': [],
         'columns': [
-          { visible: false },  // internal index to this.events array
+          { 'visible': false },  // internal index to this.events array
           {
             'className': 'details-control',
             'orderable': false,
@@ -211,7 +211,7 @@ module.exports = {
       this.eventsTable.search('')
       for (var i = 0; i < this.events.length; i++) {
         e = this.events[i]
-        r = [i, 'x']  // first columns: internal index, child row expansion
+        r = [i, '']  // first columns: internal index, child row expansion
         for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
           if (e[column]) { r.push(e[column]) } else { r.push('') }
         }
@@ -295,8 +295,14 @@ table.dataTable thead .sorting_desc:after {
   content: "\f0de";
 }
 
-td.details-control {
+td.details-control::after {
   cursor: pointer;
+  font-family: 'FontAwesome';
+  content: "\f196";
+}
+
+tr.shown td.details-control::after {
+  content: "\f147";
 }
 
 div.child-row-el {
