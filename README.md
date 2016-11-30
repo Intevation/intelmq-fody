@@ -1,6 +1,10 @@
 **Fody** is a management interface to
 [intelmq-mailgen](https://github.com/Intevation/intelmq-mailgen) setups.
 
+![Screenshot](https://cloud.githubusercontent.com/assets/8190008/20760225/b2c83b80-b71f-11e6-98a0-f141f23b28c6.png)
+
+![Screenshot-small-device](https://cloud.githubusercontent.com/assets/8190008/20760245/c2aa5678-b71f-11e6-920e-548d2e275c8e.png)
+
 It started from the [CoPilot](https://github.com/misterGF/CoPilot) template.
 
 Installation
