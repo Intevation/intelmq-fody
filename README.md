@@ -14,6 +14,8 @@ Installation
 
 Download (or clone) the source code.
 
+[Install yarn "globally"](https://yarnpkg.com/en/docs/install).
+
 
 #### Build Setup
 
