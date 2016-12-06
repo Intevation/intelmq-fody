@@ -51,15 +51,15 @@ e.g.
 
 ```shell
 #as root
-apt-install python3-pip
-pip install -U pip setuptools
+apt-get install python3-pip
+pip3 install -U pip setuptools
 ```
 
 ```shell
 #as fody
-pip --version
+pip3 --version
 # should be for python 3.4
-pip install hug -U
+pip3 install hug -U
 ```
 
 
@@ -69,7 +69,7 @@ some access control from the intelmq-manager setup.
 
 ```shell
 #as root
-apt-install libapache2-mod-wsgi-py3
+apt-get install libapache2-mod-wsgi-py3
 ```
 
 The configuration of apache happens in
