@@ -44,9 +44,6 @@ mv dist www
 ```
 
 #### installing hug
-We want hug only to be locally installed,
-so we can deinstall it more clean when needed.
-
 First follow the official way for
 [installing Python Modules](https://docs.python.org/3/installing/index.html),
 e.g.
@@ -54,14 +51,11 @@ e.g.
 ```shell
 #as root
 apt-get install python3-pip
-pip3 install -U pip setuptools
-```
+pip3 install --upgrade pip setuptools
 
-```shell
-#as fody
 pip --version
 # should be current (v>9.0.1) and for python 3.4
-pip install --upgrade --user hug
+pip install --upgrade hug
 ```
 
 
@@ -115,7 +109,7 @@ Add a new configuration starting from the existing, e.g. 001-fody.conf:
             Require valid-user
         </Directory>
 
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+        ErrorLog ${APACHE_LOG_DIR}/fody-error.log
+        CustomLog ${APACHE_LOG_DIR}/fody-access.log combined
 </VirtualHost>
 ```
