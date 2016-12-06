@@ -25,6 +25,8 @@ We want an installation that is quite separated from the rest of the system:
 adduser --disabled-password fody
 ```
 
+Note: The user must have the right to read the mailgen configuration.
+
 ```shell
 #as fody
 git clone --depth 1 https://github.com/Intevation/intelmq-mailgen.git
