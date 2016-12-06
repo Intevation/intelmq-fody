@@ -74,7 +74,7 @@ apt-get install libapache2-mod-wsgi-py3
 
 The configuration of apache happens in
 ```shell
-pushd /etc/apache
+pushd /etc/apache2
 ```
 
 
