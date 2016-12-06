@@ -39,6 +39,7 @@ yarn run e2e
 yarn test
 ```
 
+See the [setup example for Ubuntu](docs/SetupExampleUbuntu.md).
 
 Documentation
 -------------
