@@ -41,6 +41,28 @@ Copy the build `dist` directory over and rename it to `www`:
 mv dist www
 ```
 
+#### installing hug
+We want hug only to be locally installed,
+so we can deinstall it more clean when needed.
+
+First follow the official way for
+[installing Python Modules](https://docs.python.org/3/installing/index.html),
+e.g.
+
+```shell
+#as root
+apt-install python3-pip
+pip install -U pip setuptools
+```
+
+```shell
+#as fody
+pip --version
+# should be for python 3.4
+pip install hug -U
+```
+
+
 ### Using Apache2
 We reuse the apache2 installation which already has
 some access control from the intelmq-manager setup.
