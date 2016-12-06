@@ -61,7 +61,7 @@ pip3 install -U pip setuptools
 #as fody
 pip --version
 # should be current (v>9.0.1) and for python 3.4
-pip install hug -U
+pip install --upgrade --user hug
 ```
 
 
