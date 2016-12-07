@@ -56,7 +56,7 @@ apt-get install python3-pip python3.4-venv
 
 ```shell
 #as fody
-pyvenv venv-hug
+pyvenv-3.4 venv-hug
 
 # enable system-site-packages later, so that pip gets always installed
 # change line to  include-system-site-packages = true  with
