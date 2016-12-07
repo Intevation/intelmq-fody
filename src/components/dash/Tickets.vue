@@ -22,7 +22,7 @@
           <div class="box-body">
             <div class="forum-control" v-bind:class='ticketInputClass'>
               <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-ticket"></span>
+                <span class="input-group-addon"><i class="fa fa-ticket"></i></span>
                 <input class="form-control"
                   v-model:title="ticketID"
                   v-on:keyup.enter="lookupIDs"
