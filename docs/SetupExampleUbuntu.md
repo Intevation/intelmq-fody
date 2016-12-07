@@ -50,7 +50,7 @@ e.g.
 
 ```shell
 #as root
-apt-get install python3-pip python3-venv
+apt-get install python3-pip python3.4-venv
 ```
 
 
