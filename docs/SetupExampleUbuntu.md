@@ -50,11 +50,26 @@ e.g.
 
 ```shell
 #as root
-apt-get install python3-pip
+apt-get install python3-pip python3-venv
+```
+
+
+```shell
+#as fody
+pyvenv venv-hug
+
+# enable system-site-packages later, so that pip gets always installed
+# change line to  include-system-site-packages = true  with
+vim venv-hug/pyvenv.cfg
+
+source venv-hug/bin/activate
+
+# (optionally) get current pip
 pip3 install --upgrade pip setuptools
 
+# pip should should now be current (v>9.0.1) and for python 3.4, check with
 pip --version
-# should be current (v>9.0.1) and for python 3.4
+
 pip install --upgrade hug
 ```
 
