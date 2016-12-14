@@ -115,8 +115,8 @@ module.exports = {
             this.eventIDs = value
             this.events = []
             // directly load events, if we only have a few
-            if (this.eventIDs.length < 1000) {
-              console.log('less than 1000 events, triggering loading directly')
+            if (this.eventIDs.length < 10000) {
+              console.log('less than 10000 events, triggering loading directly')
               this.loadDetails()
             }
           } else {
@@ -219,10 +219,7 @@ module.exports = {
       this.eventsTable.draw()
     },
     loadDetails: function () {
-      var url = this.queryURL + 'getEvents?'
-      for (var i = 0, size = this.eventIDs.length; i < size; i++) {
-        url += 'ids=' + this.eventIDs[i] + '&'
-      }
+      var url = this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID
 
       this.$http.get(url).then((response) => {
         // success
