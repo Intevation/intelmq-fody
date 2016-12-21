@@ -220,7 +220,6 @@ module.exports = {
    which uses images, but the color on the images does not match adminlte.
 
 @import url('/static/js/plugins/datatables/jquery.dataTables.min.css');
-*/
 
 @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
 
@@ -239,4 +238,5 @@ table.dataTable thead .sorting_asc:after {
 table.dataTable thead .sorting_desc:after {
   content: "\f0de";
 }
+*/
 </style>
