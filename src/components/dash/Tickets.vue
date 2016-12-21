@@ -273,23 +273,25 @@ module.exports = {
 
 @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
 
+table.dataTable thead > tr > th {
+  text-align: right;
+  padding-right: 22px;
+}
+
 table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after {
   top : 2px;
   font-family: 'FontAwesome';
 }
 
 table.dataTable thead .sorting:after {
-  top : 2px;
   content: "\f0dc";
 }
 
 table.dataTable thead .sorting_asc:after {
-  top : 2px;
   content: "\f0dd";
 }
 
 table.dataTable thead .sorting_desc:after {
-  top : 2px;
   content: "\f0de";
 }
 
