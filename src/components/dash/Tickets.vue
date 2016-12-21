@@ -275,11 +275,17 @@ module.exports = {
 
 table.dataTable thead > tr > th {
   text-align: right;
-  padding-right: 22px;
+  padding-left: 2px;
+  padding-right: 14px;
+}
+
+table.dataTable td {
+  text-align: right;
 }
 
 table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after {
   top : 2px;
+  padding-right: 0px;
   font-family: 'FontAwesome';
 }
 
