@@ -11,7 +11,7 @@
     data: function () {
       return {
         section: 'Head',
-        version: '0.1.1',
+        version: '0.1.2',
         callingAPI: false,
         serverURI: 'http://localhost:8080',
         caller: this.$http

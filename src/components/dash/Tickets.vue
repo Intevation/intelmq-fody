@@ -284,8 +284,8 @@ table.dataTable td {
 }
 
 table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after {
-  top : 2px;
-  padding-right: 0px;
+  top: 2px;
+  right: 0px;
   font-family: 'FontAwesome';
 }
 
