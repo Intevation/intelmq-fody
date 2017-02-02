@@ -35,7 +35,7 @@ cd wsgi
 ln -s ../intelmq-mailgen/extras/checkticket-spa/checkticket.py .
 ```
 
-(Check checkticket.py that it will serve `/home/fody/www/index.html`.)
+(Modify checkticket.py that it will serve `/home/fody/www/index.html`.)
 
 
 Copy the build `dist` directory over and rename it to `www`:
@@ -89,13 +89,17 @@ pushd /etc/apache2
 ```
 
 
- * `ports.conf` make sure there is a `Listen` option for your port, e.g.
+ * modify `ports.conf` make sure there is a `Listen` option for your port, e.g.
    ```Listen: 8000```.
  * move the `Directory` configuration of `sites-enabled/intelmq.conf` into
    the `Virtual` section of `000-default.conf`.
 
-Add a new configuration starting from the existing, e.g. 001-fody.conf:
+Add a new configuration starting from the existing, e.g. create
+```site-available/001-fody.conf```:
+
 ```apache
+WSGIPythonPath /home/fody/venv-hug/lib/python3.4/site-packages
+
 <VirtualHost *:8000>
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html
@@ -111,7 +115,7 @@ Add a new configuration starting from the existing, e.g. 001-fody.conf:
             Require valid-user
         </Directory>
 
-        WSGIDaemonProcess fody threads=15 maximum-requests=10000
+        WSGIDaemonProcess fody python-path=/home/fody/venv-hug/lib/python3.4/site-packages threads=15 maximum-requests=10000
         WSGIScriptAlias / /home/fody/wsgi/checkticket.py
         WSGICallableObject __hug_wsgi__
 
@@ -127,4 +131,10 @@ Add a new configuration starting from the existing, e.g. 001-fody.conf:
         ErrorLog ${APACHE_LOG_DIR}/fody-error.log
         CustomLog ${APACHE_LOG_DIR}/fody-access.log combined
 </VirtualHost>
+```
+
+and then enable the side and trigger it with apache:
+```sh
+a2ensite 001-fody
+service apache2 reload
 ```
