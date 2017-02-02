@@ -94,8 +94,8 @@ pushd /etc/apache2
  * move the `Directory` configuration of `sites-enabled/intelmq.conf` into
    the `Virtual` section of `000-default.conf`.
 
-Add a new configuration starting from the existing, e.g. create
-```site-available/001-fody.conf```:
+Add a new configuration starting from the existing, 
+e.g. create ```site-available/001-fody.conf```:
 
 ```apache
 WSGIPythonPath /home/fody/venv-hug/lib/python3.4/site-packages
