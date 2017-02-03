@@ -3,9 +3,11 @@ Here is an example recipe to setup fody on Ubuntu 14.04LTS.
 We are going to do the example with
 the prototype checkticket.py backend based on hug.
 
-### Preparation, install nodejs and yarn
+### Development: install nodejs and yarn
+This setp only necessary for building fody from sources:
 
 ```sh
+# as root
 # Confirming "trusty" is supported...
 curl -sLf -o /dev/null 'https://deb.nodesource.com/node_6.x/dists/trusty/ReleaseX' && echo yes
 
@@ -43,7 +45,7 @@ yarn --version
 
 ### build fody
 
-Do a production build of fody (as indicate on the main fody documentation), which ends up in `dist`,
+Do a production build of fody (as indicated in the main fody documentation), which ends up in `dist`,
 make sure that we are asking our own webserver before running the build:
 
 ```diff
