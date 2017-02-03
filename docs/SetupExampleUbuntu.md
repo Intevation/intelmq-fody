@@ -4,7 +4,7 @@ We are going to do the example with
 the prototype checkticket.py backend based on hug.
 
 ### Development: install nodejs and yarn
-This setup step **only necessary for building fody from sources**:
+This setup step is **only necessary for building fody from sources**:
 
 ```sh
 # as root
