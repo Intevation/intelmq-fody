@@ -14,18 +14,18 @@
                 <input class="form-control"
                   v-model:title="searchASN"
                   v-on:keyup.enter="lookupASN"
-                  placeholder="20161020-10000004"
+                  placeholder="1853"
                 >
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
               </div>
-              <span class="help-block" v-if="eventIDs.length === 0">
+              <span class="help-block" v-if="manualOrgIDs.length === 0">
                 Not found.
               </span>
-              <span class="help-block" v-if="eventIDs.length === 1">
+              <span class="help-block" v-if="manualOrgIDs.length === 1">
                 Found one event.
               </span>
-              <span class="help-block"  v-if="eventIDs.length > 1">
-                Found {{ eventIDs.length }} events.
+              <span class="help-block"  v-if="manualOrgIDs.length > 1">
+                Found {{ manualOrgIDs.length }} manual organisations.
               </span>
             </div>
           </div> <!-- .box-body -->
@@ -43,9 +43,9 @@ module.exports = {
   name: 'Contacts',
   data: function () {
     return {
-      searchASN: null,  // asn we are searching for
+      searchASN: '',  // asn we are searching for
       manualOrgIDs: [], // entries we currently show
-      autoOrgIDs: [], // entries we currently show
+      autoOrgIDs: [] // entries we currently show
     }
   },
   computed: {
