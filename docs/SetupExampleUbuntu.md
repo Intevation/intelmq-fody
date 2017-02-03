@@ -3,9 +3,47 @@ Here is an example recipe to setup fody on Ubuntu 14.04LTS.
 We are going to do the example with
 the prototype checkticket.py backend based on hug.
 
+### Preparation, install nodejs and yarn
+
+```sh
+# Confirming "trusty" is supported...
+curl -sLf -o /dev/null 'https://deb.nodesource.com/node_6.x/dists/trusty/ReleaseX' && echo yes
+
+## Adding the NodeSource and Yarn signing pubkeys to your system...
+curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+
+## Creating apt sources list file for the NodeSource Node.js v6.x repo...
+echo 'deb https://deb.nodesource.com/node_6.x trusty main' > /etc/apt/sources.list.d/nodesource.list
+echo 'deb-src https://deb.nodesource.com/node_6.x trusty main' >> /etc/apt/sources.list.d/nodesource.list
+
+## Creating apt sources list file for yarn...
+echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
+```
+
+#### installing nodejs, yarn
+If you are using the [logbuch-tools from Intevation's adminton](https://hg.intevation.de/adminton/raw-file/tip/logbuch-tools/logbuch-installer) which helps you to write down administrative steps:
+```sh
+apt-install nodejs yarn
+```
+otherwise
+```sh
+apt-get update
+apt-get install nodejs yarn
+```
+
+#### Check installed versions
+```sh
+nodejs -v
+# testoutput v6.9.5
+yarn --version
+0.19.1
+# testoutput 0.19.1
+```
+
 ### build fody
 
-Do a production build of fody, which ends up in `dist`,
+Do a production build of fody (as indicate on the main fody documentation), which ends up in `dist`,
 make sure that we are asking our own webserver before running the build:
 
 ```diff
