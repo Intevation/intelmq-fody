@@ -56,9 +56,11 @@ module.exports = {
   name: 'Contacts',
   data: function () {
     return {
+      baseQueryURL: '/api/contactdb',  // base url for AJAJ service
       searchASN: '',  // asn we are searching for
-      manualOrgIDs: [], // entries we currently show
-      autoOrgIDs: [], // entries we currently show
+      manualOrgIDs: [], // list of ids of manual orgs we currently show
+      autoOrgIDs: [], // list of ids of auto entries we currently show
+      autoOrgs: [], // list of auto entries itself
       pendingOrgIDs: [] // entries we currently edit
     }
   },
@@ -75,12 +77,42 @@ module.exports = {
       }
     }
   },
+  watch: {
+    autoOrgIDs: function (newAutoOrgIDs) {
+      for (var index in newAutoOrgIDs) {
+        this.lookupOrg(this.autoOrgs, index)
+      }
+    }
+  },
   methods: {
     lookupASN: function () {
-      // FUTURE: we need some debounce or throttle function here
-      // TODO: replace those manual testing values with a real search
-      this.manualOrgIDs = [1, 23]
-      this.autoOrgIDs = [23, 456]
+      // fixes testing values with out AJAJ request:
+      // this.manualOrgIDs = [1, 23]
+      // this.autoOrgIDs = [23, 456]
+
+      // FUTURE: we may need some debounce or throttle function here
+      var url = this.baseQueryURL + '/searchasn?asn=' + this.searchASN
+      this.$http.get(url).then((response) => {
+        // got a valid response
+        response.json().then((value) => {
+          // json parsed correctly
+          if (value) {
+            this.autoOrgIDs = value['auto']
+            this.manualOrgIDs = value['manual']
+          } else {
+            this.autoOrgIDs = []
+            this.manualOrgIDs = []
+          }
+        })
+      }, (response) => {
+        // no valid response
+        this.autoOrgIDs = []
+        this.manualOrgIDs = []
+      })
+    },
+    lookupOrg: function (orgList, index) {
+      // TODO replace hardcoded testing value with async request
+      orgList[index] = {'yo': 'man', 'id': index}
     }
   }
 }
