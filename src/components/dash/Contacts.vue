@@ -14,7 +14,7 @@
                 <input class="form-control"
                   v-model.lazy:title="searchASN"
                   v-on:change="lookupASN"
-                  placeholder="1853"
+                  placeholder="49234"
                 >
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
               </div>
@@ -33,8 +33,8 @@
           </div> <!-- .box-body -->
 
           <ul>
-             <org-card status="manual" v-for="orgid in manualOrgIDs" v-bind:id="orgid"></org-card>
-             <org-card status="auto" v-for="orgid in autoOrgIDs" v-bind:id="orgid"></org-card>
+             <org-card status="manual" v-for="org in manualOrgs" v-bind:org="org"></org-card>
+             <org-card status="auto" v-for="org in autoOrgs" v-bind:org="org"></org-card>
           </ul>
 
         </div> <!-- .box -->
@@ -48,8 +48,8 @@
 
 // A vue component for displaying one organisation
 var OrgCard = {
-  props: ['id', 'status'],
-  template: '<li> OrgID: {{ id }} Status: {{status}}</li>'
+  props: ['status', 'org'],
+  template: '<li> Status: {{status}} {{ org }} </li>'
 }
 
 module.exports = {
@@ -59,9 +59,11 @@ module.exports = {
       baseQueryURL: '/api/contactdb',  // base url for AJAJ service
       searchASN: '',  // asn we are searching for
       manualOrgIDs: [], // list of ids of manual orgs we currently show
+      manualOrgs: [],
       autoOrgIDs: [], // list of ids of auto entries we currently show
-      autoOrgs: [], // list of auto entries itself
-      pendingOrgIDs: [] // entries we currently edit
+      autoOrgs: [],
+      pendingOrgIDs: [], // entries we currently edit
+      pendingOrgs: []
     }
   },
   components: {
@@ -78,6 +80,14 @@ module.exports = {
     }
   },
   watch: {
+    manualOrgIDs: function (newManualOrgIDs) {
+      // deleting all objects and reloading them. (A more clever approach
+      // is unnecessary, because we expect only to load a few
+      this.manualOrgs = []
+      for (var index in newManualOrgIDs) {
+        this.lookupOrg(this.manualOrgs, 'manual', this.manualOrgIDs, index)
+      }
+    },
     autoOrgIDs: function (newAutoOrgIDs) {
       // deleting all objects and reloading them. (A more clever approach
       // is unnecessary, because we expect only to load a few
@@ -114,17 +124,16 @@ module.exports = {
       })
     },
     lookupOrg: function (orgList, type, ids, index) {
-      console.log('lookupOrg called')
-
       var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
-      console.log(url)
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
-            console.log(value)
-            orgList[index] = value
+            // instead of orgList[index] = value
+            // we have to use splice for Vue to notice the change
+            // see https://vuejs.org/v2/guide/list.html#Caveats
+            orgList.splice(index, 1, value)
           } else {
             delete orgList[index]
           }
