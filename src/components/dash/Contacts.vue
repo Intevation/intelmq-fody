@@ -79,8 +79,11 @@ module.exports = {
   },
   watch: {
     autoOrgIDs: function (newAutoOrgIDs) {
+      // deleting all objects and reloading them. (A more clever approach
+      // is unnecessary, because we expect only to load a few
+      this.autoOrgs = []
       for (var index in newAutoOrgIDs) {
-        this.lookupOrg(this.autoOrgs, index)
+        this.lookupOrg(this.autoOrgs, 'auto', this.autoOrgIDs, index)
       }
     }
   },
@@ -110,9 +113,26 @@ module.exports = {
         this.manualOrgIDs = []
       })
     },
-    lookupOrg: function (orgList, index) {
-      // TODO replace hardcoded testing value with async request
-      orgList[index] = {'yo': 'man', 'id': index}
+    lookupOrg: function (orgList, type, ids, index) {
+      console.log('lookupOrg called')
+
+      var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
+      console.log(url)
+      this.$http.get(url).then((response) => {
+        // got valid response
+        response.json().then((value) => {
+          // json parsed correctly
+          if (value) {
+            console.log(value)
+            orgList[index] = value
+          } else {
+            delete orgList[index]
+          }
+        })
+      }, (response) => {
+        // no valid response
+        delete orgList[index]
+      })
     }
   }
 }
