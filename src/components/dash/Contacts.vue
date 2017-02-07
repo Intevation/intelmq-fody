@@ -19,23 +19,21 @@
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
               </div>
               <span v-if="searchASN !== ''">
-              <span class="help-block" v-if="autoOrgIDs.length === 0">
-                No auto-imported organisation found.
-              </span>
-              <span class="help-block" v-if="autoOrgIDs.length === 1">
-                Found one auto-imporated organisation.
-              </span>
-              <span class="help-block"  v-if="manualOrgIDs.length > 1">
-                Found {{ autoOrgIDs.length }} auto-imported organisations.
-              </span>
+                <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                  Not found.
+                </span>
+                <span class="help-block"
+                      v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                  Found {{ autoOrgIDs.length }} auto-imported and
+                        {{ manualOrgIDs.length }} manual organisations.
+                </span>
               </span>
             </div>
           </div> <!-- .box-body -->
 
-          <ul>
              <org-card status="manual" v-for="org in manualOrgs" v-bind:org="org"></org-card>
              <org-card status="auto" v-for="org in autoOrgs" v-bind:org="org"></org-card>
-          </ul>
 
         </div> <!-- .box -->
       </div> <!-- .col... -->
@@ -49,7 +47,18 @@
 // A vue component for displaying one organisation
 var OrgCard = {
   props: ['status', 'org'],
-  template: '<li> Status: {{status}} {{ org }} </li>'
+  template: `<div class="panel panel-primary">
+               <div class="panel-heading">
+                 <h3 class="panel-title">
+                 <i class="fa fa-address-book-o" style="padding:20"></i>
+                  {{ org.name }}
+                  <span class="badge primary">{{ status }}</span>
+                 </h3>
+               </div>
+               <div class="panel-body">
+                 {{ org }}
+               </div>
+            </div>`
 }
 
 module.exports = {
