@@ -28,52 +28,52 @@ const routes = [
         path: '',
         component: DashboardView,
         name: 'Dashboard',
-        description: 'Overview of environment'
+        meta { description: 'Overview of environment' }
       }, {
         path: '/tickets',
         component: TicketsView,
         name: 'Tickets',
-        description: 'Show sent reports'
+        meta { description: 'Show sent reports' }
       }, {
         path: '/contacts',
         component: ContactsView,
         name: 'Contacts',
-        description: 'Maintain contact database'
+        meta { description: 'Maintain contact database' }
       }, {
         path: '/stats',
         component: StatsView,
         name: 'Statistics',
-        description: 'Analysis interface'
+        meta { description: 'Analysis interface' }
       }, {
         path: '/tables',
         component: TablesView,
         name: 'Tables',
-        description: 'Simple and advance table'
+        meta { description: 'Simple and advance table' }
       }, {
         path: '/tasks',
         component: TasksView,
         name: 'Tasks',
-        description: 'Tasks page in the form of a timeline'
+        meta { description: 'Tasks page in the form of a timeline' }
       }, {
         path: '/setting',
         component: SettingView,
         name: 'Settings',
-        description: 'User settings page'
+        meta { description: 'User settings page' }
       }, {
         path: '/access',
         component: AccessView,
         name: 'Access',
-        description: 'Example of using maps'
+        meta { description: 'Example of using maps' }
       }, {
         path: '/server',
         component: ServerView,
         name: 'Servers',
-        description: 'List of our servers'
+        meta { description: 'List of our servers' }
       }, {
         path: '/repos',
         component: ReposView,
         name: 'Repository',
-        description: 'List of popular javascript repos'
+        meta { description: 'List of popular javascript repos' }
       }
     ]
   }, {
