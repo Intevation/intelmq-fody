@@ -33,13 +33,17 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
 
+        <!--
         <div class='box' v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
           <div class="box-body">
-            <org-card v-for="org of manualOrgs"
+        -->
+            <org-card v-for="org of manualOrgs" class="col-md-6"
                       v-bind:org="org" status="manual"></org-card>
-            <org-card v-for="org of autoOrgs"
+            <org-card v-for="org of autoOrgs" class="col-md-6"
                       v-bind:org="org" status="auto"></org-card>
+        <!--
           </div> <!-- .box-body -->
+        <!--
         </div> <!-- .box -->
 
       </div> <!-- .col... -->
@@ -64,16 +68,16 @@ var OrgCard = {
                 </div>
                 <div class="panel-body">
                   <ul class="list-group">
-                    <li v-for="asn of org.asns" class="list-group-item">
-                      ASN{{ asn.number }}
-                    </li>
-                  </ul>
-                  <ul class="list-group">
                     <li v-for="contact of org.contacts" class="list-group-item">
                       {{ contact.email }}
                       <em v-if="contact.comment !== ''">
                         ({{ contact.comment }})
                       </em>
+                    </li>
+                  </ul>
+                  <ul class="list-group">
+                    <li v-for="asn of org.asns" class="list-group-item">
+                      ASN{{ asn.number }}
                     </li>
                   </ul>
                   <div class="well">
