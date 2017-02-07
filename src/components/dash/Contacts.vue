@@ -3,8 +3,8 @@
     <div class="row">
       <div class='col-xs-12'>
         <div class='box'>
-          <div class='box-header with-border'>
-            <h2>Search for ASN in ContactDB</h2>
+          <div class='box-header with-border col-md-3 col-sm-3'>
+            <h2>Search for ASN</h2>
           </div>
 
           <div class="box-body">
@@ -33,18 +33,41 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
 
-        <!--
-        <div class='box' v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+        <div class='box'>
+          <div class='box-header with-border col-md-3 col-sm-6'>
+            <h2>Search for email</h2>
+          </div>
+
           <div class="box-body">
-        -->
-            <org-card v-for="org of manualOrgs" class="col-md-6"
-                      v-bind:org="org" status="manual"></org-card>
-            <org-card v-for="org of autoOrgs" class="col-md-6"
-                      v-bind:org="org" status="auto"></org-card>
-        <!--
+            <div class="forum-control" v-bind:class='EmailInputClass'>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
+                <input class="form-control"
+                  v-model.lazy:title="searchEmail"
+                  v-on:change="lookupEmail"
+                  placeholder="abuse@bund.de"
+                >
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+              <span v-if="searchEmail !== ''">
+                <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                  Not found.
+                </span>
+                <span class="help-block"
+                      v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                  Found {{ autoOrgIDs.length }} auto-imported and
+                        {{ manualOrgIDs.length }} manual organisations.
+                </span>
+              </span>
+            </div>
           </div> <!-- .box-body -->
-        <!--
         </div> <!-- .box -->
+
+        <org-card v-for="org of manualOrgs" class="col-md-6 col-sm-6"
+                  v-bind:org="org" status="manual"></org-card>
+        <org-card v-for="org of autoOrgs" class="col-md-6 col-sm-6"
+                  v-bind:org="org" status="auto"></org-card>
 
       </div> <!-- .col... -->
     </div> <!-- /.row -->
@@ -110,6 +133,7 @@ module.exports = {
     return {
       baseQueryURL: '/api/contactdb',  // base url for AJAJ service
       searchASN: '',  // asn we are searching for
+      searchEmail: '',  // email we are searching for
       manualOrgIDs: [], // list of ids of manual orgs we currently show
       manualOrgs: [],
       autoOrgIDs: [], // list of ids of auto entries we currently show
@@ -127,6 +151,14 @@ module.exports = {
         'has-error': (this.searchASN !== '' &&
                       this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
         'has-success': (this.searchASN !== '' &&
+                        this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
+      }
+    },
+    EmailInputClass: function () {
+      return {
+        'has-error': (this.searchEmail !== '' &&
+                      this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
+        'has-success': (this.searchEmail !== '' &&
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
       }
     }
@@ -154,9 +186,32 @@ module.exports = {
       // fixes testing values with out AJAJ request:
       // this.manualOrgIDs = [1, 23]
       // this.autoOrgIDs = [23, 456]
+      this.searchEmail = ''
 
       // FUTURE: we may need some debounce or throttle function here
       var url = this.baseQueryURL + '/searchasn?asn=' + this.searchASN
+      this.$http.get(url).then((response) => {
+        // got a valid response
+        response.json().then((value) => {
+          // json parsed correctly
+          if (value) {
+            this.autoOrgIDs = value['auto']
+            this.manualOrgIDs = value['manual']
+          } else {
+            this.autoOrgIDs = []
+            this.manualOrgIDs = []
+          }
+        })
+      }, (response) => {
+        // no valid response
+        this.autoOrgIDs = []
+        this.manualOrgIDs = []
+      })
+    },
+    lookupEmail: function () {
+      this.searchASN = ''
+      // FUTURE: we may need some debounce or throttle function here
+      var url = this.baseQueryURL + '/searchcontact?email=' + this.searchEmail
       this.$http.get(url).then((response) => {
         // got a valid response
         response.json().then((value) => {
