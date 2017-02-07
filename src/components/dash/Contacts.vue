@@ -31,11 +31,17 @@
               </span>
             </div>
           </div> <!-- .box-body -->
-
-             <org-card status="manual" v-for="org in manualOrgs" v-bind:org="org"></org-card>
-             <org-card status="auto" v-for="org in autoOrgs" v-bind:org="org"></org-card>
-
         </div> <!-- .box -->
+
+        <div class='box' v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+          <div class="box-body">
+            <org-card v-for="org of manualOrgs"
+                      v-bind:org="org" status="manual"></org-card>
+            <org-card v-for="org of autoOrgs"
+                      v-bind:org="org" status="auto"></org-card>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+
       </div> <!-- .col... -->
     </div> <!-- /.row -->
   </section>
@@ -45,20 +51,53 @@
 // import $ from 'jquery'
 
 // A vue component for displaying one organisation
+// TODO put it into a single file component
 var OrgCard = {
   props: ['status', 'org'],
-  template: `<div class="panel panel-primary">
-               <div class="panel-heading">
-                 <h3 class="panel-title">
-                 <i class="fa fa-address-book-o" style="padding:20"></i>
-                  {{ org.name }}
-                  <span class="badge primary">{{ status }}</span>
-                 </h3>
-               </div>
-               <div class="panel-body">
-                 {{ org }}
-               </div>
-            </div>`
+  template: ` <div class="panel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <i class="fa fa-address-book-o"></i>
+                    {{ org.name }}
+                    <span class="badge primary">{{ status }}</span>
+                  </h3>
+                </div>
+                <div class="panel-body">
+                  <ul class="list-group">
+                    <li v-for="asn of org.asns" class="list-group-item">
+                      ASN{{ asn.number }}
+                    </li>
+                  </ul>
+                  <ul class="list-group">
+                    <li v-for="contact of org.contacts" class="list-group-item">
+                      {{ contact.email }}
+                      <em v-if="contact.comment !== ''">
+                        ({{ contact.comment }})
+                      </em>
+                    </li>
+                  </ul>
+                  <div class="well">
+                    <div v-for="(value, key) in otherAttributes">
+                      <strong>{{ key }}</strong>: {{ value }}
+                    </div>
+                  </div>
+                </div>
+              </div>`,
+  data: function () {
+    return {
+      // for knownOrgKeys, the display is handled explicitely
+      knownOrgKeys: [ 'name', 'asns', 'contacts', 'id' ]
+    }
+  },
+  computed: {
+    otherAttributes: function () {
+      var newOrg = this.org
+      for (var key of this.knownOrgKeys) {
+        delete newOrg[key]
+      }
+      return newOrg
+    }
+  }
 }
 
 module.exports = {
