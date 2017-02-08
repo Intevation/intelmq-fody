@@ -43,9 +43,12 @@ yarn --version
 # testoutput 0.19.1
 ```
 
-### build fody
+### production build fody
 
-Do a production build of fody (as indicated in the main fody documentation), which ends up in `dist`,
+Do a production build of fody (as indicated in the main fody documentation), which ends up in `dist`.
+
+#### Only for fody (versions <= 0.1.2) :
+
 make sure that we are asking our own webserver before running the build:
 
 ```diff
@@ -64,24 +67,13 @@ We want an installation that is quite separated from the rest of the system:
 #as root
 adduser --disabled-password fody
 ```
-
 Note: The user must have the right to read the mailgen configuration.
-
-```shell
-#as fody
-git clone --depth 1 https://github.com/Intevation/intelmq-mailgen.git
-mkdir wsgi
-cd wsgi
-ln -s ../intelmq-mailgen/extras/checkticket-spa/checkticket.py .
-```
-
-(Modify checkticket.py that it will serve `/home/fody/www/index.html`.)
-
 
 Copy the build `dist` directory over and rename it to `www`:
 ```shell
 mv dist www
 ```
+
 
 #### installing hug
 First follow the official way for
@@ -92,7 +84,6 @@ e.g.
 #as root
 apt-get install python3-pip python3.4-venv
 ```
-
 
 ```shell
 #as fody
@@ -112,6 +103,23 @@ pip --version
 
 pip install --upgrade hug
 ```
+
+### install server-side apis
+
+```shell
+#as fody
+git clone --depth 1 https://github.com/Intevation/intelmq-mailgen.git
+mkdir wsgi
+cd wsgi
+ln -s ../intelmq-mailgen/extras/checkticket-spa/checkticket.py .
+```
+
+(Modify checkticket.py that it will serve `/home/fody/www/index.html`.)
+
+```shall
+#as fody in venv-hug
+pushd ~/intelmq-mailgen/extras/contactdb_api
+pip install .
 
 
 ### Using Apache2
