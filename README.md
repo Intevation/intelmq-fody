@@ -1,11 +1,15 @@
-**Fody** is a management interface to
+**Fody** is an interface for 
 [intelmq-mailgen](https://github.com/Intevation/intelmq-mailgen) setups.
+
+### Features
+ * Shows event details for a report that has been send out.
+ * Inspect the [IntelMQ certbund-contact](https://github.com/Intevation/intelmq/tree/certbund-contact/intelmq/bots/experts/certbund_contact) database.
 
 ![Screenshot](https://cloud.githubusercontent.com/assets/8190008/20760225/b2c83b80-b71f-11e6-98a0-f141f23b28c6.png)
 
 ![Screenshot-small-device](https://cloud.githubusercontent.com/assets/8190008/20760245/c2aa5678-b71f-11e6-920e-548d2e275c8e.png)
 
-It started from the [CoPilot](https://github.com/misterGF/CoPilot) template.
+![Screenshot-Contacts](https://cloud.githubusercontent.com/assets/8190008/22743973/271a7d76-ee1c-11e6-882e-bbc629e97ace.png)
 
 Installation
 ------------
@@ -23,27 +27,26 @@ Download (or clone) the source code.
 # install dependencies
 yarn
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:8080 
+#   and proxy /api requests to localhost:8002
 yarn run dev
 
 # build for production with minification
 yarn run build
-
-# (not yet) run unit tests
-yarn run unit
-
-# (not yet) run e2e tests
-yarn run e2e
-
-# (not yet) run all tests
-yarn test
 ```
 
 See the [setup example for Ubuntu](docs/SetupExampleUbuntu.md).
 
+For data to be retrieved, you need to serve the 
+[checkticket](https://github.com/Intevation/intelmq-mailgen/tree/master/extras/checkticket-spa)
+and 
+[contactdb](https://github.com/Intevation/intelmq-mailgen/tree/master/extras/contactdb_api)
+apis via http for your Intelmq setup.
+
 Documentation
 -------------
 
+The layout frame has originally be derived from the [CoPilot](https://github.com/misterGF/CoPilot) template.
 
 License
 -------
