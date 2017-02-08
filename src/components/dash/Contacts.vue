@@ -41,7 +41,7 @@
           <div class="box-body">
             <div class="forum-control" v-bind:class='EmailInputClass'>
               <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
+                <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
                 <input class="form-control"
                   v-model.lazy:title="searchEmail"
                   v-on:change="lookupEmail"
@@ -84,7 +84,7 @@ var OrgCard = {
   template: ` <div class="panel panel-primary">
                 <div class="panel-heading">
                   <h3 class="panel-title">
-                    <i class="fa fa-address-book-o"></i>
+                    <i class="fa fa-address-book-o rme"></i>
                     {{ org.name }}
                     <span class="badge primary">{{ status }}</span>
                   </h3>
@@ -92,6 +92,7 @@ var OrgCard = {
                 <div class="panel-body">
                   <ul class="list-group">
                     <li v-for="contact of org.contacts" class="list-group-item">
+                      <i class="fa fa-envelope-o rme"></i>
                       {{ contact.email }}
                       <em v-if="contact.comment !== ''">
                         ({{ contact.comment }})
@@ -100,6 +101,7 @@ var OrgCard = {
                   </ul>
                   <ul class="list-group">
                     <li v-for="asn of org.asns" class="list-group-item">
+                      <i class="fa fa-hdd-o rme"></i>
                       ASN{{ asn.number }}
                     </li>
                   </ul>
@@ -243,4 +245,7 @@ module.exports = {
 </script>
 
 <style>
+i.rme {
+  margin-right: 0.3em
+}
 </style>
