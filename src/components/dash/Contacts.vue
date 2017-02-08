@@ -12,7 +12,7 @@
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
                 <input class="form-control"
-                  v-model.lazy:title="searchASN"
+                  v-model.lazy.trim:title="searchASN"
                   v-on:change="lookupASN"
                   placeholder="49234"
                 >
@@ -43,13 +43,44 @@
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
                 <input class="form-control"
-                  v-model.lazy:title="searchEmail"
+                  v-model.lazy.trim:title="searchEmail"
                   v-on:change="lookupEmail"
                   placeholder="abuse@bund.de"
                 >
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
               </div>
               <span v-if="searchEmail !== ''">
+                <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                  Not found.
+                </span>
+                <span class="help-block"
+                      v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                  Found {{ autoOrgIDs.length }} auto-imported and
+                        {{ manualOrgIDs.length }} manual organisations.
+                </span>
+              </span>
+            </div>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+
+        <div class='box'>
+          <div class='box-header with-border col-md-3 col-sm-6'>
+            <h2>Lookup name</h2>
+          </div>
+
+          <div class="box-body">
+            <div class="forum-control" v-bind:class='NameInputClass'>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
+                <input class="form-control"
+                  v-model.trim:title="searchName"
+                  v-on:change="lookupName"
+                  placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
+                >
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+              <span v-if="searchName !== ''">
                 <span class="help-block"
                     v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
                   Not found.
@@ -136,6 +167,7 @@ module.exports = {
       baseQueryURL: '/api/contactdb',  // base url for AJAJ service
       searchASN: '',  // asn we are searching for
       searchEmail: '',  // email we are searching for
+      searchName: '',  // org name we want to look up
       manualOrgIDs: [], // list of ids of manual orgs we currently show
       manualOrgs: [],
       autoOrgIDs: [], // list of ids of auto entries we currently show
@@ -161,6 +193,14 @@ module.exports = {
         'has-error': (this.searchEmail !== '' &&
                       this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
         'has-success': (this.searchEmail !== '' &&
+                        this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
+      }
+    },
+    NameInputClass: function () {
+      return {
+        'has-error': (this.searchName !== '' &&
+                      this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
+        'has-success': (this.searchName !== '' &&
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
       }
     }
@@ -212,13 +252,22 @@ module.exports = {
       // this.autoOrgIDs = [23, 456]
 
       this.searchEmail = ''
+      this.searchName = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
     },
     lookupEmail: function () {
       // FUTURE: we may need some debounce or throttle function here
 
       this.searchASN = ''
+      this.searchName = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
+    },
+    lookupName: function () {
+      // FUTURE: we may need some debounce or throttle function here
+
+      this.searchASN = ''
+      this.searchEmail = ''
+      this.getOrgIDs('/searchorg?name=' + this.searchName)
     },
     lookupOrg: function (orgList, type, ids, index) {
       var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
@@ -246,6 +295,6 @@ module.exports = {
 
 <style>
 i.rme {
-  margin-right: 0.3em
+  margin-right: 0.25em
 }
 </style>
