@@ -74,7 +74,7 @@
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
                 <input class="form-control"
-                  v-model.trim:title="searchName"
+                  v-model.lazy.trim:title="searchName"
                   v-on:change="lookupName"
                   placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
                 >
@@ -108,57 +108,7 @@
 <script>
 // import $ from 'jquery'
 
-// A vue component for displaying one organisation
-// TODO put it into a single file component
-var OrgCard = {
-  props: ['status', 'org'],
-  template: ` <div class="panel panel-primary">
-                <div class="panel-heading">
-                  <h3 class="panel-title">
-                    <i class="fa fa-address-book-o rme"></i>
-                    {{ org.name }}
-                    <span class="badge primary">{{ status }}</span>
-                  </h3>
-                </div>
-                <div class="panel-body">
-                  <ul class="list-group">
-                    <li v-for="contact of org.contacts" class="list-group-item">
-                      <i class="fa fa-envelope-o rme"></i>
-                      {{ contact.email }}
-                      <em v-if="contact.comment !== ''">
-                        ({{ contact.comment }})
-                      </em>
-                    </li>
-                  </ul>
-                  <ul class="list-group">
-                    <li v-for="asn of org.asns" class="list-group-item">
-                      <i class="fa fa-hdd-o rme"></i>
-                      ASN{{ asn.number }}
-                    </li>
-                  </ul>
-                  <div class="well">
-                    <div v-for="(value, key) in otherAttributes">
-                      <strong>{{ key }}</strong>: {{ value }}
-                    </div>
-                  </div>
-                </div>
-              </div>`,
-  data: function () {
-    return {
-      // for knownOrgKeys, the display is handled explicitely
-      knownOrgKeys: [ 'name', 'asns', 'contacts', 'id' ]
-    }
-  },
-  computed: {
-    otherAttributes: function () {
-      var newOrg = this.org
-      for (var key of this.knownOrgKeys) {
-        delete newOrg[key]
-      }
-      return newOrg
-    }
-  }
-}
+import OrgCard from './OrgCard.vue'
 
 module.exports = {
   name: 'Contacts',
@@ -177,7 +127,7 @@ module.exports = {
     }
   },
   components: {
-    'org-card': OrgCard
+    OrgCard
   },
   computed: {
     ASNInputClass: function () {
@@ -293,8 +243,3 @@ module.exports = {
 }
 </script>
 
-<style>
-i.rme {
-  margin-right: 0.25em
-}
-</style>
