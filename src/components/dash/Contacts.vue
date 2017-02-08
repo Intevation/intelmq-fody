@@ -182,14 +182,8 @@ module.exports = {
     }
   },
   methods: {
-    lookupASN: function () {
-      // fixes testing values with out AJAJ request:
-      // this.manualOrgIDs = [1, 23]
-      // this.autoOrgIDs = [23, 456]
-      this.searchEmail = ''
-
-      // FUTURE: we may need some debounce or throttle function here
-      var url = this.baseQueryURL + '/searchasn?asn=' + this.searchASN
+    getOrgIDs: function (queryPartStr) {
+      var url = this.baseQueryURL + queryPartStr
       this.$http.get(url).then((response) => {
         // got a valid response
         response.json().then((value) => {
@@ -208,27 +202,21 @@ module.exports = {
         this.manualOrgIDs = []
       })
     },
-    lookupEmail: function () {
-      this.searchASN = ''
+    lookupASN: function () {
       // FUTURE: we may need some debounce or throttle function here
-      var url = this.baseQueryURL + '/searchcontact?email=' + this.searchEmail
-      this.$http.get(url).then((response) => {
-        // got a valid response
-        response.json().then((value) => {
-          // json parsed correctly
-          if (value) {
-            this.autoOrgIDs = value['auto']
-            this.manualOrgIDs = value['manual']
-          } else {
-            this.autoOrgIDs = []
-            this.manualOrgIDs = []
-          }
-        })
-      }, (response) => {
-        // no valid response
-        this.autoOrgIDs = []
-        this.manualOrgIDs = []
-      })
+
+      // fixed testing values with out AJAJ request:
+      // this.manualOrgIDs = [1, 23]
+      // this.autoOrgIDs = [23, 456]
+
+      this.searchEmail = ''
+      this.getOrgIDs('/searchasn?asn=' + this.searchASN)
+    },
+    lookupEmail: function () {
+      // FUTURE: we may need some debounce or throttle function here
+
+      this.searchASN = ''
+      this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
     },
     lookupOrg: function (orgList, type, ids, index) {
       var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
