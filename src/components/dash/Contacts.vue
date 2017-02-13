@@ -249,7 +249,11 @@ module.exports = {
     },
     cloneOrg: function (index, event) {
       console.log('cloneOrg() called with index: ' + index +
-                  'and argument: ' + JSON.stringify(event))
+                  ' and argument: ' + JSON.stringify(event))
+      // deep-copy the org we want to edit
+      var newOrg = JSON.parse(JSON.stringify(this.autoOrgs[index]))
+      this.pendingOrgs.push(newOrg)
+      this.pendingOrgIDs.push(newOrg['id'])
     }
   }
 }
