@@ -28,6 +28,7 @@
           <strong>{{ key }}</strong>: {{ value }}
         </div>
       </div>
+      <button v-if="status === 'auto'" v-on:click="cloneMe">Clone</button>
     </div>
   </div>
 </template>
@@ -70,16 +71,25 @@ module.exports = {
   data: function () {
     return {
       // for knownOrgKeys, the display is handled explicitely
-      knownOrgKeys: [ 'name', 'asns', 'contacts', 'id' ]
+      knownOrgKeys: { 'name': 0, 'asns': 0, 'contacts': 0, 'id': 0 }
     }
   },
   computed: {
     otherAttributes: function () {
-      var newOrg = this.org
-      for (var key of this.knownOrgKeys) {
-        delete newOrg[key]
+      // copy over the attributes we are interested in,
+      //   otherwise we would modify in place
+      var newOrg = {}
+      for (var key in this.org) {
+        if (this.knownOrgKeys.hasOwnProperty(key) === false) {
+          newOrg[key] = this.org[key]
+        }
       }
       return newOrg
+    }
+  },
+  methods: {
+    cloneMe: function () {
+      this.$emit('clone', this.org)
     }
   }
 }

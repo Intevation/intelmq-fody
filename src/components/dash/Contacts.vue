@@ -97,8 +97,13 @@
 
         <org-card v-for="org of manualOrgs" class="col-md-6 col-sm-6"
                   v-bind:org="org" status="manual"></org-card>
-        <org-card v-for="org of autoOrgs" class="col-md-6 col-sm-6"
-                  v-bind:org="org" status="auto"></org-card>
+        <org-card v-for="(org, index) of autoOrgs" class="col-md-6 col-sm-6"
+                  v-bind:org="org" status="auto"
+                  v-on:clone="cloneOrg(index, $event)"></org-card>
+
+        <button class="btn btn-primary btn-lg btn-block"
+                v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
+        </button>
 
       </div> <!-- .col... -->
     </div> <!-- /.row -->
@@ -238,6 +243,13 @@ module.exports = {
         // no valid response
         delete orgList[index]
       })
+    },
+    newOrg: function () {
+      console.log('newOrg() called')
+    },
+    cloneOrg: function (index, event) {
+      console.log('cloneOrg() called with index: ' + index +
+                  'and argument: ' + JSON.stringify(event))
     }
   }
 }
