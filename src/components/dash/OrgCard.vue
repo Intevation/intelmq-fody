@@ -1,5 +1,5 @@
 <template>
-  <div class="panel panel-primary">
+  <div class="panel" v-bind:class="computedPanelClass">
     <div class="panel-heading">
       <h3 class="panel-title">
         <i class="fa fa-address-book-o rme"></i>
@@ -54,6 +54,12 @@ module.exports = {
         }
       }
       return newOrg
+    },
+    computedPanelClass: function () {
+      return {
+        'panel-primary': this.status !== 'pending',
+        'panel-danger': this.status === 'pending'
+      }
     }
   },
   methods: {

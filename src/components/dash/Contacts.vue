@@ -105,6 +105,17 @@
                 v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
         </button>
 
+        <org-card v-for="(org, index) of pendingOrgs" class="col-md-6 col-sm-6"
+                  v-bind:org="org" status="pending"
+                  v-on:clone="cloneOrg(index, $event)"></org-card>
+
+        <button v-if="pendingOrgIDs.length !== 0"
+                class="btn btn-danger btn-lg btn-block"
+                v-on:click="commitPendingOrgs"
+                ><i class="fa fa-pencil-square-o"
+                    style="margin-right:.2em"></i>Commit
+        </button>
+
       </div> <!-- .col... -->
     </div> <!-- /.row -->
   </section>
@@ -127,8 +138,8 @@ module.exports = {
       manualOrgs: [],
       autoOrgIDs: [], // list of ids of auto entries we currently show
       autoOrgs: [],
-      pendingOrgIDs: [], // entries we currently edit
-      pendingOrgs: []
+      pendingOrgIDs: [], // entries we currently edit, null when needing new id
+      pendingOrgs: []  // objects, potentially changed, to be written back
     }
   },
   components: {
@@ -246,6 +257,8 @@ module.exports = {
     },
     newOrg: function () {
       console.log('newOrg() called')
+      // TODO get a template
+      // push it to pendingOrgs
     },
     cloneOrg: function (index, event) {
       console.log('cloneOrg() called with index: ' + index +
@@ -253,7 +266,10 @@ module.exports = {
       // deep-copy the org we want to edit
       var newOrg = JSON.parse(JSON.stringify(this.autoOrgs[index]))
       this.pendingOrgs.push(newOrg)
-      this.pendingOrgIDs.push(newOrg['id'])
+      this.pendingOrgIDs.push(null)
+    },
+    commitPendingOrgs () {
+      console.log('commitPendingOrgs() called')
     }
   }
 }
