@@ -111,7 +111,7 @@
                     v-bind:org="org" status="pending"
                     v-on:clone="cloneOrg(index, $event)"></org-card>
 
-          <button v-if="pendingOrgIDs.length !== 0"
+          <button v-if="pendingOrgIndex.length !== 0"
                   class="btn btn-danger btn-lg btn-block"
                   v-on:click="commitPendingOrgs"
                   ><i class="fa fa-pencil-square-o"
@@ -141,7 +141,11 @@ module.exports = {
       manualOrgs: [],
       autoOrgIDs: [], // list of ids of auto entries we currently show
       autoOrgs: [],
-      pendingOrgIDs: [], // entries we currently edit, null when needing new id
+      // state of the entries in pendingOrgs, three values
+      //   'delete' for removing the manual entry with org.id
+      //   'create' for adding a new manual entry
+      //   'update' for replacing the manual entry
+      pendingOrgIndex: [],
       pendingOrgs: []  // objects, potentially changed, to be written back
     }
   },
@@ -264,19 +268,52 @@ module.exports = {
       // push it to pendingOrgs
     },
     cloneOrg: function (index, event) {
-      //console.log('cloneOrg() called with index: ' + index +
+      // console.log('cloneOrg() called with index: ' + index +
       //            ' and argument: ' + JSON.stringify(event))
 
-      // deep-copy the org we want to edit
+      // deep-copy the org so we can create a new one
       var newOrg = JSON.parse(JSON.stringify(this.autoOrgs[index]))
       // remove values that are only within _automatic tables
       delete newOrg['import_source']
       delete newOrg['import_time']
+      delete newOrg['id']
+
+      // add in commit queue as CREATE
       this.pendingOrgs.push(newOrg)
-      this.pendingOrgIDs.push(null)
+      this.pendingOrgIndex.push('create')
+    },
+    deleteOrg: function (index, event) {
+      this.pendingOrgs.push('delete')
+      this.pendingOrgIndex.push(this.manualOrgs[index].id)
     },
     commitPendingOrgs () {
       console.log('commitPendingOrgs() called')
+      var url = this.baseQueryURL + '/org/manual/commit'
+      var commitObject = {
+        'commands': this.pendingOrgIndex,
+        'orgs': this.pendingOrgs
+      }
+
+      // TODO block until we have a response
+      this.$http.post(url, commitObject).then(response => {
+        // request was good, remove pending items
+        this.pendingOrgIndex = []
+        this.pendingOrgs = []
+        // TODO unblock
+
+        // getting a list of new or updated manual Org IDs back
+        response.json().then(value => {
+          // json parsed correctly
+          if (value) {
+            // TODO add ids we do not have already to the displayed manualOrgs
+            // (which also shall trigger an update)
+          }
+        })
+      }, response => {
+        // error callback
+        // TODO display error message
+        // TODO unblock
+      })
     }
   }
 }
