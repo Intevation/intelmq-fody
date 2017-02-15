@@ -105,16 +105,19 @@
                 v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
         </button>
 
-        <org-card v-for="(org, index) of pendingOrgs" class="col-md-6 col-sm-6"
-                  v-bind:org="org" status="pending"
-                  v-on:clone="cloneOrg(index, $event)"></org-card>
+        <div class="box" style="margin-top:20px">
+          <org-card v-for="(org, index) of pendingOrgs"
+                    class="col-md-6 col-sm-6"
+                    v-bind:org="org" status="pending"
+                    v-on:clone="cloneOrg(index, $event)"></org-card>
 
-        <button v-if="pendingOrgIDs.length !== 0"
-                class="btn btn-danger btn-lg btn-block"
-                v-on:click="commitPendingOrgs"
-                ><i class="fa fa-pencil-square-o"
-                    style="margin-right:.2em"></i>Commit
-        </button>
+          <button v-if="pendingOrgIDs.length !== 0"
+                  class="btn btn-danger btn-lg btn-block"
+                  v-on:click="commitPendingOrgs"
+                  ><i class="fa fa-pencil-square-o"
+                      style="margin-right:.2em"></i>Commit
+          </button>
+        </div>
 
       </div> <!-- .col... -->
     </div> <!-- /.row -->
