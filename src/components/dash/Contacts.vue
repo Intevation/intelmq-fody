@@ -265,6 +265,9 @@ module.exports = {
                   ' and argument: ' + JSON.stringify(event))
       // deep-copy the org we want to edit
       var newOrg = JSON.parse(JSON.stringify(this.autoOrgs[index]))
+      // remove values that are only within _automatic tables
+      delete newOrg['import_source']
+      delete newOrg['import_time']
       this.pendingOrgs.push(newOrg)
       this.pendingOrgIDs.push(null)
     },
