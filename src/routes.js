@@ -7,7 +7,6 @@ import DashboardView from './components/dash/Dashboard.vue'
 import TicketsView from './components/dash/Tickets.vue'
 import ContactsView from './components/dash/Contacts.vue'
 import StatsView from './components/dash/Stats.vue'
-import TablesView from './components/dash/Tables.vue'
 import TasksView from './components/dash/Tasks.vue'
 import SettingView from './components/dash/Setting.vue'
 import AccessView from './components/dash/Access.vue'
@@ -44,11 +43,6 @@ const routes = [
         component: StatsView,
         name: 'Statistics',
         meta: { description: 'Analysis interface' }
-      }, {
-        path: '/tables',
-        component: TablesView,
-        name: 'Tables',
-        meta: { description: 'Simple and advance table' }
       }, {
         path: '/tasks',
         component: TasksView,
