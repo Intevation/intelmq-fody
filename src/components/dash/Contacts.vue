@@ -264,8 +264,9 @@ module.exports = {
       // push it to pendingOrgs
     },
     cloneOrg: function (index, event) {
-      console.log('cloneOrg() called with index: ' + index +
-                  ' and argument: ' + JSON.stringify(event))
+      //console.log('cloneOrg() called with index: ' + index +
+      //            ' and argument: ' + JSON.stringify(event))
+
       // deep-copy the org we want to edit
       var newOrg = JSON.parse(JSON.stringify(this.autoOrgs[index]))
       // remove values that are only within _automatic tables
