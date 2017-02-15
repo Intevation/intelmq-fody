@@ -36,15 +36,17 @@
           ASN{{ asn.number }}
         </li>
       </ul>
-      <div class="well">
+      <div v-if="!editable" class="well">
         <div v-for="(value, key) in otherAttributes">
-          <span v-if="!editable">
             <strong>{{ key }}</strong>: {{ value }}
-          </span>
-          <span v-if="editable">
-            <strong>{{ key }}</strong>:
-            <input v-model="org[key]"></input>
-          </span>
+        </div>
+      </div>
+      <div v-if="editable" class="well form-horizontal">
+        <div v-for="(value, key) in otherAttributes" class="form-group">
+          <label class="col-sm-4 control-label">{{ key }}</label>
+          <div class="col-sm-8">
+            <input v-model="org[key]" class="form-control"></input>
+          </div>
         </div>
       </div>
       <button v-if="status === 'auto'" v-on:click="cloneMe">Clone</button>
