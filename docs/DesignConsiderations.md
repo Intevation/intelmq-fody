@@ -17,4 +17,7 @@ to the database within one transaction to that the status is consistent
 before and after the change.
 
 To avoid having to hold a state on the server, we therefore
-transmitt all changes to the contactdb at once.
+transmit all changes to the contactdb at once.
+
+This approach is prepared to be reused when preparing the manual
+changes before an automatic update of contactdb data can be imported.

@@ -48,6 +48,10 @@ See the [setup example for Ubuntu](docs/SetupExampleUbuntu.md) for a complete ex
 Documentation
 -------------
 
+Check the [NEWS](NEWS.md) when upgrading from a previous version.
+
+Some [design considerations](docs/DesignConsiderations.md) are documented.
+
 The layout frame has originally be derived from the [CoPilot](https://github.com/misterGF/CoPilot) template.
 
 License
