@@ -105,18 +105,25 @@
                 v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
         </button>
 
-        <div class="box" style="margin-top:20px">
+        <div v-if="pendingOrgIndex.length !== 0"
+             class="box" style="margin-top:20px">
           <org-card v-for="(org, index) of pendingOrgs"
                     class="col-md-6 col-sm-6"
                     v-bind:org="org" status="pending"
                     v-on:clone="cloneOrg(index, $event)"></org-card>
 
-          <button v-if="pendingOrgIndex.length !== 0"
-                  class="btn btn-danger btn-lg btn-block"
+          <button class="btn btn-warning btn-lg btn-block"
                   v-on:click="commitPendingOrgs"
                   ><i class="fa fa-pencil-square-o"
                       style="margin-right:.2em"></i>Commit
           </button>
+
+          <button class="btn btn-danger btn-lg btn-block"
+                  v-on:click="clearPendingOrgs"
+                  ><i class="fa fa-trash-o"
+                      style="margin-right:.2em"></i>Clear
+          </button>
+
         </div>
 
       </div> <!-- .col... -->
@@ -263,8 +270,7 @@ module.exports = {
       })
     },
     newOrg: function () {
-      console.log('newOrg() called')
-      // TODO get a template
+      // TODO get a template from the api
       // push it to pendingOrgs
       this.pendingOrgs.push({'name': ''})
       this.pendingOrgIndex.push('create')
@@ -287,6 +293,13 @@ module.exports = {
     deleteOrg: function (index, event) {
       this.pendingOrgs.push('delete')
       this.pendingOrgIndex.push(this.manualOrgs[index].id)
+    },
+    clearPendingOrgs () {
+      // TODO add some debounce, throttle or other saftey function
+      //  like the necessity to press the button twice
+      //  right now we just throw away
+      this.pendingOrgs = []
+      this.pendingOrgIndex = []
     },
     commitPendingOrgs () {
       console.log('commitPendingOrgs() called')
