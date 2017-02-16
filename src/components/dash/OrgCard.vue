@@ -90,14 +90,15 @@
                   type="text" class="form-control"></input>
             </div>
           </div>
-          <button v-on:click="org.asns.splice(index,1)" class="btn btn-danger">
+          <button v-on:click="org.asns.splice(index,1)"
+                  class="btn btn-default btn-xs">
             <i class="fa fa-minus"></i>
           </button>
         </div>
         <button v-on:click="org.asns.push({number:'', comment:''})"
-          class="list-group-item btn btn-primary">
-            <i class="fa fa-plus"></i>
-          </button>
+                class="list-group-item btn btn-default">
+          <i class="fa fa-plus"></i>
+        </button>
       </div>
 
       <!-- other attribues -->
