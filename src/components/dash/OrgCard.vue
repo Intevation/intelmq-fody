@@ -20,7 +20,10 @@
         </span>
       </h3>
     </div>
+
     <div class="panel-body">
+
+      <!-- contact details section -->
       <ul class="list-group">
         <li v-for="contact of org.contacts" class="list-group-item">
           <i class="fa fa-envelope-o rme"></i>
@@ -30,12 +33,45 @@
           </em>
         </li>
       </ul>
-      <ul class="list-group">
+
+      <!-- ASN section -->
+      <ul v-if="!editable" class="list-group">
         <li v-for="asn of org.asns" class="list-group-item">
           <i class="fa fa-hdd-o rme"></i>
           ASN{{ asn.number }}
+          <em v-if="asn.comment !== ''">
+            ({{ asn.comment }})
+          </em>
         </li>
       </ul>
+      <div v-if="editable" class="list-group form-horizontal">
+        <div v-for="(asn, index) in org.asns" class="list-group-item">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">
+              <i class="fa fa-hdd-o rme"></i>ASN</label>
+              <div class="col-sm-8">
+                <input v-model="org.asns[index].number"
+                  type="number" class="form-control"></input>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label"><em>Comment</em></label>
+              <div class="col-sm-8">
+                <input v-model="org.asns[index].comment"
+                  type="text" class="form-control"></input>
+            </div>
+          </div>
+          <button v-on:click="org.asns.splice(index,1)" class="btn btn-danger">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+        <button v-on:click="org.asns.push({number:'', comment:''})"
+          class="list-group-item btn btn-primary">
+            <i class="fa fa-plus"></i>
+          </button>
+      </div>
+
+      <!-- other attribues -->
       <div v-if="!editable" class="well">
         <div v-for="(value, key) in otherAttributes">
             <strong>{{ key }}</strong>: {{ value }}
