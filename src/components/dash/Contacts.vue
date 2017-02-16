@@ -95,8 +95,9 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
 
-        <org-card v-for="org of manualOrgs" class="col-md-6 col-sm-6"
-                  v-bind:org="org" status="manual"></org-card>
+        <org-card v-for="(org, index) of manualOrgs" class="col-md-6 col-sm-6"
+                  v-bind:org="org" status="manual"
+                  v-on:edit="editOrg(index)"></org-card>
         <org-card v-for="(org, index) of autoOrgs" class="col-md-6 col-sm-6"
                   v-bind:org="org" status="auto"
                   v-on:clone="cloneOrg(index, $event)"></org-card>
@@ -288,9 +289,19 @@ module.exports = {
       delete newOrg['import_time']
       delete newOrg['id']
 
-      // add in commit queue as CREATE
+      // add to commit queue as CREATE
       this.pendingOrgs.push(newOrg)
       this.pendingOrgIndex.push('create')
+    },
+    editOrg: function (index) {
+      // edit a manual organisation
+
+      // deep-copy the org
+      var editOrg = JSON.parse(JSON.stringify(this.manualOrgs[index]))
+
+      // add it to commit queue as UPDATE
+      this.pendingOrgs.push(editOrg)
+      this.pendingOrgIndex.push('update')
     },
     trashOrg: function (index) {
       // remove a pendingOrg

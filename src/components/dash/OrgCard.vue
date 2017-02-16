@@ -50,10 +50,11 @@
         </div>
       </div>
       <button v-if="editable" v-on:click="trashMe"
-          ><i class="fa fa-trash-o"
-            style="margin-right:.2em"></i>Remove
-      </button>
-      <button v-if="status === 'auto'" v-on:click="cloneMe">Clone</button>
+        ><i class="fa fa-trash-o rme"></i>Scratch</button>
+      <button v-if="status === 'auto'" v-on:click="cloneMe"
+        ><i class="fa fa-clone rme"></i>Clone</button>
+      <button v-if="status === 'manual'" v-on:click="editMe"
+        ><i class="fa fa-pencil-square-o rme"></i>Edit</button>
     </div>
   </div>
 </template>
@@ -110,6 +111,9 @@ module.exports = {
     },
     trashMe: function () {
       this.$emit('trash')
+    },
+    editMe: function () {
+      this.$emit('edit')
     }
   }
 }
