@@ -266,6 +266,8 @@ module.exports = {
       console.log('newOrg() called')
       // TODO get a template
       // push it to pendingOrgs
+      this.pendingOrgs.push({'name': ''})
+      this.pendingOrgIndex.push('create')
     },
     cloneOrg: function (index, event) {
       // console.log('cloneOrg() called with index: ' + index +
