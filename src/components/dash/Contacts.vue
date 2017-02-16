@@ -110,7 +110,9 @@
           <org-card v-for="(org, index) of pendingOrgs"
                     class="col-md-6 col-sm-6"
                     v-bind:org="org" status="pending"
-                    v-on:clone="cloneOrg(index, $event)"></org-card>
+                    v-on:clone="cloneOrg(index, $event)"
+                    v-on:trash="trashOrg(index)"
+                    ></org-card>
 
           <button class="btn btn-warning btn-lg btn-block"
                   v-on:click="commitPendingOrgs"
@@ -289,6 +291,11 @@ module.exports = {
       // add in commit queue as CREATE
       this.pendingOrgs.push(newOrg)
       this.pendingOrgIndex.push('create')
+    },
+    trashOrg: function (index) {
+      // remove a pendingOrg
+      this.pendingOrgIndex.splice(index, 1)
+      this.pendingOrgs.splice(index, 1)
     },
     deleteOrg: function (index, event) {
       this.pendingOrgs.push('delete')

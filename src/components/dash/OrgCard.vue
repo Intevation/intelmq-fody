@@ -49,6 +49,10 @@
           </div>
         </div>
       </div>
+      <button v-if="editable" v-on:click="trashMe"
+          ><i class="fa fa-trash-o"
+            style="margin-right:.2em"></i>Remove
+      </button>
       <button v-if="status === 'auto'" v-on:click="cloneMe">Clone</button>
     </div>
   </div>
@@ -103,6 +107,9 @@ module.exports = {
   methods: {
     cloneMe: function () {
       this.$emit('clone', this.org)
+    },
+    trashMe: function () {
+      this.$emit('trash')
     }
   }
 }
