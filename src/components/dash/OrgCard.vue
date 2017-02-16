@@ -3,14 +3,14 @@
     <div class="panel-heading">
       <h3 class="panel-title">
         <span v-if="!editable">
-          <i class="fa fa-address-book-o rme"></i>
+          <i class="fa fa-id-badge rme"></i>
           {{ org.name }}
           <span class="badge primary">{{ status }}</span>
         </span>
         <span v-if="editable">
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-address-book-o input-group-addon"></i>
+                <i class="fa fa-id-badge input-group-addon"></i>
               </span>
               <input v-model="org.name" type="text" class="form-control">
               <span class="input-group-addon">
@@ -24,7 +24,7 @@
     <div class="panel-body">
 
       <!-- contact details section -->
-      <ul class="list-group">
+      <ul v-if="!editable" class="list-group">
         <li v-for="contact of org.contacts" class="list-group-item">
           <div class="row">
             <div class="col-sm-1 col-xs-1"
@@ -42,26 +42,73 @@
               ><i class="fa fa-key"></i></div>
             <div v-if="contact.openpgp_fpr !== ''" class="col-sm-10 col-xs-10"
               >{{ contact.openpgp_fpr }}</div>
-
-            <!-- alternative layout
-            <div class="col-sm-12 col-xs-12">
-              <i class="fa fa-envelope-o rme"></i>
-                {{ contact.firstname }} {{ contact.lastname }}
-                &lt;{{ contact.email }}&gt;
-                <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
-            </div>
-            <div v-if="contact.tel !== ''" class="col-sm-12 col-xs-12">
-              <i class="fa fa-phone rme"></i>
-              {{ contact.tel }} 1
-            </div>
-            <div v-if="contact.openpgp_fpr !== ''" class="col-sm-12 col-xs-12">
-              <i class="fa fa-key rme"></i>
-              {{ contact.openpgp_fpr }} 1
-            </div>
-            -->
           </div>
         </li>
       </ul>
+      <div v-if="editable" class="list-group form-horizontal">
+        <div v-for="(contact, index) in org.contacts" class="list-group-item">
+          <div class="form-group">
+            <label class="col-sm-1 control-label">
+              <i class="fa fa-envelope-o"></i></label>
+              <div class="col-sm-10">
+                <input v-model="org.contacts[index].email"
+                  type="email" class="form-control"></input>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">
+              Firstname
+            </label>
+              <div class="col-sm-8">
+                <input v-model="org.contacts[index].firstname"
+                  type="text" class="form-control"></input>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">
+              Lastname
+            </label>
+              <div class="col-sm-8">
+                <input v-model="org.contacts[index].lastname"
+                  type="text" class="form-control"></input>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">
+              <em>Comment</em>
+            </label>
+              <div class="col-sm-8">
+                <input v-model="org.contacts[index].comment"
+                  type="text" class="form-control"></input>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-1 control-label">
+              <i class="fa fa-phone"></i></label>
+              <div class="col-sm-10">
+                <input v-model="org.contacts[index].tel"
+                  type="tel" class="form-control"></input>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-1 control-label">
+              <i class="fa fa-key"></i></label>
+              <div class="col-sm-10">
+                <input v-model="org.contacts[index].openpgp_fpr"
+                  type="text" class="form-control"></input>
+            </div>
+          </div>
+          <button v-on:click="org.contacts.splice(index,1)"
+                  class="btn btn-default btn-xs">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+        <button v-on:click="org.contacts.push(newContactTemplate())"
+                class="list-group-item btn btn-default">
+          <i class="fa fa-plus"></i>
+          <i class="fa fa-envelope-o"></i>
+        </button>
+      </div>
 
       <!-- ASN section -->
       <ul v-if="!editable" class="list-group">
@@ -98,6 +145,7 @@
         <button v-on:click="org.asns.push({number:'', comment:''})"
                 class="list-group-item btn btn-default">
           <i class="fa fa-plus"></i>
+          <i class="fa fa-hdd-o"></i>
         </button>
       </div>
 
@@ -145,6 +193,14 @@ module.exports = {
         'contacts': 0,
         'id': 0,
         'name': 0
+      },
+      contactTemplate: {
+        firstname: '',
+        lastname: '',
+        email: '',
+        tel: '',
+        comment: '',
+        openpgp_fpr: ''
       }
     }
   },
@@ -180,6 +236,9 @@ module.exports = {
     },
     editMe: function () {
       this.$emit('edit')
+    },
+    newContactTemplate: function () {
+      return JSON.parse(JSON.stringify(this.contactTemplate))
     }
   }
 }
