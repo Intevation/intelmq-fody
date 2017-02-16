@@ -26,11 +26,40 @@
       <!-- contact details section -->
       <ul class="list-group">
         <li v-for="contact of org.contacts" class="list-group-item">
-          <i class="fa fa-envelope-o rme"></i>
-          {{ contact.email }}
-          <em v-if="contact.comment !== ''">
-            ({{ contact.comment }})
-          </em>
+          <div class="row">
+            <div class="col-sm-1 col-xs-1"
+              ><i class="fa fa-envelope-o"></i></div>
+            <div class="col-sm-10 col-xs-10">
+              {{ contact.firstname }} {{ contact.lastname }}
+              &lt;{{ contact.email }}&gt;
+              <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
+            </div>
+            <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
+              ><i class="fa fa-phone"></i></div>
+            <div v-if="contact.tel !== ''" class="col-sm-10 col-xs-10"
+              >{{ contact.tel }}</div>
+            <div v-if="contact.openpgp_fpr !== ''" class="col-sm-1 col-xs-1"
+              ><i class="fa fa-key"></i></div>
+            <div v-if="contact.openpgp_fpr !== ''" class="col-sm-10 col-xs-10"
+              >{{ contact.openpgp_fpr }}</div>
+
+            <!-- alternative layout
+            <div class="col-sm-12 col-xs-12">
+              <i class="fa fa-envelope-o rme"></i>
+                {{ contact.firstname }} {{ contact.lastname }}
+                &lt;{{ contact.email }}&gt;
+                <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
+            </div>
+            <div v-if="contact.tel !== ''" class="col-sm-12 col-xs-12">
+              <i class="fa fa-phone rme"></i>
+              {{ contact.tel }} 1
+            </div>
+            <div v-if="contact.openpgp_fpr !== ''" class="col-sm-12 col-xs-12">
+              <i class="fa fa-key rme"></i>
+              {{ contact.openpgp_fpr }} 1
+            </div>
+            -->
+          </div>
         </li>
       </ul>
 
@@ -56,7 +85,7 @@
           </div>
           <div class="form-group">
             <label class="col-sm-4 control-label"><em>Comment</em></label>
-              <div class="col-sm-8">
+            <div class="col-sm-8">
                 <input v-model="org.asns[index].comment"
                   type="text" class="form-control"></input>
             </div>
