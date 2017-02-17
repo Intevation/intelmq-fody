@@ -95,10 +95,12 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
 
-        <org-card v-for="(org, index) of manualOrgs" class="col-md-6 col-sm-6"
+        <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
+                  class="col-md-6 col-sm-6"
                   v-bind:org="org" status="manual"
                   v-on:edit="editOrg(index)"></org-card>
-        <org-card v-for="(org, index) of autoOrgs" class="col-md-6 col-sm-6"
+        <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
+                  class="col-md-6 col-sm-6"
                   v-bind:org="org" status="auto"
                   v-on:clone="cloneOrg(index, $event)"></org-card>
 
@@ -192,7 +194,7 @@ module.exports = {
     manualOrgIDs: function (newManualOrgIDs) {
       // deleting all objects and reloading them. (A more clever approach
       // is unnecessary, because we expect only to load a few
-      this.manualOrgs = []
+      this.manualOrgs = Array(newManualOrgIDs.length).fill(null)
       for (var index in newManualOrgIDs) {
         this.lookupOrg(this.manualOrgs, 'manual', this.manualOrgIDs, index)
       }
@@ -200,7 +202,7 @@ module.exports = {
     autoOrgIDs: function (newAutoOrgIDs) {
       // deleting all objects and reloading them. (A more clever approach
       // is unnecessary, because we expect only to load a few
-      this.autoOrgs = []
+      this.autoOrgs = Array(newAutoOrgIDs.length).fill(null)
       for (var index in newAutoOrgIDs) {
         this.lookupOrg(this.autoOrgs, 'auto', this.autoOrgIDs, index)
       }
@@ -264,12 +266,12 @@ module.exports = {
             // see https://vuejs.org/v2/guide/list.html#Caveats
             orgList.splice(index, 1, value)
           } else {
-            delete orgList[index]
+            orgList[index] = null
           }
         })
       }, (response) => {
         // no valid response
-        delete orgList[index]
+        orgList[index] = null
       })
     },
     newOrg: function () {
