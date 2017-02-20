@@ -268,7 +268,7 @@ module.exports = {
             // see https://vuejs.org/v2/guide/list.html#Caveats
             orgList.splice(index, 1, value)
           } else {
-            orgList[index] = null
+            orgList.splice(index, 1, null)
           }
         })
       }, (response) => {
@@ -300,8 +300,32 @@ module.exports = {
     editOrg: function (index) {
       // edit a manual organisation
 
+      // TODO: Check if we are already in the queue and if so possibly change
+      //   status and do not add it again
+      var toBeUpdatedOrgID = this.manualOrgs[index].id
+
+      var strMe = JSON.stringify(this.manualOrgs[index])
+
+      for (index in this.pendingOrgs) {
+        if ('id' in this.pendingOrgs[index] &&
+            this.pendingOrgs[index].id === toBeUpdatedOrgID) {
+          console.log('id already in pendingOrds')
+          if (this.pendingOrgIndex[index] === 'update') {
+            // we are already editing it, doing nothing
+            return
+          }
+          if (this.pendingOrgIndex[index] === 'delete') {
+            // change it to update
+            // (We have to use splice for Vue to notice the change
+            // see https://vuejs.org/v2/guide/list.html#Caveats)
+            this.pendingOrgIndex.splice(index, 1, 'update')
+            return
+          }
+        }
+      }
+
       // deep-copy the org
-      var editOrg = JSON.parse(JSON.stringify(this.manualOrgs[index]))
+      var editOrg = JSON.parse(strMe)
 
       // add it to commit queue as UPDATE
       this.pendingOrgs.push(editOrg)
@@ -313,9 +337,24 @@ module.exports = {
       this.pendingOrgs.splice(index, 1)
     },
     deleteOrg: function (index) {
-      // schedule for deletion
+      // schedule manual organisation for deletion
+
+      // Check if we are already in the queue and if so possibly change
+      // status and do not add it again
+      var strMe = JSON.stringify(this.manualOrgs[index])
+      for (index in this.pendingOrgs) {
+        if (JSON.stringify(this.pendingOrgs[index]) === strMe) {
+          // it is okay to just set delete,
+          // because no value has been changed
+          // (We have to use splice for Vue to notice the change
+          // see https://vuejs.org/v2/guide/list.html#Caveats)
+          this.pendingOrgIndex.splice(index, 1, 'delete')
+          return
+        }
+      }
+
       // deep-copy the org
-      var toBeDeletedOrg = JSON.parse(JSON.stringify(this.manualOrgs[index]))
+      var toBeDeletedOrg = JSON.parse(strMe)
 
       this.pendingOrgs.push(toBeDeletedOrg)
       this.pendingOrgIndex.push('delete')
