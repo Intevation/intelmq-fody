@@ -5,7 +5,10 @@
         <span v-if="!editable">
           <i class="fa fa-id-badge rme"></i>
           {{ org.name }}
-          <span class="badge primary">{{ status }}</span>
+          <span v-if="status !=='delete'"
+                class="badge primary">{{ status }}</span>
+          <span v-if="status ==='delete'"
+                class="badge danger">{{ status }}</span>
         </span>
         <span v-if="editable">
             <div class="input-group">
@@ -14,7 +17,7 @@
               </span>
               <input v-model="org.name" type="text" class="form-control">
               <span class="input-group-addon">
-                <span class="badge danger">{{ status }}</span>
+                <span class="badge warning">{{ status }}</span>
               </span>
             </div>
         </span>
@@ -163,11 +166,16 @@
           </div>
         </div>
       </div>
-      <button v-if="editable" v-on:click="trashMe"
+      <button v-if="editable || status === 'delete'" v-on:click="trashMe"
         ><i class="fa fa-trash-o rme"></i>Scratch</button>
       <button v-if="status === 'auto'" v-on:click="cloneMe"
+        class="btn btn-default btn-xs"
         ><i class="fa fa-clone rme"></i>Clone</button>
+      <button v-if="status === 'manual'" v-on:click="deleteMe"
+        class="btn btn-default btn-xs"
+        ><i class="fa fa-trash-o rme"></i>Delete</button>
       <button v-if="status === 'manual'" v-on:click="editMe"
+        class="btn btn-default btn-xs"
         ><i class="fa fa-pencil-square-o rme"></i>Edit</button>
     </div>
   </div>
@@ -179,7 +187,7 @@ module.exports = {
   // because our prop 'org' is an object it is passed by reference (see
   // warning at // https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow)
   // and we use this pecularity to be able to change the properties of org
-  // when in status === 'pending' so that changes directly affect our parent
+  // when editable() so that changes directly affect our parent
   // which should use v-bind and an object ready for manipulation.
   // HINT: This makes "our app’s data flow harder to reason about" and violates
   // vue's intentions, but a better encapsulation can be developed later, if
@@ -217,12 +225,13 @@ module.exports = {
       return newOrg
     },
     editable: function () {
-      return this.status === 'pending'
+      return (this.status === 'create' || this.status === 'update')
     },
     computedPanelClass: function () {
       return {
         'panel-primary': !this.editable,
-        'panel-danger': this.editable
+        'panel-warning': this.editable,
+        'panel-danger': this.status === 'delete'
       }
     }
 
@@ -233,6 +242,9 @@ module.exports = {
     },
     trashMe: function () {
       this.$emit('trash')
+    },
+    deleteMe: function () {
+      this.$emit('delete')
     },
     editMe: function () {
       this.$emit('edit')

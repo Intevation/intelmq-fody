@@ -98,7 +98,9 @@
         <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                   class="col-md-6 col-sm-6"
                   v-bind:org="org" status="manual"
-                  v-on:edit="editOrg(index)"></org-card>
+                  v-on:edit="editOrg(index)"
+                  v-on:delete="deleteOrg(index)"
+                  ></org-card>
         <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
                   class="col-md-6 col-sm-6"
                   v-bind:org="org" status="auto"
@@ -112,7 +114,7 @@
              class="box" style="margin-top:20px">
           <org-card v-for="(org, index) of pendingOrgs"
                     class="col-md-6 col-sm-6"
-                    v-bind:org="org" status="pending"
+                    v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
                     v-on:clone="cloneOrg(index, $event)"
                     v-on:trash="trashOrg(index)"
                     ></org-card>
@@ -310,9 +312,13 @@ module.exports = {
       this.pendingOrgIndex.splice(index, 1)
       this.pendingOrgs.splice(index, 1)
     },
-    deleteOrg: function (index, event) {
-      this.pendingOrgs.push('delete')
-      this.pendingOrgIndex.push(this.manualOrgs[index].id)
+    deleteOrg: function (index) {
+      // schedule for deletion
+      // deep-copy the org
+      var toBeDeletedOrg = JSON.parse(JSON.stringify(this.manualOrgs[index]))
+
+      this.pendingOrgs.push(toBeDeletedOrg)
+      this.pendingOrgIndex.push('delete')
     },
     clearPendingOrgs () {
       // TODO add some debounce, throttle or other saftey function
