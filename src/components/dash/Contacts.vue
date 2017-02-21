@@ -279,7 +279,16 @@ module.exports = {
     newOrg: function () {
       // TODO get a template from the api
       // push it to pendingOrgs
-      this.pendingOrgs.push({'name': ''})
+      this.pendingOrgs.push({
+        'name': '',
+        'sector_id': '',
+        'comment': '',
+        'ripe_org_hdl': '',
+        'ti_handle': '',
+        'first_handle': '',
+        'asns': [],
+        'contacts': []
+      })
       this.pendingOrgIndex.push('create')
     },
     cloneOrg: function (index, event) {

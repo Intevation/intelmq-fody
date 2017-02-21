@@ -101,6 +101,15 @@
                   type="text" class="form-control"></input>
             </div>
           </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">
+              format_id
+            </label>
+              <div class="col-sm-8">
+                <input v-model="org.contacts[index].format_id"
+                  type="number" class="form-control"></input>
+            </div>
+          </div>
           <button v-on:click="org.contacts.splice(index,1)"
                   class="btn btn-default btn-xs">
             <i class="fa fa-minus"></i>
@@ -121,6 +130,7 @@
           <em v-if="asn.comment !== ''">
             ({{ asn.comment }})
           </em>
+          <i class="fa fa-bell-o lme rme"></i>{{ asn.notification_interval }}
         </li>
       </ul>
       <div v-if="editable" class="list-group form-horizontal">
@@ -140,12 +150,23 @@
                   type="text" class="form-control"></input>
             </div>
           </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">
+              <i class="fa fa-bell-o rme"></i
+                ><small>Notification Interval</small></label>
+            <div class="col-sm-8">
+                <input v-model="org.asns[index].notification_interval"
+                  type="number" class="form-control"></input>
+            </div>
+          </div>
+
           <button v-on:click="org.asns.splice(index,1)"
                   class="btn btn-default btn-xs">
             <i class="fa fa-minus"></i>
           </button>
         </div>
-        <button v-on:click="org.asns.push({number:'', comment:''})"
+        <button v-on:click="org.asns.push(
+                  {number:'', comment:'', notification_interval:0})"
                 class="list-group-item btn btn-default">
           <i class="fa fa-plus"></i>
           <i class="fa fa-hdd-o"></i>
@@ -208,7 +229,8 @@ module.exports = {
         email: '',
         tel: '',
         comment: '',
-        openpgp_fpr: ''
+        openpgp_fpr: '',
+        format_id: 2
       }
     }
   },
@@ -259,5 +281,8 @@ module.exports = {
 <style>
 i.rme {
   margin-right: 0.25em
+}
+i.lme {
+  margin-left: 0.35em
 }
 </style>
