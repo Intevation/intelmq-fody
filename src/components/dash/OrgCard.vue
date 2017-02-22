@@ -183,7 +183,10 @@
         <div v-for="(value, key) in otherAttributes" class="form-group">
           <label class="col-sm-4 control-label">{{ key }}</label>
           <div class="col-sm-8">
-            <input v-model="org[key]" class="form-control"></input>
+            <input v-if="key === 'sector_id'" type="number"
+              v-model="org[key]" class="form-control"></input>
+            <input v-if="key !== 'sector_id'" type="text"
+              v-model="org[key]" class="form-control"></input>
           </div>
         </div>
       </div>

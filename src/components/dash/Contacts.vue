@@ -281,7 +281,7 @@ module.exports = {
       // push it to pendingOrgs
       this.pendingOrgs.push({
         'name': '',
-        'sector_id': '',
+        'sector_id': null,
         'comment': '',
         'ripe_org_hdl': '',
         'ti_handle': '',
