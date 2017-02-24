@@ -256,6 +256,21 @@ module.exports = {
       this.searchEmail = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
     },
+    refreshCurrentSearch: function () {
+      // simple version to just repeat the search we'd done before
+      if (this.searchASN !== '') {
+        this.lookupASN()
+        return
+      }
+      if (this.searchEmail !== '') {
+        this.lookupEMail()
+        return
+      }
+      if (this.searchName !== '') {
+        this.lookupName()
+        return
+      }
+    },
     lookupOrg: function (orgList, type, ids, index) {
       var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
       this.$http.get(url).then((response) => {
@@ -394,8 +409,11 @@ module.exports = {
         response.json().then(value => {
           // json parsed correctly
           if (value) {
-            // TODO add ids we do not have already to the displayed manualOrgs
-            // (which also shall trigger an update)
+            // TODO updates ids that have changed to manualOrgIDs
+            // (which will then trigger an update)
+
+            // using the more simple approach now to redo the current search
+            this.refreshCurrentSearch()
           }
         })
       }, response => {
