@@ -263,7 +263,7 @@ module.exports = {
         return
       }
       if (this.searchEmail !== '') {
-        this.lookupEMail()
+        this.lookupEmail()
         return
       }
       if (this.searchName !== '') {
