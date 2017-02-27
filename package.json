@@ -20,6 +20,7 @@
     "font-awesome": "^4.5.7",
     "hideseek": "^0.7.0",
     "moment": "^2.12.0",
+    "npm-font-source-sans-pro": "^1.0.2",
     "vue": "^2.0.3",
     "vue-date-picker": "^1.0.2",
     "vue-resource": "^1.0.3",

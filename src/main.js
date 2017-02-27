@@ -4,6 +4,7 @@ import Resource from 'vue-resource'
 import VueRouter from 'vue-router'
 
 import 'font-awesome/css/font-awesome.css'
+import 'npm-font-source-sans-pro/source-sans-pro.css'
 
 import routes from './routes'
 import store from './store'
