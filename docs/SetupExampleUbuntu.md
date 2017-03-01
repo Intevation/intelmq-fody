@@ -163,7 +163,7 @@ WSGIPythonPath /home/fody/venv-hug/lib/python3.4/site-packages
             Require valid-user
         </Directory>
 
-        WSGIDaemonProcess fody python-path=/home/fody/venv-hug/lib/python3.4/site-packages threads=15 maximum-requests=10000
+        WSGIDaemonProcess fody python-path=/home/fody/venv-hug/lib/python3.4/site-packages threads=1 maximum-requests=10000
         WSGIScriptAlias / /home/fody/wsgi/checkticket.py
         WSGICallableObject __hug_wsgi__
 
