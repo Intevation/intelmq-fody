@@ -9,7 +9,7 @@ This setup step is **only necessary for building fody from sources**:
 ```sh
 # as root
 # Confirming "trusty" is supported...
-curl -sLf -o /dev/null 'https://deb.nodesource.com/node_6.x/dists/trusty/ReleaseX' && echo yes
+curl -sLf -o /dev/null 'https://deb.nodesource.com/node_6.x/dists/trusty/Release' && echo yes
 
 ## Adding the NodeSource and Yarn signing pubkeys to your system...
 curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
