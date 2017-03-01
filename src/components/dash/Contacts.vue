@@ -1,140 +1,130 @@
 <template>
   <section class="content">
-    <div class="row">
-      <div class='col-xs-12'>
-        <div class='box'>
-          <div class='box-header with-border col-md-3 col-sm-3'>
-            <h2>Search for ASN</h2>
-          </div>
-
-          <div class="box-body">
-            <div class="forum-control" v-bind:class='ASNInputClass'>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
-                <input class="form-control"
-                  v-model.lazy.trim:title="searchASN"
-                  v-on:change="lookupASN"
-                  placeholder="49234"
-                >
-                <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              </div>
-              <span v-if="searchASN !== ''">
-                <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                  Not found.
-                </span>
-                <span class="help-block"
-                      v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                  Found {{ autoOrgIDs.length }} auto-imported and
-                        {{ manualOrgIDs.length }} manual organisations.
-                </span>
-              </span>
-            </div>
-          </div> <!-- .box-body -->
-        </div> <!-- .box -->
-
-        <div class='box'>
-          <div class='box-header with-border col-md-3 col-sm-6'>
-            <h2>Search for email</h2>
-          </div>
-
-          <div class="box-body">
-            <div class="forum-control" v-bind:class='EmailInputClass'>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-                <input class="form-control"
-                  v-model.lazy.trim:title="searchEmail"
-                  v-on:change="lookupEmail"
-                  placeholder="abuse@bund.de"
-                >
-                <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              </div>
-              <span v-if="searchEmail !== ''">
-                <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                  Not found.
-                </span>
-                <span class="help-block"
-                      v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                  Found {{ autoOrgIDs.length }} auto-imported and
-                        {{ manualOrgIDs.length }} manual organisations.
-                </span>
-              </span>
-            </div>
-          </div> <!-- .box-body -->
-        </div> <!-- .box -->
-
-        <div class='box'>
-          <div class='box-header with-border col-md-3 col-sm-6'>
-            <h2>Lookup name</h2>
-          </div>
-
-          <div class="box-body">
-            <div class="forum-control" v-bind:class='NameInputClass'>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
-                <input class="form-control"
-                  v-model.lazy.trim:title="searchName"
-                  v-on:change="lookupName"
-                  placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
-                >
-                <span class="input-group-addon"><i class="fa fa-search"></i></span>
-              </div>
-              <span v-if="searchName !== ''">
-                <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                  Not found.
-                </span>
-                <span class="help-block"
-                      v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                  Found {{ autoOrgIDs.length }} auto-imported and
-                        {{ manualOrgIDs.length }} manual organisations.
-                </span>
-              </span>
-            </div>
-          </div> <!-- .box-body -->
-        </div> <!-- .box -->
-
-        <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
-                  class="col-md-6 col-sm-6"
-                  v-bind:org="org" status="manual"
-                  v-on:edit="editOrg(index)"
-                  v-on:delete="deleteOrg(index)"
-                  ></org-card>
-        <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
-                  class="col-md-6 col-sm-6"
-                  v-bind:org="org" status="auto"
-                  v-on:clone="cloneOrg(index, $event)"></org-card>
-
-        <button class="btn btn-primary btn-lg btn-block"
-                v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
-        </button>
-
-        <div v-if="pendingOrgIndex.length !== 0"
-             class="box" style="margin-top:20px">
-          <org-card v-for="(org, index) of pendingOrgs"
-                    class="col-md-6 col-sm-6"
-                    v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
-                    v-on:clone="cloneOrg(index, $event)"
-                    v-on:trash="trashOrg(index)"
-                    ></org-card>
-
-          <button class="btn btn-warning btn-lg btn-block"
-                  v-on:click="commitPendingOrgs"
-                  ><i class="fa fa-pencil-square-o"
-                      style="margin-right:.2em"></i>Commit
-          </button>
-
-          <button class="btn btn-danger btn-lg btn-block"
-                  v-on:click="clearPendingOrgs"
-                  ><i class="fa fa-trash-o"
-                      style="margin-right:.2em"></i>Clear
-          </button>
-
+    <div class='box' v-bind:class='ASNInputClass'>
+      <div class="box-body">
+        <div class='col-md-2 col-sm-2'>
+          <h4>Search for ASN</h4>
         </div>
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
+          <input type="text" class="form-control"
+            v-model.lazy.trim:title="searchASN"
+            v-on:change="lookupASN"
+            placeholder="49234"
+          >
+          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        </div>
+        <span v-if="searchASN !== ''">
+          <span class="help-block"
+              v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+            Not found.
+          </span>
+          <span class="help-block"
+                v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+            Found {{ autoOrgIDs.length }} auto-imported and
+                  {{ manualOrgIDs.length }} manual organisations.
+          </span>
+        </span>
+      </div> <!-- .box-body -->
+    </div> <!-- .box -->
+    <div class='box'>
+      <div class="box-body">
+        <div class='col-md-2 col-sm-6'>
+          <h4>Search for email</h4>
+        </div>
+        <div class="forum-control" v-bind:class='EmailInputClass'>
+          <div class="input-group input-group-lg">
+            <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+            <input class="form-control"
+              v-model.lazy.trim:title="searchEmail"
+              v-on:change="lookupEmail"
+              placeholder="abuse@bund.de"
+            >
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+          </div>
+          <span v-if="searchEmail !== ''">
+            <span class="help-block"
+                v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+              Not found.
+            </span>
+            <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+              Found {{ autoOrgIDs.length }} auto-imported and
+                    {{ manualOrgIDs.length }} manual organisations.
+            </span>
+          </span>
+        </div>
+      </div> <!-- .box-body -->
+    </div> <!-- .box -->
 
-      </div> <!-- .col... -->
-    </div> <!-- /.row -->
+    <div class='box'>
+      <div class="box-body">
+        <div class='col-md-2 col-sm-6'>
+          <h4>Lookup name</h4>
+        </div>
+        <div class="forum-control" v-bind:class='NameInputClass'>
+          <div class="input-group input-group-lg">
+            <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
+            <input class="form-control"
+              v-model.lazy.trim:title="searchName"
+              v-on:change="lookupName"
+              placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
+            >
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+          </div>
+          <span v-if="searchName !== ''">
+            <span class="help-block"
+                v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+              Not found.
+            </span>
+            <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+              Found {{ autoOrgIDs.length }} auto-imported and
+                    {{ manualOrgIDs.length }} manual organisations.
+            </span>
+          </span>
+        </div>
+      </div> <!-- .box-body -->
+    </div> <!-- .box -->
+
+    <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
+              class="col-md-6 col-sm-6"
+              v-bind:org="org" status="manual"
+              v-on:edit="editOrg(index)"
+              v-on:delete="deleteOrg(index)"
+              ></org-card>
+    <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
+              class="col-md-6 col-sm-6"
+              v-bind:org="org" status="auto"
+              v-on:clone="cloneOrg(index, $event)"></org-card>
+
+    <button class="btn btn-primary btn-lg btn-block"
+            v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
+    </button>
+
+    <div v-if="pendingOrgIndex.length !== 0"
+         class="box" style="margin-top:20px">
+      <org-card v-for="(org, index) of pendingOrgs"
+                class="col-md-6 col-sm-6"
+                v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
+                v-on:clone="cloneOrg(index, $event)"
+                v-on:trash="trashOrg(index)"
+                ></org-card>
+
+      <button class="btn btn-warning btn-lg btn-block"
+              v-on:click="commitPendingOrgs"
+              ><i class="fa fa-pencil-square-o"
+                  style="margin-right:.2em"></i>Commit
+      </button>
+
+      <button class="btn btn-danger btn-lg btn-block"
+              v-on:click="clearPendingOrgs"
+              ><i class="fa fa-trash-o"
+                  style="margin-right:.2em"></i>Clear
+      </button>
+
+    </div>
+
   </section>
 </template>
 

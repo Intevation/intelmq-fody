@@ -1,206 +1,208 @@
 <template>
-  <div class="panel" v-bind:class="computedPanelClass">
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        <span v-if="!editable">
-          <i class="fa fa-id-badge rme"></i>
-          {{ org.name }}
-          <span v-if="status !=='delete'"
-                class="badge primary">{{ status }}</span>
-          <span v-if="status ==='delete'"
-                class="badge danger">{{ status }}</span>
-        </span>
-        <span v-if="editable">
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-id-badge input-group-addon"></i>
-              </span>
-              <input v-model="org.name" type="text" class="form-control">
-              <span class="input-group-addon">
-                <span class="badge warning">{{ status }}</span>
-              </span>
-            </div>
-        </span>
-      </h3>
-    </div>
+  <div> <!-- Container for column layout -->
+    <div class="panel" v-bind:class="computedPanelClass">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <span v-if="!editable">
+            <i class="fa fa-id-badge rme"></i>
+            {{ org.name }}
+            <span v-if="status !=='delete'"
+                  class="badge primary">{{ status }}</span>
+            <span v-if="status ==='delete'"
+                  class="badge danger">{{ status }}</span>
+          </span>
+          <span v-if="editable">
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="fa fa-id-badge input-group-addon"></i>
+                </span>
+                <input v-model="org.name" type="text" class="form-control">
+                <span class="input-group-addon">
+                  <span class="badge warning">{{ status }}</span>
+                </span>
+              </div>
+          </span>
+        </h3>
+      </div>
 
-    <div class="panel-body">
+      <div class="panel-body">
 
-      <!-- contact details section -->
-      <ul v-if="!editable" class="list-group">
-        <li v-for="contact of org.contacts" class="list-group-item">
-          <div class="row">
-            <div class="col-sm-1 col-xs-1"
-              ><i class="fa fa-envelope-o"></i></div>
-            <div class="col-sm-10 col-xs-10">
-              {{ contact.firstname }} {{ contact.lastname }}
-              &lt;{{ contact.email }}&gt;
-              <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
+        <!-- contact details section -->
+        <ul v-if="!editable" class="list-group">
+          <li v-for="contact of org.contacts" class="list-group-item">
+            <div class="row">
+              <div class="col-sm-1 col-xs-1"
+                ><i class="fa fa-envelope-o"></i></div>
+              <div class="col-sm-10 col-xs-10">
+                {{ contact.firstname }} {{ contact.lastname }}
+                &lt;{{ contact.email }}&gt;
+                <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
+              </div>
+              <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
+                ><i class="fa fa-phone"></i></div>
+              <div v-if="contact.tel !== ''" class="col-sm-10 col-xs-10"
+                >{{ contact.tel }}</div>
+              <div v-if="contact.openpgp_fpr !== ''" class="col-sm-1 col-xs-1"
+                ><i class="fa fa-key"></i></div>
+              <div v-if="contact.openpgp_fpr !== ''" class="col-sm-10 col-xs-10"
+                >{{ contact.openpgp_fpr }}</div>
             </div>
-            <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
-              ><i class="fa fa-phone"></i></div>
-            <div v-if="contact.tel !== ''" class="col-sm-10 col-xs-10"
-              >{{ contact.tel }}</div>
-            <div v-if="contact.openpgp_fpr !== ''" class="col-sm-1 col-xs-1"
-              ><i class="fa fa-key"></i></div>
-            <div v-if="contact.openpgp_fpr !== ''" class="col-sm-10 col-xs-10"
-              >{{ contact.openpgp_fpr }}</div>
-          </div>
-        </li>
-      </ul>
-      <div v-if="editable" class="list-group form-horizontal">
-        <div v-for="(contact, index) in org.contacts" class="list-group-item">
-          <div class="form-group">
-            <label class="col-sm-1 control-label">
-              <i class="fa fa-envelope-o"></i></label>
-              <div class="col-sm-10">
-                <input v-model="org.contacts[index].email"
-                  type="email" class="form-control"></input>
+          </li>
+        </ul>
+        <div v-if="editable" class="list-group form-horizontal">
+          <div v-for="(contact, index) in org.contacts" class="list-group-item">
+            <div class="form-group">
+              <label class="col-sm-1 control-label">
+                <i class="fa fa-envelope-o"></i></label>
+                <div class="col-sm-10">
+                  <input v-model="org.contacts[index].email"
+                    type="email" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">
-              Firstname
-            </label>
-              <div class="col-sm-8">
-                <input v-model="org.contacts[index].firstname"
-                  type="text" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">
+                Firstname
+              </label>
+                <div class="col-sm-8">
+                  <input v-model="org.contacts[index].firstname"
+                    type="text" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">
-              Lastname
-            </label>
-              <div class="col-sm-8">
-                <input v-model="org.contacts[index].lastname"
-                  type="text" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">
+                Lastname
+              </label>
+                <div class="col-sm-8">
+                  <input v-model="org.contacts[index].lastname"
+                    type="text" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">
-              <em>Comment</em>
-            </label>
-              <div class="col-sm-8">
-                <input v-model="org.contacts[index].comment"
-                  type="text" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">
+                <em>Comment</em>
+              </label>
+                <div class="col-sm-8">
+                  <input v-model="org.contacts[index].comment"
+                    type="text" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-1 control-label">
-              <i class="fa fa-phone"></i></label>
-              <div class="col-sm-10">
-                <input v-model="org.contacts[index].tel"
-                  type="tel" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-1 control-label">
+                <i class="fa fa-phone"></i></label>
+                <div class="col-sm-10">
+                  <input v-model="org.contacts[index].tel"
+                    type="tel" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-1 control-label">
-              <i class="fa fa-key"></i></label>
-              <div class="col-sm-10">
-                <input v-model="org.contacts[index].openpgp_fpr"
-                  type="text" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-1 control-label">
+                <i class="fa fa-key"></i></label>
+                <div class="col-sm-10">
+                  <input v-model="org.contacts[index].openpgp_fpr"
+                    type="text" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">
-              format_id
-            </label>
-              <div class="col-sm-8">
-                <input v-model="org.contacts[index].format_id"
-                  type="number" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">
+                format_id
+              </label>
+                <div class="col-sm-8">
+                  <input v-model="org.contacts[index].format_id"
+                    type="number" class="form-control"></input>
+              </div>
             </div>
+            <button v-on:click="org.contacts.splice(index,1)"
+                    class="btn btn-default btn-xs">
+              <i class="fa fa-minus"></i>
+            </button>
           </div>
-          <button v-on:click="org.contacts.splice(index,1)"
-                  class="btn btn-default btn-xs">
-            <i class="fa fa-minus"></i>
+          <button v-on:click="org.contacts.push(newContactTemplate())"
+                  class="list-group-item btn btn-default">
+            <i class="fa fa-plus"></i>
+            <i class="fa fa-envelope-o"></i>
           </button>
         </div>
-        <button v-on:click="org.contacts.push(newContactTemplate())"
-                class="list-group-item btn btn-default">
-          <i class="fa fa-plus"></i>
-          <i class="fa fa-envelope-o"></i>
-        </button>
-      </div>
 
-      <!-- ASN section -->
-      <ul v-if="!editable" class="list-group">
-        <li v-for="asn of org.asns" class="list-group-item">
-          <i class="fa fa-hdd-o rme"></i>
-          ASN{{ asn.number }}
-          <em v-if="asn.comment !== ''">
-            ({{ asn.comment }})
-          </em>
-          <i class="fa fa-bell-o lme rme"></i>{{ asn.notification_interval }}
-        </li>
-      </ul>
-      <div v-if="editable" class="list-group form-horizontal">
-        <div v-for="(asn, index) in org.asns" class="list-group-item">
-          <div class="form-group">
-            <label class="col-sm-4 control-label">
-              <i class="fa fa-hdd-o rme"></i>ASN</label>
+        <!-- ASN section -->
+        <ul v-if="!editable" class="list-group">
+          <li v-for="asn of org.asns" class="list-group-item">
+            <i class="fa fa-hdd-o rme"></i>
+            ASN{{ asn.number }}
+            <em v-if="asn.comment !== ''">
+              ({{ asn.comment }})
+            </em>
+            <i class="fa fa-bell-o lme rme"></i>{{ asn.notification_interval }}
+          </li>
+        </ul>
+        <div v-if="editable" class="list-group form-horizontal">
+          <div v-for="(asn, index) in org.asns" class="list-group-item">
+            <div class="form-group">
+              <label class="col-sm-4 control-label">
+                <i class="fa fa-hdd-o rme"></i>ASN</label>
+                <div class="col-sm-8">
+                  <input v-model="org.asns[index].number"
+                    type="number" class="form-control"></input>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-4 control-label"><em>Comment</em></label>
               <div class="col-sm-8">
-                <input v-model="org.asns[index].number"
-                  type="number" class="form-control"></input>
+                  <input v-model="org.asns[index].comment"
+                    type="text" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label"><em>Comment</em></label>
-            <div class="col-sm-8">
-                <input v-model="org.asns[index].comment"
-                  type="text" class="form-control"></input>
+            <div class="form-group">
+              <label class="col-sm-4 control-label">
+                <i class="fa fa-bell-o rme"></i
+                  ><small>Notification Interval</small></label>
+              <div class="col-sm-8">
+                  <input v-model="org.asns[index].notification_interval"
+                    type="number" class="form-control"></input>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">
-              <i class="fa fa-bell-o rme"></i
-                ><small>Notification Interval</small></label>
-            <div class="col-sm-8">
-                <input v-model="org.asns[index].notification_interval"
-                  type="number" class="form-control"></input>
-            </div>
-          </div>
 
-          <button v-on:click="org.asns.splice(index,1)"
-                  class="btn btn-default btn-xs">
-            <i class="fa fa-minus"></i>
+            <button v-on:click="org.asns.splice(index,1)"
+                    class="btn btn-default btn-xs">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <button v-on:click="org.asns.push(
+                    {number:'', comment:'', notification_interval:0})"
+                  class="list-group-item btn btn-default">
+            <i class="fa fa-plus"></i>
+            <i class="fa fa-hdd-o"></i>
           </button>
         </div>
-        <button v-on:click="org.asns.push(
-                  {number:'', comment:'', notification_interval:0})"
-                class="list-group-item btn btn-default">
-          <i class="fa fa-plus"></i>
-          <i class="fa fa-hdd-o"></i>
-        </button>
-      </div>
 
-      <!-- other attribues -->
-      <div v-if="!editable" class="well">
-        <div v-for="(value, key) in otherAttributes">
-            <strong>{{ key }}</strong>: {{ value }}
-        </div>
-      </div>
-      <div v-if="editable" class="well form-horizontal">
-        <div v-for="(value, key) in otherAttributes" class="form-group">
-          <label class="col-sm-4 control-label">{{ key }}</label>
-          <div class="col-sm-8">
-            <input v-if="key === 'sector_id'" type="number"
-              v-model="org[key]" class="form-control"></input>
-            <input v-if="key !== 'sector_id'" type="text"
-              v-model="org[key]" class="form-control"></input>
+        <!-- other attribues -->
+        <div v-if="!editable" class="well">
+          <div v-for="(value, key) in otherAttributes">
+              <strong>{{ key }}</strong>: {{ value }}
           </div>
         </div>
+        <div v-if="editable" class="well form-horizontal">
+          <div v-for="(value, key) in otherAttributes" class="form-group">
+            <label class="col-sm-4 control-label">{{ key }}</label>
+            <div class="col-sm-8">
+              <input v-if="key === 'sector_id'" type="number"
+                v-model="org[key]" class="form-control"></input>
+              <input v-if="key !== 'sector_id'" type="text"
+                v-model="org[key]" class="form-control"></input>
+            </div>
+          </div>
+        </div>
+        <button v-if="editable || status === 'delete'" v-on:click="trashMe"
+          ><i class="fa fa-trash-o rme"></i>Scratch</button>
+        <button v-if="status === 'auto'" v-on:click="cloneMe"
+          class="btn btn-default btn-xs"
+          ><i class="fa fa-clone rme"></i>Clone</button>
+        <button v-if="status === 'manual'" v-on:click="deleteMe"
+          class="btn btn-default btn-xs"
+          ><i class="fa fa-trash-o rme"></i>Delete</button>
+        <button v-if="status === 'manual'" v-on:click="editMe"
+          class="btn btn-default btn-xs"
+          ><i class="fa fa-pencil-square-o rme"></i>Edit</button>
       </div>
-      <button v-if="editable || status === 'delete'" v-on:click="trashMe"
-        ><i class="fa fa-trash-o rme"></i>Scratch</button>
-      <button v-if="status === 'auto'" v-on:click="cloneMe"
-        class="btn btn-default btn-xs"
-        ><i class="fa fa-clone rme"></i>Clone</button>
-      <button v-if="status === 'manual'" v-on:click="deleteMe"
-        class="btn btn-default btn-xs"
-        ><i class="fa fa-trash-o rme"></i>Delete</button>
-      <button v-if="status === 'manual'" v-on:click="editMe"
-        class="btn btn-default btn-xs"
-        ><i class="fa fa-pencil-square-o rme"></i>Edit</button>
     </div>
   </div>
 </template>
