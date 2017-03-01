@@ -132,6 +132,11 @@
               ({{ asn.comment }})
             </em>
             <i class="fa fa-bell-o lme rme"></i>{{ asn.notification_interval }}
+            <ul v-if="'inhibitions' in asn" class="list-group">
+              Inhibitions:
+              <li v-for="inhib in asn['inhibitions']" class="list-group-item">
+                {{ inhib }}
+            </ul>
           </li>
         </ul>
         <div v-if="editable" class="list-group form-horizontal">
@@ -160,6 +165,11 @@
                     type="number" class="form-control"></input>
               </div>
             </div>
+            <ul v-if="'inhibitions' in asn" class="list-group">
+              <em>Inhibitions (editing not supported):</em>
+              <li v-for="inhib in asn['inhibitions']" class="list-group-item">
+                {{ inhib }}
+            </ul>
 
             <button v-on:click="org.asns.splice(index,1)"
                     class="btn btn-default btn-xs">
