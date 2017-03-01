@@ -62,6 +62,15 @@ Fody is Free Software under the licenses of CoPilot,
 the included components and new files under GNU Affero GPL v>=3.
 Please see the particular source files for details.
 
+During the build process a number of tools and Free Software components
+are used, some of them are included in the production build.
+To get an overview of the licenses run:
+```sh
+yarn licenses ls | grep License: | sed 's/^.*License: /License: /' | sort -u
+```
+While `yarn licenses ls` and `yarn generate-disclaimer` will give you
+more details.
+
 CoPilot is a Free Software initiative by [Gil Ferreira](http://gferreira.me)
 and licensed under [MIT](http://opensource.org/licenses/MIT).
 
