@@ -39,7 +39,6 @@ apt-get install nodejs yarn
 nodejs -v
 # testoutput v6.9.5
 yarn --version
-0.19.1
 # testoutput 0.19.1
 ```
 
@@ -116,10 +115,11 @@ ln -s ../intelmq-mailgen/extras/checkticket-spa/checkticket.py .
 
 (Modify checkticket.py that it will serve `/home/fody/www/index.html`.)
 
-```shall
+```shell
 #as fody in venv-hug
 pushd ~/intelmq-mailgen/extras/contactdb_api
 pip install .
+```
 
 
 ### Using Apache2
