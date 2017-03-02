@@ -3,16 +3,20 @@
     <div class='box' v-bind:class='ASNInputClass'>
       <div class="box-body">
         <div class='col-md-2 col-sm-2'>
-          <h4>Search for ASN</h4>
+          <h5>Search for ASN</h5>
         </div>
-        <div class="input-group input-group-lg">
+        <div class="input-group input-group-sm">
           <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
           <input type="text" class="form-control"
             v-model.lazy.trim:title="searchASN"
             v-on:change="lookupASN"
             placeholder="49234"
           >
-          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+          <span class="input-group-btn">
+            <button class="btn btn-default" v-on:click="lookupASN">
+              <i class="fa fa-search"></i>
+            </button>
+          </span>
         </div>
         <span v-if="searchASN !== ''">
           <span class="help-block"
@@ -27,63 +31,67 @@
         </span>
       </div> <!-- .box-body -->
     </div> <!-- .box -->
-    <div class='box'>
+    <div class='box' v-bind:class='EmailInputClass'>
       <div class="box-body">
         <div class='col-md-2 col-sm-6'>
-          <h4>Search for email</h4>
+          <h5>Search for email</h5>
         </div>
-        <div class="forum-control" v-bind:class='EmailInputClass'>
-          <div class="input-group input-group-lg">
-            <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-            <input class="form-control"
-              v-model.lazy.trim:title="searchEmail"
-              v-on:change="lookupEmail"
-              placeholder="abuse@bund.de"
-            >
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-          </div>
-          <span v-if="searchEmail !== ''">
-            <span class="help-block"
-                v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-              Not found.
-            </span>
-            <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-              Found {{ autoOrgIDs.length }} auto-imported and
-                    {{ manualOrgIDs.length }} manual organisations.
-            </span>
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+          <input class="form-control"
+            v-model.lazy.trim:title="searchEmail"
+            v-on:change="lookupEmail"
+            placeholder="abuse@bund.de"
+          >
+          <span class="input-group-btn">
+            <button class="btn btn-default" v-on:click="lookupEmail">
+              <i class="fa fa-search"></i>
+            </button>
           </span>
         </div>
+        <span v-if="searchEmail !== ''">
+          <span class="help-block"
+              v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+            Not found.
+          </span>
+          <span class="help-block"
+                v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+            Found {{ autoOrgIDs.length }} auto-imported and
+                  {{ manualOrgIDs.length }} manual organisations.
+          </span>
+        </span>
       </div> <!-- .box-body -->
     </div> <!-- .box -->
 
-    <div class='box'>
+    <div class='box' v-bind:class='NameInputClass'>
       <div class="box-body">
         <div class='col-md-2 col-sm-6'>
-          <h4>Lookup name</h4>
+          <h5>Lookup name</h5>
         </div>
-        <div class="forum-control" v-bind:class='NameInputClass'>
-          <div class="input-group input-group-lg">
-            <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
-            <input class="form-control"
-              v-model.lazy.trim:title="searchName"
-              v-on:change="lookupName"
-              placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
-            >
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-          </div>
-          <span v-if="searchName !== ''">
-            <span class="help-block"
-                v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-              Not found.
-            </span>
-            <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-              Found {{ autoOrgIDs.length }} auto-imported and
-                    {{ manualOrgIDs.length }} manual organisations.
-            </span>
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
+          <input class="form-control"
+            v-model.lazy.trim:title="searchName"
+            v-on:change="lookupName"
+            placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
+          >
+          <span class="input-group-btn">
+            <button class="btn btn-default" v-on:click="lookupName">
+              <i class="fa fa-search"></i>
+            </button>
           </span>
         </div>
+        <span v-if="searchName !== ''">
+          <span class="help-block"
+              v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+            Not found.
+          </span>
+          <span class="help-block"
+                v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+            Found {{ autoOrgIDs.length }} auto-imported and
+                  {{ manualOrgIDs.length }} manual organisations.
+          </span>
+        </span>
       </div> <!-- .box-body -->
     </div> <!-- .box -->
 
