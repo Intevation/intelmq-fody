@@ -59,12 +59,13 @@ The layout frame has originally be derived from the [CoPilot](https://github.com
 License
 -------
 Fody is Free Software under the licenses of CoPilot,
-the included components and new files under GNU Affero GPL v>=3.
-Please see the particular source files for details.
+the included components and
+GNU Affero GPL v>=3 (for the files originating here).
+Please see a particular source files for details.
 
-During the build process a number of tools and Free Software components
-are used, some of them are included in the production build.
-To get an overview of the licenses run:
+During the build process a number of Free Software tools and components
+are used, parts of them are included in the production build.
+To get an overview of the licenses of the dependencies:
 ```sh
 yarn licenses ls | grep License: | sed 's/^.*License: /License: /' | sort -u
 ```
