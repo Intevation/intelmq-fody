@@ -1,138 +1,141 @@
 <template>
   <section class="content">
-    <div class='box' v-bind:class='ASNInputClass'>
-      <div class="box-body">
-        <div class='col-md-2 col-sm-2'>
-          <h5>Search for ASN</h5>
-        </div>
-        <div class="input-group input-group-sm">
-          <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
-          <input type="text" class="form-control"
-            v-model.lazy.trim:title="searchASN"
-            v-on:change="lookupASN"
-            placeholder="49234"
-          >
-          <span class="input-group-btn">
-            <button class="btn btn-default" v-on:click="lookupASN">
-              <i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-        <span v-if="searchASN !== ''">
-          <span class="help-block"
-              v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-            Not found.
-          </span>
-          <span class="help-block"
-                v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-            Found {{ autoOrgIDs.length }} auto-imported and
-                  {{ manualOrgIDs.length }} manual organisations.
-          </span>
-        </span>
-      </div> <!-- .box-body -->
-    </div> <!-- .box -->
-    <div class='box' v-bind:class='EmailInputClass'>
-      <div class="box-body">
-        <div class='col-md-2 col-sm-6'>
-          <h5>Search for email</h5>
-        </div>
-        <div class="input-group input-group-sm">
-          <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-          <input class="form-control"
-            v-model.lazy.trim:title="searchEmail"
-            v-on:change="lookupEmail"
-            placeholder="abuse@bund.de"
-          >
-          <span class="input-group-btn">
-            <button class="btn btn-default" v-on:click="lookupEmail">
-              <i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-        <span v-if="searchEmail !== ''">
-          <span class="help-block"
-              v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-            Not found.
-          </span>
-          <span class="help-block"
-                v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-            Found {{ autoOrgIDs.length }} auto-imported and
-                  {{ manualOrgIDs.length }} manual organisations.
-          </span>
-        </span>
-      </div> <!-- .box-body -->
-    </div> <!-- .box -->
+    <div class="row">
+      <div class="col-md-4 col-sm-4">
+        <div class='box' v-bind:class='ASNInputClass'>
+          <div class="box-body">
+            <h5>Search for ASN</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
+              <input type="text" class="form-control"
+                v-model.lazy.trim:title="searchASN"
+                v-on:change="lookupASN"
+                placeholder="49234"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupASN">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchASN !== ''">
+              <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                Found {{ autoOrgIDs.length }} auto-imported and
+                      {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <div class='box' v-bind:class='EmailInputClass'>
+          <div class="box-body">
+            <h5>Search for email</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+              <input class="form-control"
+                v-model.lazy.trim:title="searchEmail"
+                v-on:change="lookupEmail"
+                placeholder="abuse@bund.de"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupEmail">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchEmail !== ''">
+              <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                Found {{ autoOrgIDs.length }} auto-imported and
+                      {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <div class='box' v-bind:class='NameInputClass'>
+          <div class="box-body">
+            <h5>Lookup name</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
+              <input class="form-control"
+                v-model.lazy.trim:title="searchName"
+                v-on:change="lookupName"
+                placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupName">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchName !== ''">
+              <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                Found {{ autoOrgIDs.length }} auto-imported and
+                      {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
+    </div>
+    <div class="row">
+      <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
+                class="col-md-6 col-sm-6"
+                v-bind:org="org" status="manual"
+                v-on:edit="editOrg(index)"
+                v-on:delete="deleteOrg(index)"
+                ></org-card>
+      <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
+                class="col-md-6 col-sm-6"
+                v-bind:org="org" status="auto"
+                v-on:clone="cloneOrg(index, $event)"></org-card>
 
-    <div class='box' v-bind:class='NameInputClass'>
-      <div class="box-body">
-        <div class='col-md-2 col-sm-6'>
-          <h5>Lookup name</h5>
-        </div>
-        <div class="input-group input-group-sm">
-          <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
-          <input class="form-control"
-            v-model.lazy.trim:title="searchName"
-            v-on:change="lookupName"
-            placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
-          >
-          <span class="input-group-btn">
-            <button class="btn btn-default" v-on:click="lookupName">
-              <i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-        <span v-if="searchName !== ''">
-          <span class="help-block"
-              v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-            Not found.
-          </span>
-          <span class="help-block"
-                v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-            Found {{ autoOrgIDs.length }} auto-imported and
-                  {{ manualOrgIDs.length }} manual organisations.
-          </span>
-        </span>
-      </div> <!-- .box-body -->
-    </div> <!-- .box -->
-
-    <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
-              class="col-md-6 col-sm-6"
-              v-bind:org="org" status="manual"
-              v-on:edit="editOrg(index)"
-              v-on:delete="deleteOrg(index)"
-              ></org-card>
-    <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
-              class="col-md-6 col-sm-6"
-              v-bind:org="org" status="auto"
-              v-on:clone="cloneOrg(index, $event)"></org-card>
-
-    <button class="btn btn-primary btn-lg btn-block"
-            v-on:click="newOrg"><i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
-    </button>
-
-    <div v-if="pendingOrgIndex.length !== 0"
-         class="box" style="margin-top:20px">
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
                 v-on:clone="cloneOrg(index, $event)"
                 v-on:trash="trashOrg(index)"
                 ></org-card>
-
-      <button class="btn btn-warning btn-lg btn-block"
-              v-on:click="commitPendingOrgs"
-              ><i class="fa fa-pencil-square-o"
-                  style="margin-right:.2em"></i>Commit
-      </button>
-
-      <button class="btn btn-danger btn-lg btn-block"
-              v-on:click="clearPendingOrgs"
-              ><i class="fa fa-trash-o"
-                  style="margin-right:.2em"></i>Clear
-      </button>
-
     </div>
-
+    <div class="row">
+      <div class="col-md-4 col-sm-4">
+        <button class="btn btn-primary btn-lg btn-block"
+                v-on:click="newOrg">
+          <i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
+        </button>
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <button class="btn btn-warning btn-lg btn-block"
+                v-on:click="commitPendingOrgs"
+                v-bind:class="ActionDisabled">
+          <i class="fa fa-pencil-square-o" style="margin-right:.2em"></i>Commit
+        </button>
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <button class="btn btn-danger btn-lg btn-block"
+                v-on:click="clearPendingOrgs"
+                v-bind:class="ActionDisabled">
+          <i class="fa fa-trash-o" style="margin-right:.2em"></i>Clear
+        </button>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -187,6 +190,11 @@ module.exports = {
                       this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
         'has-success': (this.searchName !== '' &&
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
+      }
+    },
+    ActionDisabled: function () {
+      return {
+        'disabled': (this.pendingOrgs.length === 0)
       }
     }
   },
