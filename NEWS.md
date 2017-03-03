@@ -1,7 +1,13 @@
-## 0.1.2 to 0.2.0-dev
+## 0.2.0 to 0.2.1-dev
+
+(empty)
+
+## 0.1.2 to 0.2.0
 
  * Accesses the contactdb\_api on the server now, so it must be installed
    for the /Contacts subpage to work (see installation instructions).
+ * The configuration of the production HTTP server must be single-threaded
+   to avoid write conflicts in the contactdb.
 
 
 _Noting the important changes to fody.
