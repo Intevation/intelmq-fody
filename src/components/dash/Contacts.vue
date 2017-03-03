@@ -339,7 +339,7 @@ module.exports = {
       for (index in this.pendingOrgs) {
         if ('id' in this.pendingOrgs[index] &&
             this.pendingOrgs[index].id === toBeUpdatedOrgID) {
-          console.log('id already in pendingOrds')
+          console.log('Selected "edit", but org is already in edit mode.')
           if (this.pendingOrgIndex[index] === 'update') {
             // we are already editing it, doing nothing
             return
@@ -397,7 +397,7 @@ module.exports = {
       this.pendingOrgIndex = []
     },
     commitPendingOrgs () {
-      console.log('commitPendingOrgs() called')
+      // console.log('commitPendingOrgs() called')
       var url = this.baseQueryURL + '/org/manual/commit'
       var commitObject = {
         'commands': this.pendingOrgIndex,
@@ -424,7 +424,15 @@ module.exports = {
         })
       }, response => {
         // error callback
+        console.log('Committing changes to server failed, status code = ' +
+                    response.status + ' (' + response.statusText + ').')
         // TODO display error message
+        if (response.status === 400) {  // we get json for "bad request"s
+          response.json().then(value => {
+            // json parsed correctly
+            console.log('Server answer:' + JSON.stringify(value))
+          })
+        }
         // TODO unblock
       })
     }
