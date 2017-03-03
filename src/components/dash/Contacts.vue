@@ -1,10 +1,10 @@
 <template>
   <section class="content">
     <div class="row">
-      <div class="col-md-4 col-sm-4">
+      <div class="col-md-3 col-sm-6">
         <div class='box' v-bind:class='ASNInputClass'>
           <div class="box-body">
-            <h5>Search for ASN</h5>
+            <h5>Lookup ASN</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
               <input type="text" class="form-control"
@@ -32,10 +32,10 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
-      <div class="col-md-4 col-sm-4">
+      <div class="col-md-4 col-sm-6">
         <div class='box' v-bind:class='EmailInputClass'>
           <div class="box-body">
-            <h5>Search for email</h5>
+            <h5>Search Email</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
               <input class="form-control"
@@ -63,10 +63,10 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
-      <div class="col-md-4 col-sm-4">
+      <div class="col-md-5 col-sm-12">
         <div class='box' v-bind:class='NameInputClass'>
           <div class="box-body">
-            <h5>Lookup name</h5>
+            <h5>Search Name</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
               <input class="form-control"
