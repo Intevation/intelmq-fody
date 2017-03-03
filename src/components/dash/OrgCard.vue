@@ -1,28 +1,31 @@
 <template>
-  <div> <!-- Container for column layout -->
+  <div class="container"> <!-- Container for column layout -->
     <div class="panel" v-bind:class="computedPanelClass">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <span v-if="!editable">
+      <div class="panel-heading clearfix">
+        <span v-if="!editable">
+          <h3 class="panel-title pull-left">
             <i class="fa fa-id-badge rme"></i>
             {{ org.name }}
-            <span v-if="status !=='delete'"
-                  class="badge primary">{{ status }}</span>
-            <span v-if="status ==='delete'"
-                  class="badge danger">{{ status }}</span>
+          </h3>
+          <span v-if="status !=='delete'"
+                class="badge primary pull-right">{{ status }}</span>
+          <span v-if="status ==='delete'"
+                class="badge danger pull-right">{{ status }}</span>
+        </span>
+        <span v-if="editable">
+          <span class="input-group input-group-sm">
+            <span class="input-group-addon">
+              <i class="fa fa-id-badge rme"></i>
+            </span>
+            <input class="form-control"
+              placeholder="Name"
+              v-model="org.name"
+              type="text">
+            <span class="input-group-addon">
+              <span class="badge warning pull-right">{{ status }}</span>
+            </span>
           </span>
-          <span v-if="editable">
-              <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="fa fa-id-badge input-group-addon"></i>
-                </span>
-                <input v-model="org.name" type="text" class="form-control">
-                <span class="input-group-addon">
-                  <span class="badge warning">{{ status }}</span>
-                </span>
-              </div>
-          </span>
-        </h3>
+        </span>
       </div>
 
       <div class="panel-body">
