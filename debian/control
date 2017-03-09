@@ -1,0 +1,15 @@
+Source: intelmq-fody
+Maintainer: Sascha Wilde <wilde@intevation.de>
+Section: net
+Priority: optional
+Build-Depends: debhelper (>= 9), nodejs (>= 4.0.0), yarn (>= 0.21.0)
+Standards-Version: 3.9.6
+
+Package: intelmq-fody
+Architecture: all
+Depends: ${misc:Depends}
+Description: Fody is an interface for intelmq-mailgen setups.
+ Shows event details for a report that has been send out.
+ Manage the IntelMQ certbund-contact database.
+
+ 

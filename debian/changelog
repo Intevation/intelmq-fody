@@ -1,0 +1,5 @@
+intelmq-fody (0.2.0) unstable; urgency=low
+
+  * Initial, packaged release.
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 07 Mar 2017 16:20:49 +0100

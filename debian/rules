@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf dist node_modules
+
+override_dh_auto_configure:
+	yarn
+
+override_dh_auto_build:
+	yarn run build
+
+override_dh_fixperms:
+	dh_fixperms
+	find debian/intelmq-fody/usr/share/fody/www/static \
+          -type f -exec chmod -x \{\} \;
