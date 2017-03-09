@@ -164,7 +164,7 @@
           <!--
           <li class="pageLink" v-on:click="toggleMenu"><router-link to="/tasks"><i class="fa fa-tasks"></i><span class="page">Tasks</span></router-link></li>
           -->
-          <li class="pageLink" v-on:click="toggleMenu"><router-link to="/setting"><i class="fa fa-cog"></i><span class="page">Settings</span></router-link></li>
+          <li class="pageLink" v-on:click="toggleMenu"><router-link to="/settings"><i class="fa fa-cog"></i><span class="page">Settings</span></router-link></li>
 
           <!--
           <li class="header">LOGS</li>

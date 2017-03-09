@@ -8,7 +8,7 @@ import TicketsView from './components/dash/Tickets.vue'
 import ContactsView from './components/dash/Contacts.vue'
 import StatsView from './components/dash/Stats.vue'
 import TasksView from './components/dash/Tasks.vue'
-import SettingView from './components/dash/Setting.vue'
+import SettingsView from './components/dash/Settings.vue'
 import AccessView from './components/dash/Access.vue'
 import ServerView from './components/dash/Server.vue'
 import ReposView from './components/dash/Repos.vue'
@@ -49,8 +49,8 @@ const routes = [
         name: 'Tasks',
         meta: { description: 'Tasks page in the form of a timeline' }
       }, {
-        path: '/setting',
-        component: SettingView,
+        path: '/settings',
+        component: SettingsView,
         name: 'Settings',
         meta: { description: 'User settings page' }
       }, {
