@@ -14,6 +14,9 @@ import ServerView from './components/dash/Server.vue'
 import ReposView from './components/dash/Repos.vue'
 
 // Routes
+// When adding new routes, make sure that the subpages are also
+// directly served by the server to our 'index.html', e.g. by changing
+// the hug example lines in checkticket.py.
 const routes = [
   {
     path: '/login',
