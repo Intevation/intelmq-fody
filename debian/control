@@ -2,7 +2,7 @@ Source: intelmq-fody
 Maintainer: Sascha Wilde <wilde@intevation.de>
 Section: net
 Priority: optional
-Build-Depends: debhelper (>= 9), nodejs (>= 4.0.0), yarn (>= 0.21.0)
+Build-Depends: debhelper (>= 9), nodejs (>= 4.0.0), yarn (>= 0.21.0), rsync
 Standards-Version: 3.9.6
 
 Package: intelmq-fody
@@ -12,4 +12,18 @@ Description: Fody is an interface for intelmq-mailgen setups.
  Shows event details for a report that has been send out.
  Manage the IntelMQ certbund-contact database.
 
- 
+Package: intelmq-fody-src
+Architecture: all
+Depends: ${misc:Depends}
+Description: Full expanded source of Fody.
+ As Fody is build using yarn, thereby downloading various sources
+ during package building, the regular deb source packages doesn't
+ contain most of the sources actually used to build the binary
+ package.
+ .
+ This package contains the full tree witrh all dependencies installed
+ turing buid time.  It is installed below /usr/src and mainly intended
+ for reference.
+ .
+ In nearly all cases you won't need this package to rebuild Fody, just
+ use the regular deb source packages.
