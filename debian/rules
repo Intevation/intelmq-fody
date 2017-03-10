@@ -16,3 +16,11 @@ override_dh_fixperms:
 	dh_fixperms
 	find debian/intelmq-fody/usr/share/fody/www/static \
           -type f -exec chmod -x \{\} \;
+
+override_dh_install:
+	dh_install
+	mkdir -p debian/intelmq-fody-src/usr/src/intelmq-fody/
+	rsync -a --exclude debian \
+		 --exclude dist \
+                 --exclude .git\* \
+	  ./ debian/intelmq-fody-src/usr/src/intelmq-fody/
