@@ -89,7 +89,7 @@ module.exports = {
   name: 'Tickets',
   data: function () {
     return {
-      queryURL: '',  // base url for AJAJ service
+      queryURL: '/api/checkticket/',  // base url for AJAJ service
       ticketID: '',  // ticket to be examined
       eventIDs: [],  // list of corresponding ids for the ticket
       events: [],  // list of events details
