@@ -67,7 +67,6 @@ module.exports = {
   },
   watch: {
     width: function widthChanged () {
-      console.log('widthChanged')
       this.update()
     },
     queryData: function queryDataChanged () {
@@ -101,13 +100,6 @@ module.exports = {
           .attr('text-anchor', 'end')
           .attr('style', 'fill:black')
           .text('count')
-
-      /*
-      const path = d3.line()
-        .x((d, i) => scale.x(i))
-        .y(d => scale.y(d))
-      this.line = path(this.data)
-      */
     },
     update: function () {
       var data = this.queryData.results
@@ -123,7 +115,11 @@ module.exports = {
           .attr('x', d => scale.x(d.date_trunc))
           .attr('y', d => scale.y(d.count))
           .attr('width', scale.x.bandwidth())
-          .attr('height', d => this.padded.height - scale.y(d.count))
+          .attr('height', d => {
+            //  could be temporarily negative for small d.count
+            var diff = this.padded.height - scale.y(d.count)
+            return diff < 0 ? 0 : diff
+          })
 
       bar.exit().remove()
 
