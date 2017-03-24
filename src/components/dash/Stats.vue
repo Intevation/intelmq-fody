@@ -9,9 +9,8 @@
         <!-- for SVG downloading to result in usable file we want
              the styling within each element as style attribute -->
         <svg id="chart1" v-bind:width="width" v-bind:height="height">
-          <g id="chart1_g" style="transform: translate(0, 10px)"> <!-- margins left, top -->
-            <path class="line" :d="line"
-              style="fill: none; stroke: #76BF8A; stroke-width: 2px"/>
+          <g id="chart1_g"
+            v-bind:style="{transform: `translate(${margin.left}px, ${margin.top}px)`}">
           </g>
         </svg>
       </div>
@@ -45,11 +44,19 @@ module.exports = {
     return {
       width: 0,
       height: 0,
+      margin: {'top': 20, 'right': 30, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
       data: [3, 12, 7, 11, 6, 18],
       line: '',
       svgXML: '',
       queryData: {'results': []}
+    }
+  },
+  computed: {
+    padded: function () {
+      const width = this.width - this.margin.left - this.margin.right
+      const height = this.height - this.margin.top - this.margin.bottom
+      return { width, height }
     }
   },
   mounted: function () {
@@ -61,6 +68,9 @@ module.exports = {
   },
   watch: {
     width: function widthChanged () {
+      console.log('widthChanged')
+    },
+    queryData: function queryDataChanged () {
       this.initialize()
     }
   },
@@ -70,11 +80,11 @@ module.exports = {
       this.height = this.width / 1.61803 // golden ratio
     },
     getScales: function (data) {
-      var x = d3.scaleBand().rangeRound([0, this.width]).padding(0.1)
-      var y = d3.scaleLinear().rangeRound([this.height, 0])
+      var x = d3.scaleBand().rangeRound([0, this.padded.width]).padding(0.1)
+      var y = d3.scaleLinear().rangeRound([this.padded.height, 0])
       // d3.axisLeft().scale(x)
       // d3.axisBottom().scale(y)
-      x.domain(data.map(d => d.data_trunc))
+      x.domain(data.map(d => d.date_trunc))
       y.domain([0, d3.max(data, d => d.count)])
       return {x, y}
     },
@@ -85,12 +95,12 @@ module.exports = {
       var g = d3.select('#chart1_g')
       g.append('g')
         .attr('class', 'axis axis--x')
-        .attr('transform', 'translate(0,' + this.height + ')')
+        .attr('transform', 'translate(0,' + this.padded.height + ')')
         .call(d3.axisBottom(scale.x))
 
       g.append('g')
           .attr('class', 'axis axis--y')
-          .call(d3.axisLeft(scale.y).ticks(10, '%'))
+          .call(d3.axisLeft(scale.y).ticks(10))
         .append('text')
           .attr('transform', 'rotate(-90)')
           .attr('y', 6)
@@ -106,7 +116,7 @@ module.exports = {
           .attr('x', d => scale.x(d.date_trunc))
           .attr('y', d => scale.y(d.count))
           .attr('width', scale.x.bandwidth())
-          .attr('height', d => this.height - scale.y(d.count))
+          .attr('height', d => this.padded.height - scale.y(d.count))
           .attr('style', 'fill: steelblue')
       /*
       const path = d3.line()
