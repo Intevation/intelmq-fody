@@ -46,8 +46,6 @@ module.exports = {
       height: 0,
       margin: {'top': 20, 'right': 30, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
-      data: [3, 12, 7, 11, 6, 18],
-      line: '',
       svgXML: '',
       queryData: {'results': []}
     }
@@ -61,6 +59,7 @@ module.exports = {
   },
   mounted: function () {
     window.addEventListener('resize', this.onResize)
+    this.initialize()
     this.onResize()  // initialize size and chart on first mount
   },
   beforeDestroy: function () {
@@ -69,9 +68,10 @@ module.exports = {
   watch: {
     width: function widthChanged () {
       console.log('widthChanged')
+      this.update()
     },
     queryData: function queryDataChanged () {
-      this.initialize()
+      this.update()
     }
   },
   methods: {
@@ -82,25 +82,18 @@ module.exports = {
     getScales: function (data) {
       var x = d3.scaleBand().rangeRound([0, this.padded.width]).padding(0.1)
       var y = d3.scaleLinear().rangeRound([this.padded.height, 0])
-      // d3.axisLeft().scale(x)
-      // d3.axisBottom().scale(y)
       x.domain(data.map(d => d.date_trunc))
       y.domain([0, d3.max(data, d => d.count)])
       return {x, y}
     },
     initialize: function () {
-      // TODO do most of the operations only once, otherwise we'll add more and more
-      var data = this.queryData.results
-      var scale = this.getScales(data)
       var g = d3.select('#chart1_g')
+
       g.append('g')
         .attr('class', 'axis axis--x')
-        .attr('transform', 'translate(0,' + this.padded.height + ')')
-        .call(d3.axisBottom(scale.x))
 
       g.append('g')
           .attr('class', 'axis axis--y')
-          .call(d3.axisLeft(scale.y).ticks(10))
         .append('text')
           .attr('transform', 'rotate(-90)')
           .attr('y', 6)
@@ -109,21 +102,37 @@ module.exports = {
           .attr('style', 'fill:black')
           .text('count')
 
-      g.selectAll('.bar')
-        .data(data)
-        .enter().append('rect')
-          .attr('class', 'bar')
-          .attr('x', d => scale.x(d.date_trunc))
-          .attr('y', d => scale.y(d.count))
-          .attr('width', scale.x.bandwidth())
-          .attr('height', d => this.padded.height - scale.y(d.count))
-          .attr('style', 'fill: steelblue')
       /*
       const path = d3.line()
         .x((d, i) => scale.x(i))
         .y(d => scale.y(d))
       this.line = path(this.data)
       */
+    },
+    update: function () {
+      var data = this.queryData.results
+      var scale = this.getScales(data)
+      var g = d3.select('#chart1_g')
+
+      var bar = g.selectAll('.bar').data(data)
+
+      bar.enter().append('rect')
+          .attr('class', 'bar')
+          .attr('style', 'fill: steelblue')
+        .merge(bar)
+          .attr('x', d => scale.x(d.date_trunc))
+          .attr('y', d => scale.y(d.count))
+          .attr('width', scale.x.bandwidth())
+          .attr('height', d => this.padded.height - scale.y(d.count))
+
+      bar.exit().remove()
+
+      g.select('.axis--x')
+        .attr('transform', 'translate(0,' + this.padded.height + ')')
+        .call(d3.axisBottom(scale.x))
+
+      g.select('.axis--y')
+        .call(d3.axisLeft(scale.y).ticks(10))
     },
     loadStats: function () {
       var today = (new Date()).toJSON().slice(0, 10)
