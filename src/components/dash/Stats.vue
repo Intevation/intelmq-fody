@@ -101,6 +101,13 @@ module.exports = {
           .attr('style', 'fill:black')
           .text('count')
     },
+    formatXTick: function () {
+      if (this.queryData.timeres === 'day') {
+        return d => d.slice(0, 10)
+      } else {
+        return d => d
+      }
+    },
     update: function () {
       var data = this.queryData.results
       var scale = this.getScales(data)
@@ -125,7 +132,7 @@ module.exports = {
 
       g.select('.axis--x')
         .attr('transform', 'translate(0,' + this.padded.height + ')')
-        .call(d3.axisBottom(scale.x))
+        .call(d3.axisBottom(scale.x).tickFormat(this.formatXTick()))
 
       g.select('.axis--y')
         .call(d3.axisLeft(scale.y).ticks(10))
