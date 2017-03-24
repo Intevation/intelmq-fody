@@ -1,15 +1,15 @@
 <template>
   <section class="content">
     <div class="row">
-      <div class="col-md-12 col-sm-12">
+      <div class="col-md-12 col-sm-12" id="chart_container">
         <button class="btn btn-default" v-on:click="loadStats">
           Load data
         </button>
         <h2>Events processed</h2>
         <!-- for SVG downloading to result in usable file we want
              the styling within each element as style attribute -->
-        <svg id="chart1" width="100%" height="100%">
-          <g style="transform: translate(0, 10px)">
+        <svg id="chart1" v-bind:width="width" v-bind:height="height">
+          <g style="transform: translate(0, 10px)"> <!-- margins left, top -->
             <path class="line" :d="line"
               style="fill: none; stroke: #76BF8A; stroke-width: 2px"/>
           </g>
@@ -43,6 +43,8 @@ module.exports = {
   name: 'Stats',
   data: function () {
     return {
+      width: 0,
+      height: 0,
       baseQueryURL: '/api/events',  // base url for AJAJ service
       data: [3, 12, 7, 11, 6, 18],
       line: '',
@@ -51,19 +53,32 @@ module.exports = {
     }
   },
   mounted: function () {
-    this.calculateLine()
+    window.addEventListener('resize', this.onResize)
+    this.onResize()  // initialize size and chart on first mount
+  },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.onResize)
+  },
+  watch: {
+    width: function widthChanged () {
+      this.initialize()
+    }
   },
   methods: {
+    onResize: function () {
+      this.width = document.getElementById('chart_container').offsetWidth
+      this.height = this.width / 1.61803 // golden ratio
+    },
     getScales: function () {
-      const x = d3.scaleTime().range([0, 330])
-      const y = d3.scaleLinear().range([200, 0])
+      const x = d3.scaleTime().range([0, this.width])
+      const y = d3.scaleLinear().range([this.height, 0])
       d3.axisLeft().scale(x)
       d3.axisBottom().scale(y)
       x.domain(d3.extent(this.data, (d, i) => i))
       y.domain([0, d3.max(this.data, d => d)])
       return {x, y}
     },
-    calculateLine: function () {
+    initialize: function () {
       const scale = this.getScales()
       const path = d3.line()
         .x((d, i) => scale.x(i))
