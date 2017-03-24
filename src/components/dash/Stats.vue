@@ -11,8 +11,9 @@
         </svg>
       </div>
 
-      <button class="btn btn-success" id="save_as_svg" v-on:click="saveSVG">
-        Save as SVG</button>
+      <a v-if="svgXML !== ''" class="btn btn-success"
+        :href="'data:text/plain;charset=utf-8,' + encodeURIComponent(svgXML)"
+        download="fody.svg">Download SVG</a>
     </div>
   </section>
 </template>
@@ -26,11 +27,13 @@ module.exports = {
     return {
       baseQueryURL: '/api/stats',  // base url for AJAJ service
       data: [3, 12, 7, 11, 6, 18],
-      line: ''
+      line: '',
+      svgXML: ''
     }
   },
   mounted: function () {
     this.calculateLine()
+    this.saveSVG()
   },
   methods: {
     getScales: function () {
@@ -56,8 +59,9 @@ module.exports = {
       /* global XMLSerializer */
       /* eslint no-undef: "error" */
       /* eslint-env browser */
-      var svgXml = (new XMLSerializer()).serializeToString(svg)
-      console.log(svgXml)
+      var svgXML = (new XMLSerializer()).serializeToString(svg)
+      console.log(svgXML)
+      this.svgXML = svgXML
     }
   }
 }
