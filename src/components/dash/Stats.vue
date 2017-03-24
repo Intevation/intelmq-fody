@@ -3,6 +3,8 @@
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <h2>Events processed</h2>
+        <!-- for SVG downloading to result in usable file we want
+             the styling within each element as style attribute -->
         <svg id="chart1" width="100%" height="100%">
           <g style="transform: translate(0, 10px)">
             <path class="line" :d="line"
@@ -11,8 +13,16 @@
         </svg>
       </div>
 
+      <!-- using encodeURIComponent because IE and Firefox need this for
+           non-base64 SVG and using base64 is even more cumbersome as it would
+           require an encoding function that can deal with unicode (atob can't).
+      -->
+      <button v-if="svgXML === ''" class="btn btn-warning"
+        v-on:click="saveSVG()">
+        Prepare SVG Export
+      </button>
       <a v-if="svgXML !== ''" class="btn btn-success"
-        :href="'data:text/plain;charset=utf-8,' + encodeURIComponent(svgXML)"
+        :href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
         download="fody.svg">Download SVG</a>
     </div>
   </section>
@@ -33,7 +43,6 @@ module.exports = {
   },
   mounted: function () {
     this.calculateLine()
-    this.saveSVG()
   },
   methods: {
     getScales: function () {
