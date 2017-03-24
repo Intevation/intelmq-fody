@@ -93,7 +93,7 @@
             -->
 
               <!-- /input-group -->
-            </div>
+            <!-- </div> -->
             <!-- /.box-body -->
           </div>
         </div>

@@ -139,6 +139,7 @@
               Inhibitions:
               <li v-for="inhib in asn['inhibitions']" class="list-group-item">
                 {{ inhib }}
+              </li>
             </ul>
           </li>
         </ul>
@@ -172,6 +173,7 @@
               <em>Inhibitions (editing not supported):</em>
               <li v-for="inhib in asn['inhibitions']" class="list-group-item">
                 {{ inhib }}
+              </li>
             </ul>
 
             <button v-on:click="org.asns.splice(index,1)"
