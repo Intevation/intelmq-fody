@@ -5,10 +5,14 @@
         <h2>Events processed</h2>
         <svg id="chart1" width="100%" height="100%">
           <g style="transform: translate(0, 10px)">
-            <path class="line" :d="line" />
+            <path class="line" :d="line"
+              style="fill: none; stroke: #76BF8A; stroke-width: 2px"/>
           </g>
         </svg>
       </div>
+
+      <button class="btn btn-success" id="save_as_svg" v-on:click="saveSVG">
+        Save as SVG</button>
     </div>
   </section>
 </template>
@@ -44,15 +48,17 @@ module.exports = {
         .x((d, i) => scale.x(i))
         .y(d => scale.y(d))
       this.line = path(this.data)
+    },
+    saveSVG: function () {
+      console.log('saveSVG called, resulting SVG:')
+      var svg = document.getElementById('chart1')
+
+      /* global XMLSerializer */
+      /* eslint no-undef: "error" */
+      /* eslint-env browser */
+      var svgXml = (new XMLSerializer()).serializeToString(svg)
+      console.log(svgXml)
     }
   }
 }
 </script>
-
-<style>
-path {
-  fill: none;
-  stroke: #76BF8A;
-  stroke-width: 3px
-}
-</style>
