@@ -9,7 +9,7 @@
         <!-- for SVG downloading to result in usable file we want
              the styling within each element as style attribute -->
         <svg id="chart1" v-bind:width="width" v-bind:height="height">
-          <g style="transform: translate(0, 10px)"> <!-- margins left, top -->
+          <g id="chart1_g" style="transform: translate(0, 10px)"> <!-- margins left, top -->
             <path class="line" :d="line"
               style="fill: none; stroke: #76BF8A; stroke-width: 2px"/>
           </g>
@@ -49,7 +49,7 @@ module.exports = {
       data: [3, 12, 7, 11, 6, 18],
       line: '',
       svgXML: '',
-      queryData: {}
+      queryData: {'results': []}
     }
   },
   mounted: function () {
@@ -69,21 +69,51 @@ module.exports = {
       this.width = document.getElementById('chart_container').offsetWidth
       this.height = this.width / 1.61803 // golden ratio
     },
-    getScales: function () {
-      const x = d3.scaleTime().range([0, this.width])
-      const y = d3.scaleLinear().range([this.height, 0])
-      d3.axisLeft().scale(x)
-      d3.axisBottom().scale(y)
-      x.domain(d3.extent(this.data, (d, i) => i))
-      y.domain([0, d3.max(this.data, d => d)])
+    getScales: function (data) {
+      var x = d3.scaleBand().rangeRound([0, this.width]).padding(0.1)
+      var y = d3.scaleLinear().rangeRound([this.height, 0])
+      // d3.axisLeft().scale(x)
+      // d3.axisBottom().scale(y)
+      x.domain(data.map(d => d.data_trunc))
+      y.domain([0, d3.max(data, d => d.count)])
       return {x, y}
     },
     initialize: function () {
-      const scale = this.getScales()
+      // TODO do most of the operations only once, otherwise we'll add more and more
+      var data = this.queryData.results
+      var scale = this.getScales(data)
+      var g = d3.select('#chart1_g')
+      g.append('g')
+        .attr('class', 'axis axis--x')
+        .attr('transform', 'translate(0,' + this.height + ')')
+        .call(d3.axisBottom(scale.x))
+
+      g.append('g')
+          .attr('class', 'axis axis--y')
+          .call(d3.axisLeft(scale.y).ticks(10, '%'))
+        .append('text')
+          .attr('transform', 'rotate(-90)')
+          .attr('y', 6)
+          .attr('dy', '0.71em')
+          .attr('text-anchor', 'end')
+          .attr('style', 'fill:black')
+          .text('count')
+
+      g.selectAll('.bar')
+        .data(data)
+        .enter().append('rect')
+          .attr('class', 'bar')
+          .attr('x', d => scale.x(d.date_trunc))
+          .attr('y', d => scale.y(d.count))
+          .attr('width', scale.x.bandwidth())
+          .attr('height', d => this.height - scale.y(d.count))
+          .attr('style', 'fill: steelblue')
+      /*
       const path = d3.line()
         .x((d, i) => scale.x(i))
         .y(d => scale.y(d))
       this.line = path(this.data)
+      */
     },
     loadStats: function () {
       var today = (new Date()).toJSON().slice(0, 10)
