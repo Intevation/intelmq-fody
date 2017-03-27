@@ -73,7 +73,7 @@ module.exports = {
     return {
       width: 0,
       height: 0,
-      margin: {'top': 20, 'right': 40, 'bottom': 30, 'left': 40},
+      margin: {'top': 20, 'right': 52, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
       svgXML: '',
       queryData: {'results': []},
