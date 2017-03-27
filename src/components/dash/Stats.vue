@@ -2,9 +2,22 @@
   <section class="content">
     <div class="row">
       <div class="col-md-12 col-sm-12" id="chart_container">
-        <button class="btn btn-default" v-on:click="loadStats">
-          Load data
-        </button>
+        <div class="form-inline">
+          <div class="form-group">
+            <label>Time interval</label>
+            <select v-model="query.timeres" class="form-control">
+              <option value="">(automatic)</option>
+              <option>hour</option>
+              <option>day</option>
+              <option>week</option>
+              <option>month</option>
+            </select>
+            <button class="btn btn-default" v-on:click="loadStats">
+              Load data
+            </button>
+          </div>
+        </div>
+
         <h2>Events processed</h2>
         <!-- for SVG downloading to result in usable file we want
              the styling within each element as style attribute -->
@@ -47,7 +60,10 @@ module.exports = {
       margin: {'top': 20, 'right': 30, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
       svgXML: '',
-      queryData: {'results': []}
+      queryData: {'results': []},
+      query: {
+        timeres: ''
+      }
     }
   },
   computed: {
@@ -141,7 +157,7 @@ module.exports = {
       var today = (new Date()).toJSON().slice(0, 10)
       var url = this.baseQueryURL + '/stats?' +
         'time-observation_after=2016-03-01' +
-        '&time-observation_before=' + today + '&timeres=day'
+        '&time-observation_before=' + today + '&timeres=' + this.query.timeres
 
       this.$http.get(url).then((response) => {
         // got valid response
