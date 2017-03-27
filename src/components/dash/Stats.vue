@@ -50,9 +50,11 @@
         :href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
         download="fody.svg">Download SVG</a>
       </div>
+      <!-- 
       <pre>
         {{ queryData }}
       </pre>
+      -->
     </div>
   </section>
 </template>
@@ -71,7 +73,7 @@ module.exports = {
     return {
       width: 0,
       height: 0,
-      margin: {'top': 20, 'right': 30, 'bottom': 30, 'left': 40},
+      margin: {'top': 20, 'right': 40, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
       svgXML: '',
       queryData: {'results': []},
@@ -116,9 +118,9 @@ module.exports = {
       this.height = this.width / 1.61803 // golden ratio
     },
     getScales: function (data) {
-      var x = d3.scaleBand().rangeRound([0, this.padded.width]).padding(0.1)
+      var x = d3.scaleTime().range([0, this.padded.width])
       var y = d3.scaleLinear().rangeRound([this.padded.height, 0])
-      x.domain(data.map(d => d.date_trunc))
+      x.domain(d3.extent(data, d => d.date_trunc)).nice()
       y.domain([0, d3.max(data, d => d.count)])
       return {x, y}
     },
@@ -138,11 +140,16 @@ module.exports = {
           .attr('style', 'fill:black')
           .text('count')
     },
+    ticksX: function () {
+      // how many ticks shall we display?
+      return Math.floor(this.padded.width / 110)
+    },
     formatXTick: function () {
       if (this.queryData.timeres === 'day') {
         return d => d.toISOString().slice(0, 10)
       } else {
-        return d => d
+        return d => d.toISOString().slice(0, 10) + '.' +
+                    d.toISOString().slice(11, 13)
       }
     },
     update: function () {
@@ -156,9 +163,9 @@ module.exports = {
           .attr('class', 'bar')
           .attr('style', 'fill: steelblue')
         .merge(bar)
-          .attr('x', d => scale.x(d.date_trunc))
+          .attr('x', d => scale.x(d.date_trunc) - 1)  // minus .05*width
           .attr('y', d => scale.y(d.count))
-          .attr('width', scale.x.bandwidth())
+          .attr('width', 2)  // TODO better width calculation
           .attr('height', d => {
             //  could be temporarily negative for small d.count
             var diff = this.padded.height - scale.y(d.count)
@@ -169,7 +176,9 @@ module.exports = {
 
       g.select('.axis--x')
         .attr('transform', 'translate(0,' + this.padded.height + ')')
-        .call(d3.axisBottom(scale.x).tickFormat(this.formatXTick()))
+        .call(d3.axisBottom(scale.x)
+          .ticks(this.ticksX())
+          .tickFormat(this.formatXTick()))
 
       g.select('.axis--y')
         .call(d3.axisLeft(scale.y).ticks(10))
