@@ -102,8 +102,8 @@
   </div>
 </template>
 <script>
-require('moment')
-import datepicker from 'vue-date-picker'
+// require('moment')
+// import datepicker from 'vue-date-picker'
 
 export default {
   name: 'Settings',
@@ -112,7 +112,7 @@ export default {
       return new Date()
     }
   },
-  components: { datepicker },
+  //  components: { datepicker },
   methods: {
     clearInput: function (vueModel) {
       vueModel = ''
@@ -124,7 +124,8 @@ export default {
 </script>
 
 <style>
-.datetime-picker input {
+/* .datetime-picker input {
   height: 4em !important;
 }
+*/
 </style>

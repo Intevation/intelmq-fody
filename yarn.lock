@@ -2454,6 +2454,10 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
+flatpickr@^2.3.0-3:
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-2.4.7.tgz#3b5b9c2b820aea302339e2cceed00d243932fa54"
+
 flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
@@ -5448,7 +5452,7 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-supports-color@3.1.2:
+supports-color@3.1.2, supports-color@^3.1.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.1.2.tgz#72a262894d9d408b956ca05ff37b2ed8a6e2a2d5"
   dependencies:
@@ -5458,7 +5462,7 @@ supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
-supports-color@^3.1.0, supports-color@^3.2.3:
+supports-color@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.2.3.tgz#65ac0504b3954171d8a64946b2ae3cbb8a5f54f6"
   dependencies:
@@ -5775,9 +5779,11 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
-vue-date-picker@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/vue-date-picker/-/vue-date-picker-1.0.2.tgz#d8243dde3d3c37b550cbe4f88c8d4b0803128471"
+vue-flatpickr@^2.2.9:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/vue-flatpickr/-/vue-flatpickr-2.3.0.tgz#4dfe48eea391b9ddcba48adcc4967493fa5769de"
+  dependencies:
+    flatpickr "^2.3.0-3"
 
 vue-hot-reload-api@^2.0.1:
   version "2.0.11"

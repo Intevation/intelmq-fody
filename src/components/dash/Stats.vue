@@ -4,7 +4,16 @@
       <div class="col-md-12 col-sm-12" id="chart_container">
         <div class="form-inline">
           <div class="form-group">
-            <label>Time interval</label>
+            <label>after</label>
+            <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
+               class="form-control"
+            />
+            <label>before</label>
+            <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
+               class="form-control"/>
+          </div>
+          <div class="form-group">
+            <label>Resolution</label>
             <select v-model="query.timeres" class="form-control">
               <option value="">(automatic)</option>
               <option>hour</option>
@@ -50,9 +59,14 @@
 
 <script>
 import * as d3 from 'd3'
+import VueFlatpickr from 'vue-flatpickr'
+import 'vue-flatpickr/theme/airbnb.css'
 
 module.exports = {
   name: 'Stats',
+  components: {
+    'Flatpickr': VueFlatpickr
+  },
   data: function () {
     return {
       width: 0,
@@ -62,7 +76,14 @@ module.exports = {
       svgXML: '',
       queryData: {'results': []},
       query: {
-        timeres: ''
+        timeres: '',
+        after: '2017-01-01 00:00',
+        before: (new Date()).toJSON().slice(0, 19)  // today
+      },
+      fpOptions: {
+        onValueUpdate: null,
+        // allowInput: true,
+        enableTime: true
       }
     }
   },
@@ -154,10 +175,11 @@ module.exports = {
         .call(d3.axisLeft(scale.y).ticks(10))
     },
     loadStats: function () {
-      var today = (new Date()).toJSON().slice(0, 10)
+      // var today = (new Date()).toJSON().slice(0, 10)
       var url = this.baseQueryURL + '/stats?' +
         'time-observation_after=2016-03-01' +
-        '&time-observation_before=' + today + '&timeres=' + this.query.timeres
+        '&time-observation_before=' + this.query.before +
+        '&timeres=' + this.query.timeres
 
       this.$http.get(url).then((response) => {
         // got valid response

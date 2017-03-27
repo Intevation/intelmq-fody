@@ -23,7 +23,7 @@
     "moment": "^2.12.0",
     "npm-font-source-sans-pro": "^1.0.2",
     "vue": "^2.0.3",
-    "vue-date-picker": "^1.0.2",
+    "vue-flatpickr": "^2.2.9",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.0.1",
     "vuex": "^2.0.0"
