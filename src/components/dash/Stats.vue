@@ -16,7 +16,8 @@
           <div v-for="(sq, index) of query.subs" class="form-group">
             <select v-model="sq.cond" class="form-control">
               <option value=""></option>
-              <option v-for="(v, k) of allowedSubs">{{ k }}</option>
+              <option v-for="k in Object.keys(allowedSubs).sort()"
+                >{{ k }}</option>
             </select>
             <!-- <p class="form-control-static">:</p> -->
             <input v-model="sq.value" type="text" class="form-control">
@@ -230,11 +231,18 @@ module.exports = {
       })
     },
     loadStats: function () {
-      // var today = (new Date()).toJSON().slice(0, 10)
       var url = this.baseQueryURL + '/stats?' +
-        'time-observation_after=2016-03-01' +
+        'time-observation_after=' + this.query.after +
         '&time-observation_before=' + this.query.before +
         '&timeres=' + this.query.timeres
+
+      // add optional subqueries
+      // we don't mind if some conditions appear several times
+      url += '&' +
+        this.query.subs
+          .filter(q => q.cond !== '')
+          .map(q => q.cond + '=' + q.value)
+          .join('&')
 
       this.$http.get(url).then((response) => {
         // got valid response
