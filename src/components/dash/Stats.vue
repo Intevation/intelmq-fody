@@ -140,7 +140,7 @@ module.exports = {
     },
     formatXTick: function () {
       if (this.queryData.timeres === 'day') {
-        return d => d.slice(0, 10)
+        return d => d.toISOString().slice(0, 10)
       } else {
         return d => d
       }
@@ -186,7 +186,16 @@ module.exports = {
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
-            this.queryData = value
+            // parse the date_trunc strings into Date objects
+            this.queryData = {
+              timeres: value.timeres,
+              results: value.results.map(d => {
+                return {
+                  count: d.count,
+                  date_trunc: new Date(d.date_trunc)
+                }
+              })
+            }
           } else {
             this.queryData = {}
           }
