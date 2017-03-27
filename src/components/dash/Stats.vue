@@ -12,7 +12,17 @@
             <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
                class="form-control"/>
           </div>
-          <div class="form-group">
+
+          <div v-for="(sq, index) of query.subs" class="form-group">
+            <select v-model="sq.cond" class="form-control">
+              <option value=""></option>
+              <option v-for="(v, k) of allowedSubs">{{ k }}</option>
+            </select>
+            <!-- <p class="form-control-static">:</p> -->
+            <input v-model="sq.value" type="text" class="form-control">
+          </div>
+
+          <div class="form-group pull-right">
             <label>Resolution</label>
             <select v-model="query.timeres" class="form-control">
               <option value="">(automatic)</option>
@@ -24,6 +34,7 @@
             <button class="btn btn-default" v-on:click="loadStats">
               Load data
             </button>
+          </div>
           </div>
         </div>
 
@@ -75,12 +86,14 @@ module.exports = {
       height: 0,
       margin: {'top': 20, 'right': 52, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
+      allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',
       queryData: {'results': []},
       query: {
         timeres: '',
         after: '2017-01-01 00:00',
-        before: (new Date()).toJSON().slice(0, 19)  // today
+        before: (new Date()).toJSON().slice(0, 19),  // today
+        subs: [{cond: '', value: ''}]
       },
       fpOptions: {
         onValueUpdate: null,
@@ -98,6 +111,20 @@ module.exports = {
   },
   mounted: function () {
     window.addEventListener('resize', this.onResize)
+
+    this.$watch('query.subs', function (newVal, oldVal) {
+      var lastSub = this.query.subs[this.query.subs.length - 1]
+      if (lastSub.cond !== '') {
+        this.query.subs.push({cond: '', value: ''})
+      }
+      for (var i = 0; i < this.query.subs.length - 1; i++) {
+        if (this.query.subs[i].cond === '') {
+          this.query.subs.splice(i, 1)
+        }
+      }
+    }, {deep: true})
+
+    this.getSubQueries()
     this.initialize()
     this.onResize()  // initialize size and chart on first mount
   },
@@ -116,6 +143,9 @@ module.exports = {
     onResize: function () {
       this.width = document.getElementById('chart_container').offsetWidth
       this.height = this.width / 1.61803 // golden ratio
+    },
+    updateQuerySubs: function () {
+      //
     },
     getScales: function (data) {
       var x = d3.scaleTime().range([0, this.padded.width])
@@ -182,6 +212,18 @@ module.exports = {
 
       g.select('.axis--y')
         .call(d3.axisLeft(scale.y).ticks(10))
+    },
+    getSubQueries: function () {
+      var url = this.baseQueryURL + '/subqueries'
+      this.$http.get(url).then((response) => {
+        // got valid response
+        response.json().then((value) => {
+          // json parsed correctly
+          if (value) {
+            this.allowedSubs = value
+          }
+        })
+      })
     },
     loadStats: function () {
       // var today = (new Date()).toJSON().slice(0, 10)
