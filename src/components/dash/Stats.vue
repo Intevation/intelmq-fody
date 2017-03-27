@@ -212,8 +212,12 @@ module.exports = {
 
       g.select('.axis--y')
         .call(d3.axisLeft(scale.y).ticks(10))
+
+      // once updated we have to clearout the old svgXML
+      this.svgXML = ''
     },
     getSubQueries: function () {
+      // ask the server what kind of subqueries are allowed
       var url = this.baseQueryURL + '/subqueries'
       this.$http.get(url).then((response) => {
         // got valid response
