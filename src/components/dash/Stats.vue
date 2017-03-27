@@ -48,19 +48,24 @@
           </g>
         </svg>
       </div>
-      <div>
 
-      <!-- using encodeURIComponent because IE and Firefox need this for
-           non-base64 SVG and using base64 is even more cumbersome as it would
-           require an encoding function that can deal with unicode (atob can't).
-      -->
-      <button v-if="svgXML === ''" class="btn btn-warning"
-        v-on:click="saveSVG">
-        Prepare SVG Export
-      </button>
-      <a v-if="svgXML !== ''" class="btn btn-success"
-        :href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
-        download="fody.svg">Download SVG</a>
+      <div>
+        <!-- using encodeURIComponent because IE and Firefox need this for
+          non-base64 SVG and using base64 is even more cumbersome as it would 
+          require an encoding function that can deal with unicode (atob can't).
+        -->
+        <button v-if="svgXML === ''" class="btn btn-warning"
+          v-on:click="prepareDownloads">
+          Prepare Exports
+        </button>
+        <a v-if="svgXML !== ''" class="btn btn-success"
+          :href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
+          download="fody.svg">Download SVG</a>
+
+        <a v-if="dataCSV !== ''" class="btn btn-success"
+          :href="'data:text/csv;charset=utf-8;header=present,' + encodeURIComponent(dataCSV)"
+          v-bind:download="'intelmq-fody-' + query.timeres + '.csv'"
+            >Download CSV</a>
       </div>
       <!-- 
       <pre>
@@ -88,7 +93,8 @@ module.exports = {
       margin: {'top': 20, 'right': 52, 'bottom': 30, 'left': 40},
       baseQueryURL: '/api/events',  // base url for AJAJ service
       allowedSubs: {},  // allowed subqueries as returned from the backend
-      svgXML: '',
+      svgXML: '',  // SVG string for download
+      dataCSV: '',  // CVS of data for download
       queryData: {'results': []},
       query: {
         timeres: '',
@@ -214,8 +220,9 @@ module.exports = {
       g.select('.axis--y')
         .call(d3.axisLeft(scale.y).ticks(10))
 
-      // once updated we have to clearout the old svgXML
+      // once updated we have to clearout the old export data
       this.svgXML = ''
+      this.dataCSV = ''
     },
     getSubQueries: function () {
       // ask the server what kind of subqueries are allowed
@@ -268,16 +275,16 @@ module.exports = {
         this.queryData = {}
       })
     },
-    saveSVG: function () {
-      // console.log('saveSVG called, resulting SVG:')
+    prepareDownloads: function () {
       var svg = document.getElementById('chart1')
 
       /* global XMLSerializer */
       /* eslint no-undef: "error" */
       /* eslint-env browser */
       var svgXML = (new XMLSerializer()).serializeToString(svg)
-      // console.log(svgXML)
       this.svgXML = svgXML
+
+      this.dataCSV = d3.csvFormat(this.queryData.results)
     }
   }
 }
