@@ -59,12 +59,13 @@
           Prepare Exports
         </button>
         <a v-if="svgXML !== ''" class="btn btn-success"
-          :href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
-          download="fody.svg">Download SVG</a>
+          v-bind:href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
+          v-bind:download="'intelmq-fody-stats-' + queryData.timeres + 'ly.svg'"
+            >Download SVG</a>
 
         <a v-if="dataCSV !== ''" class="btn btn-success"
-          :href="'data:text/csv;charset=utf-8;header=present,' + encodeURIComponent(dataCSV)"
-          v-bind:download="'intelmq-fody-' + query.timeres + '.csv'"
+          v-bind:href="'data:text/csv;charset=utf-8;header=present,' + encodeURIComponent(dataCSV)"
+          v-bind:download="'intelmq-fody-' + queryData.timeres + 'ly.csv'"
             >Download CSV</a>
       </div>
       <!-- 
