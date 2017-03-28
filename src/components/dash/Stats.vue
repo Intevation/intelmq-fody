@@ -44,8 +44,8 @@
              the styling within each element as style attribute -->
         <svg id="chart1" v-bind:width="width" v-bind:height="height">
           <g id="chart1_g"
-            v-bind:style="{transform: `translate(${margin.left}px, ${margin.top}px)`}">
-          </g>
+             v-bind:transform="'translate(' + margin.left +
+                               ', ' + margin.top + ')'"></g>
         </svg>
       </div>
 
@@ -91,7 +91,7 @@ module.exports = {
     return {
       width: 0,
       height: 0,
-      margin: {'top': 20, 'right': 52, 'bottom': 30, 'left': 40},
+      margin: {'top': 20, 'right': 52, 'bottom': 30, 'left': 52},
       baseQueryURL: '/api/events',  // base url for AJAJ service
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
