@@ -1,78 +1,124 @@
 <template>
   <section class="content">
-    <div class="row">
-      <div class="col-md-12 col-sm-12" id="chart_container">
-        <div class="form-inline">
-          <div class="form-group">
-            <label>after</label>
-            <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
-               class="form-control"
-            />
-            <label>before</label>
-            <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
-               class="form-control"/>
-          </div>
-
-          <div v-for="(sq, index) of query.subs" class="form-group">
-            <select v-model="sq.cond" class="form-control">
-              <option value=""></option>
-              <option v-for="k in Object.keys(allowedSubs).sort()"
-                >{{ k }}</option>
-            </select>
-            <!-- <p class="form-control-static">:</p> -->
-            <input v-model="sq.value" type="text" class="form-control">
-          </div>
-
-          <div class="form-group pull-right">
-            <label>Resolution</label>
-            <select v-model="query.timeres" class="form-control">
-              <option value="">(automatic)</option>
-              <option>hour</option>
-              <option>day</option>
-              <option>week</option>
-              <option>month</option>
-            </select>
-            <button class="btn btn-default" v-on:click="loadStats">
-              Load data
-            </button>
-          </div>
-          </div>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Switch Statistics Mode</h3>
+            <div class="box-body">
+                <div class="col-sm-12 col-xs-12">
+                    <!-- Switch the mode of the Statistics Interface -->
+                    <button class="btn btn-default" v-on:click="doEventStats">
+                        Show Events
+                    </button>
+                    <button class="btn btn-default" v-on:click="doTicketStats">
+                        Show Tickets
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
+    <!-- ./box -->
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Prepare Query</h3>
+            <div class="box-body">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Observed after</label>
+                        <div class="col-sm-8">
+                            <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
+                                class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Observed before</label>
+                        <div class="col-sm-8">
+                            <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
+                                class="form-control"/>
+                        </div>
+                    </div>
+                    <div v-for="(sq, index) of query.subs">
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-form-label">
+                                <select v-model="sq.cond" class="form-control">
+                                    <option value=""></option>
+                                    <option v-for="k in Object.keys(allowedSubs).sort()"
+                                        >{{ k }}</option>
+                                </select>
+                            </div>
+                            <!-- <p class="form-control-static">:</p> -->
+                            <div class="col-sm-8">
+                                <input v-model="sq.value" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <h2>Events processed</h2>
-        <!-- for SVG downloading to result in usable file we want
-             the styling within each element as style attribute -->
-        <svg id="chart1" v-bind:width="width" v-bind:height="height">
-          <g id="chart1_g"
-             v-bind:transform="'translate(' + margin.left +
+            <div class="col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <div class="col-sm-4 col-form-label">
+                        <label>Resolution</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <select v-model="query.timeres" class="form-control">
+                            <option value="">(automatic)</option>
+                            <option>hour</option>
+                            <option>day</option>
+                            <option>week</option>
+                            <option>month</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary" v-on:click="loadStats">
+                            Load data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ./box -->
+    <!-- Area where Charts and Data are shown -->
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Events processed</h3>
+            <div class="box-body">
+                <div class="col-md-12 col-sm-12" id="chart_container">
+                    <!-- for SVG downloading to result in usable file we want
+                    the styling within each element as style attribute -->
+                    <svg id="chart1" v-bind:width="width" v-bind:height="height">
+                        <g id="chart1_g"
+                            v-bind:transform="'translate(' + margin.left +
                                ', ' + margin.top + ')'"></g>
-        </svg>
-      </div>
+                    </svg>
+                </div>
 
-      <div>
-        <!-- using encodeURIComponent because IE and Firefox need this for
-          non-base64 SVG and using base64 is even more cumbersome as it would 
-          require an encoding function that can deal with unicode (atob can't).
-        -->
-        <button v-if="svgXML === ''" class="btn btn-warning"
-          v-on:click="prepareDownloads">
-          Prepare Exports
-        </button>
-        <a v-if="svgXML !== ''" class="btn btn-success"
-          v-bind:href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
-          v-bind:download="'intelmq-fody-stats-' + queryData.timeres + 'ly.svg'"
-            >Download SVG</a>
+                <div>
+                <!-- using encodeURIComponent because IE and Firefox need this for
+                non-base64 SVG and using base64 is even more cumbersome as it would 
+                require an encoding function that can deal with unicode (atob can't).
+                -->
+                    <button v-if="svgXML === ''" class="btn btn-warning"
+                        v-on:click="prepareDownloads">
+                            Prepare Exports
+                    </button>
+                    <a v-if="svgXML !== ''" class="btn btn-success"
+                        v-bind:href="'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXML)"
+                        v-bind:download="'intelmq-fody-stats-' + queryData.timeres + 'ly.svg'"
+                        >Download SVG</a>
 
-        <a v-if="dataCSV !== ''" class="btn btn-success"
-          v-bind:href="'data:text/csv;charset=utf-8;header=present,' + encodeURIComponent(dataCSV)"
-          v-bind:download="'intelmq-fody-' + queryData.timeres + 'ly.csv'"
-            >Download CSV</a>
-      </div>
-      <!-- 
-      <pre>
-        {{ queryData }}
-      </pre>
-      -->
+                    <a v-if="dataCSV !== ''" class="btn btn-success"
+                        v-bind:href="'data:text/csv;charset=utf-8;header=present,' + encodeURIComponent(dataCSV)"
+                        v-bind:download="'intelmq-fody-' + queryData.timeres + 'ly.csv'"
+                        >Download CSV</a>
+                </div>
+                <!--
+                <pre>
+                    {{ queryData }}
+                </pre>
+                -->
+            </div>
+        </div>
     </div>
   </section>
 </template>
