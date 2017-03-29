@@ -36,6 +36,7 @@
                 <div v-else>
                     Loading...
                 </div>
+            </span>
           </div>
           <!-- /.info-box-content -->
         </div>
