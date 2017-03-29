@@ -130,15 +130,11 @@
         <ul v-if="!editable" class="list-group">
           <li v-for="asn of org.asns" class="list-group-item">
             <i class="fa fa-hdd-o rme"></i>
-            ASN{{ asn.number }}
-            <em v-if="asn.comment !== ''">
-              ({{ asn.comment }})
-            </em>
-            <i class="fa fa-bell-o lme rme"></i>{{ asn.notification_interval }}
-            <ul v-if="'inhibitions' in asn" class="list-group">
-              Inhibitions:
-              <li v-for="inhib in asn['inhibitions']" class="list-group-item">
-                {{ inhib }}
+            ASN{{ asn.asn }}
+            <ul v-if="'annotations' in asn" class="list-group">
+              Tags:
+              <li v-for="anno in asn['annotations']" class="list-group-item">
+                {{ anno }}
               </li>
             </ul>
           </li>
@@ -149,30 +145,14 @@
               <label class="col-sm-4 control-label">
                 <i class="fa fa-hdd-o rme"></i>ASN</label>
                 <div class="col-sm-8">
-                  <input v-model="org.asns[index].number"
+                  <input v-model="org.asns[index].asn"
                     type="number" class="form-control"></input>
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-sm-4 control-label"><em>Comment</em></label>
-              <div class="col-sm-8">
-                  <input v-model="org.asns[index].comment"
-                    type="text" class="form-control"></input>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-4 control-label">
-                <i class="fa fa-bell-o rme"></i
-                  ><small>Notification Interval</small></label>
-              <div class="col-sm-8">
-                  <input v-model="org.asns[index].notification_interval"
-                    type="number" class="form-control"></input>
-              </div>
-            </div>
-            <ul v-if="'inhibitions' in asn" class="list-group">
+            <ul v-if="'annotations' in asn" class="list-group">
               <em>Inhibitions (editing not supported):</em>
-              <li v-for="inhib in asn['inhibitions']" class="list-group-item">
-                {{ inhib }}
+              <li v-for="anno in asn['annotations']" class="list-group-item">
+                {{ anno }}
               </li>
             </ul>
 
@@ -181,8 +161,7 @@
               <i class="fa fa-minus"></i>
             </button>
           </div>
-          <button v-on:click="org.asns.push(
-                    {number:'', comment:'', notification_interval:0})"
+          <button v-on:click="org.asns.push({asn: ''})"
                   class="list-group-item btn btn-default">
             <i class="fa fa-plus"></i>
             <i class="fa fa-hdd-o"></i>
