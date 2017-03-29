@@ -150,7 +150,7 @@
               </div>
             </div>
             <ul v-if="'annotations' in asn" class="list-group">
-              <em>Inhibitions (editing not supported):</em>
+              <em>Tags (editing not supported):</em>
               <li v-for="anno in asn['annotations']" class="list-group-item">
                 {{ anno }}
               </li>
@@ -168,10 +168,10 @@
           </button>
         </div>
 
-        <!-- other attribues -->
+        <!-- other attributes -->
         <div v-if="!editable" class="well">
-          <div v-for="(value, key) in otherAttributes">
-              <strong>{{ key }}</strong>: {{ value }}
+          <div v-for="key in Object.keys(otherAttributes).sort()">
+              <strong>{{ key }}</strong>: {{ otherAttributes[key] }}
           </div>
         </div>
         <div v-if="editable" class="well form-horizontal">
@@ -219,7 +219,7 @@ module.exports = {
       knownOrgKeys: {
         'asns': 0,
         'contacts': 0,
-        'id': 0,
+        'organisation_id': 0,
         'name': 0
       },
       contactTemplate: {
