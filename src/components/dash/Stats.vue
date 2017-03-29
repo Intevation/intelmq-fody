@@ -6,11 +6,11 @@
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <!-- Switch the mode of the Statistics Interface -->
-                    <button class="btn btn-default" v-on:click="doEventStats">
-                        Show Events
+                    <button class="btn" v-bind:class="[mode === 'events' ? 'btn-primary' : ' btn-default']" v-on:click="doEventStats">
+                        Events
                     </button>
-                    <button class="btn btn-default" v-on:click="doTicketStats">
-                        Show Tickets
+                    <button class="btn" v-bind:class="[mode === 'tickets' ? 'btn-primary' : ' btn-default']" v-on:click="doTicketStats">
+                        Tickets
                     </button>
                 </div>
             </div>
@@ -23,14 +23,14 @@
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Observed after</label>
+                        <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[0] }}</label>
                         <div class="col-sm-8">
                             <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
                                 class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Observed before</label>
+                        <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[1] }}</label>
                         <div class="col-sm-8">
                             <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
                                 class="form-control"/>
@@ -41,8 +41,9 @@
                             <div class="col-sm-4 col-form-label">
                                 <select v-model="sq.cond" class="form-control">
                                     <option value=""></option>
-                                    <option v-for="k in Object.keys(allowedSubs).sort()"
-                                        >{{ k }}</option>
+                                    <option v-for="k in Object.keys(allowedSubs).sort()">
+                                        {{ k }}
+                                    </option>
                                 </select>
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
@@ -81,7 +82,7 @@
     <!-- Area where Charts and Data are shown -->
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Events processed</h3>
+            <h3 class="box-title">{{ modeHeader }}</h3>
             <div class="box-body">
                 <div class="col-md-12 col-sm-12" id="chart_container">
                     <!-- for SVG downloading to result in usable file we want
@@ -138,7 +139,11 @@ module.exports = {
       width: 0,
       height: 0,
       margin: {'top': 20, 'right': 52, 'bottom': 30, 'left': 52},
-      baseQueryURL: '/api/events',  // base url for AJAJ service
+      baseQueryURL: '',  // base url for AJAJ service
+      eventsModeUrl: '/api/events',
+      ticketsModeUrl: '/api/tickets',
+      modeHeader: '',
+      mode: '',
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
@@ -178,7 +183,7 @@ module.exports = {
       }
     }, {deep: true})
 
-    this.getSubQueries()
+    this.setMode('events')
     this.initialize()
     this.onResize()  // initialize size and chart on first mount
   },
@@ -284,10 +289,45 @@ module.exports = {
         })
       })
     },
+    setMode: function (mode) {
+      this.mode = mode
+      if (mode === 'tickets') {
+        this.baseQueryURL = this.ticketsModeUrl
+        this.modeHeader = 'Tickets created'
+      } else {
+        this.baseQueryURL = this.eventsModeUrl
+        this.modeHeader = 'Events processed'
+      }
+      this.getSubQueries()
+      // Clear graph an QueryData etc.
+      this.queryData.results = []
+      this.update()
+    },
+    doEventStats: function () {
+      this.setMode('events')
+    },
+    doTicketStats: function () {
+      this.setMode('tickets')
+    },
+    getTimeResParams: function (mode) {
+      if (mode === 'tickets') {
+        return ['sent-at_after', 'sent-at_before']
+      } else {
+        return ['time-observation_after', 'time-observation_before']
+      }
+    },
+    getTimeResParamLabels: function (mode) {
+      if (mode === 'tickets') {
+        return ['Sent after', 'Sent before']
+      } else {
+        return ['Observed after', 'Observed before']
+      }
+    },
     loadStats: function () {
+      var qParams = this.getTimeResParams(this.mode)
       var url = this.baseQueryURL + '/stats?' +
-        'time-observation_after=' + this.query.after +
-        '&time-observation_before=' + this.query.before +
+        qParams[0] + '=' + this.query.after +
+        '&' + qParams[1] + '=' + this.query.before +
         '&timeres=' + this.query.timeres
 
       // add optional subqueries
