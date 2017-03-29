@@ -9,7 +9,14 @@
 
           <div class='info-box-content'>
             <span class='info-box-text'>Tickets today:</span>
-            <span class='info-box-number'>{{ tickets }}</span>
+            <span class='info-box-number'>
+                <div v-if="tickets >= 0">
+                    {{ tickets }}
+                </div>
+                <div v-else>
+                    Loading...
+                </div>
+            </span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -22,7 +29,13 @@
 
           <div class='info-box-content'>
             <span class='info-box-text'>Events today:</span>
-            <span class='info-box-number'>{{ events }}</span>
+            <span class='info-box-number'>
+                <div v-if="events >= 0">
+                    {{ events }}
+                </div>
+                <div v-else>
+                    Loading...
+                </div>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -35,7 +48,14 @@
 
           <div class='info-box-content'>
             <span class='info-box-text'>recently sent</span>
-            <span class='info-box-number'>{{ lastTicketNumber }}</span>
+            <span class='info-box-number'>
+                <div v-if="lastTicketNumber != -1">
+                    {{ lastTicketNumber }}
+                </div>
+                <div v-else>
+                    Loading...
+                </div>
+            </span>
           </div>
           <!-- /.info-box-content -->
         </div>
