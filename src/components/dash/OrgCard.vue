@@ -36,18 +36,18 @@
             <div class="row">
               <div class="col-sm-1 col-xs-1"
                 ><i class="fa fa-envelope-o"></i></div>
-              <div class="col-sm-10 col-xs-10">
+              <div class="col-sm-11 col-xs-11">
                 {{ contact.firstname }} {{ contact.lastname }}
                 &lt;{{ contact.email }}&gt;
                 <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
               </div>
               <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
                 ><i class="fa fa-phone"></i></div>
-              <div v-if="contact.tel !== ''" class="col-sm-10 col-xs-10"
+              <div v-if="contact.tel !== ''" class="col-sm-11 col-xs-11"
                 >{{ contact.tel }}</div>
               <div v-if="contact.openpgp_fpr !== ''" class="col-sm-1 col-xs-1"
                 ><i class="fa fa-key"></i></div>
-              <div v-if="contact.openpgp_fpr !== ''" class="col-sm-10 col-xs-10"
+              <div v-if="contact.openpgp_fpr !== ''" class="col-sm-11 col-xs-11"
                 >{{ contact.openpgp_fpr }}</div>
             </div>
           </li>
