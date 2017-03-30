@@ -301,6 +301,7 @@ module.exports = {
       // TODO get a template from the api
       // push it to pendingOrgs
       this.pendingOrgs.push({
+        'annotations': [],
         'name': '',
         'sector_id': null,
         'comment': '',

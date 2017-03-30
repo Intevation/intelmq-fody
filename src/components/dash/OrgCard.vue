@@ -132,7 +132,6 @@
             <i class="fa fa-hdd-o rme"></i>
             ASN{{ asn.asn }}
             <ul v-if="'annotations' in asn" class="list-group">
-              Tags:
               <li v-for="anno in asn['annotations']" class="list-group-item">
                 {{ anno }}
               </li>
@@ -150,7 +149,7 @@
               </div>
             </div>
             <ul v-if="'annotations' in asn" class="list-group">
-              <em>Tags (editing not supported):</em>
+              <em>(editing not yet supported):</em>
               <li v-for="anno in asn['annotations']" class="list-group-item">
                 {{ anno }}
               </li>
@@ -161,7 +160,7 @@
               <i class="fa fa-minus"></i>
             </button>
           </div>
-          <button v-on:click="org.asns.push({asn: ''})"
+          <button v-on:click="org.asns.push({annotations: [], asn: ''})"
                   class="list-group-item btn btn-default">
             <i class="fa fa-plus"></i>
             <i class="fa fa-hdd-o"></i>
