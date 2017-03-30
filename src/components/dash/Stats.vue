@@ -157,7 +157,7 @@ module.exports = {
       dataCSV: '',  // CVS of data for download
       queryData: {'results': []}, // Data used for statistics
       query: {
-        timeres: '',
+        timeres: 'hour',
         after: today,
         before: tomorrow,
         subs: [{cond: '', value: ''}]
