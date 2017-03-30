@@ -319,10 +319,12 @@ module.exports = {
 
       // deep-copy the org so we can create a new one
       var newOrg = JSON.parse(JSON.stringify(this.autoOrgs[index]))
-      // remove values that are only within _automatic tables
+      // remove values that are only used within _automatic tables
       delete newOrg['import_source']
       delete newOrg['import_time']
-      delete newOrg['id']
+      delete newOrg['organisation_id']
+      // add values that are needed for manual tables
+      newOrg['annotations'] = []
 
       // add to commit queue as CREATE
       this.pendingOrgs.push(newOrg)
