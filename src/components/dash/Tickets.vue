@@ -2,33 +2,26 @@
   <section class="content">
     <div class='row'>
       <div class='col-md-6 col-sm-6 col-xs-12'>
-        <div class="info-box" v-if='lastTicketNumber' v-on:click='useLastTicket'>
-          <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
-          <div class='info-box-content'>
-            <span class='info-box-text'>recently sent</span>
-            <span class='info-box-number'>{{ lastTicketNumber }}</span>
-          </div>
-        </div>
-      </div>
-    </div> <!-- /.row -->
-
-    <div class='row'>
-      <div class='col-xs-12'>
         <div class='box'>
-          <div class='box-header with-border'>
-            <h2>Examine sent CERT-Bund Report</h2>
+          <div class='box-header'>
+            <h2>Examine Ticket</h2>
           </div>
-
           <div class="box-body">
-            <div class="forum-control" v-bind:class='ticketInputClass'>
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-ticket"></i></span>
-                <input class="form-control"
+            <div v-bind:class='ticketInputClass'>
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">
+                    <i class="fa fa-ticket"></i>
+                </span>
+                <input type="text" class="form-control"
                   v-model:title="ticketID"
-                  v-on:keyup.enter="lookupIDs"
+                  v-on:change="lookupIDs"
                   placeholder="20161020-10000004"
                 >
-                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupIDs">
+                  <i class="fa fa-search"></i>
+                </button>
+                </span>
               </div>
               <span class="help-block" v-if="eventIDs.length === 0">
                 Not found.
@@ -43,6 +36,24 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div> <!-- .col... -->
+      <div class='col-md-6 col-sm-6 col-xs-12'>
+        <div class='info-box col-md-2' v-on:click='useLastTicket'>
+          <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
+
+          <div class='info-box-content'>
+            <span class='info-box-text'>recently sent</span>
+            <span class='info-box-number'>
+                <div v-if="lastTicketNumber != -1">
+                    {{ lastTicketNumber }}
+                </div>
+                <div v-else>
+                    Loading...
+                </div>
+            </span>
+          </div>
+        </div>
+      </div>
+
     </div> <!-- /.row -->
 
     <div class="row">
@@ -93,7 +104,7 @@ module.exports = {
       ticketID: '',  // ticket to be examined
       eventIDs: [],  // list of corresponding ids for the ticket
       events: [],  // list of events details
-      lastTicketNumber: '', // (approximately) the most recent server ticket#
+      lastTicketNumber: -1, // (approximately) the most recent server ticket#
       eventsTable: {} // datatables object
     }
   },
@@ -270,8 +281,11 @@ module.exports = {
 
 @import url('/static/js/plugins/datatables/jquery.dataTables.min.css');
 */
-
 @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
+
+.info-box {
+  cursor: pointer;
+}
 
 table.dataTable thead > tr > th {
   text-align: right;
