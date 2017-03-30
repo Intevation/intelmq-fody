@@ -53,6 +53,24 @@
           </div>
         </div>
       </div>
+      <div class='col-md-6 col-sm-6 col-xs-12'>
+        <div class='info-box col-md-2' v-if="recipient">
+          <span class='info-box-icon bg-aqua'><i class='fa fa-user'></i></span>
+
+          <div class='info-box-content'>
+            <span class='info-box-text'>Recipient</span>
+            <span class='info-box-text'>
+                <div>
+                    <p>
+                    Sent to: <strong>{{ recipient.recipient_address }}</strong>
+                    </p>
+                    As {{ (recipient.notification_format  || 'unknown format') }} format at
+                    {{ ( recipient.sent_at || 'unknown time') }} by {{ ( recipient.medium || 'unknown medium') }}.
+                </div>
+            </span>
+          </div>
+        </div>
+      </div>
 
     </div> <!-- /.row -->
 
@@ -102,10 +120,11 @@ module.exports = {
     return {
       queryURL: '/api/checkticket/',  // base url for AJAJ service
       ticketID: '',  // ticket to be examined
-      eventIDs: [],  // list of corresponding ids for the ticket
+      eventIDs: [],  // list of cosrresponding ids for the ticket
       events: [],  // list of events details
       lastTicketNumber: -1, // (approximately) the most recent server ticket#
-      eventsTable: {} // datatables object
+      eventsTable: {}, // datatables object
+      recipient: null // Information on the Receiver of the ticket
     }
   },
   computed: {
@@ -135,11 +154,25 @@ module.exports = {
             this.events = []
             this.updateEventsTable()
           }
+          this.loadReceiver(this.ticketID)
         })
       }, (response) => {
         this.eventIDs = []
         this.events = []
         this.updateEventsTable()
+        this.recipient = null
+      })
+    },
+    loadReceiver: function (ticket) {
+      var url = '/api/tickets/getRecipient?ticketnumber=' + this.ticketID
+      this.$http.get(url).then((response) => {
+        response.json().then((value) => {
+          if (value) {
+            this.recipient = value[0] // There should always be only one!
+          }
+        })
+      }, (response) => {
+        this.recipient = null
       })
     },
     formatEventDetailRow: function (d) {
@@ -231,7 +264,7 @@ module.exports = {
     },
     loadDetails: function () {
       var url = this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID
-
+      // URL could also be '/api/tickets/search?ticketnumber=' + this.ticketID
       this.$http.get(url).then((response) => {
         // success
         response.json().then((value) => {
