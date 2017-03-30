@@ -135,6 +135,14 @@ module.exports = {
     'Flatpickr': VueFlatpickr
   },
   data: function () {
+    var tomorrow = new Date()
+    var today = new Date()
+
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    today = today.toJSON().split('T')[0]
+    tomorrow = tomorrow.toJSON().split('T')[0]
+
     return {
       width: 0,
       height: 0,
@@ -147,17 +155,20 @@ module.exports = {
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
-      queryData: {'results': []},
+      queryData: {'results': []}, // Data used for statistics
       query: {
         timeres: '',
-        after: '2017-01-01 00:00',
-        before: (new Date()).toJSON().slice(0, 19),  // today
+        after: today,
+        before: tomorrow,
         subs: [{cond: '', value: ''}]
       },
       fpOptions: {
         onValueUpdate: null,
-        // allowInput: true,
-        enableTime: true
+        allowInput: true,
+        time_24hr: true,
+        enableTime: true,
+        weekNumbers: true,
+        maxDate: tomorrow
       }
     }
   },
