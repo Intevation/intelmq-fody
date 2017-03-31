@@ -1,3 +1,9 @@
+intelmq-fody (0.4.0~dev) unstable; urgency=low
+
+  * On its way...
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 31 Mar 2017 16:02:30 +0200
+
 intelmq-fody (0.2.0) unstable; urgency=low
 
   * Initial, packaged release.
