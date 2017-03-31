@@ -1,3 +1,10 @@
+intelmq-fody (0.4.0~rc1) unstable; urgency=low
+
+  * Added statistics.
+  * Work with new contact DB
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 31 Mar 2017 19:44:30 +0200
+
 intelmq-fody (0.4.0~dev) unstable; urgency=low
 
   * On its way...
