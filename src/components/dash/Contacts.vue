@@ -334,6 +334,12 @@ module.exports = {
       delete newOrg['organisation_id']
       // add values that are needed for manual tables
       newOrg['annotations'] = []
+      for (var network of newOrg['networks']) {
+        network['annotations'] = []
+      }
+      for (var fqdn of newOrg['fqdns']) {
+        fqdn['annotations'] = []
+      }
 
       // add to commit queue as CREATE
       this.pendingOrgs.push(newOrg)
