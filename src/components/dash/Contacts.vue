@@ -247,6 +247,9 @@ module.exports = {
       this.searchEmail = ''
       this.searchName = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
+
+      // Modify the URL, this enables bookmarking of this search.
+      this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
     },
     lookupEmail: function () {
       // FUTURE: we may need some debounce or throttle function here
@@ -254,6 +257,9 @@ module.exports = {
       this.searchASN = ''
       this.searchName = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
+
+      // Modify the URL, this enables bookmarking of this search.
+      this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
     },
     lookupName: function () {
       // FUTURE: we may need some debounce or throttle function here
@@ -261,6 +267,9 @@ module.exports = {
       this.searchASN = ''
       this.searchEmail = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
+
+      // Modify the URL, this enables bookmarking of this search.
+      this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
     },
     refreshCurrentSearch: function () {
       // simple version to just repeat the search we'd done before
@@ -447,6 +456,12 @@ module.exports = {
     if (this.$route.query.email) {
       this.searchEmail = this.$route.query.email
       this.lookupEmail()
+    } else if (this.$route.query.asn) {
+      this.searchASN = this.$route.query.asn
+      this.lookupASN()
+    } else if (this.$route.query.name) {
+      this.searchName = this.$route.query.name
+      this.lookupName()
     }
   }
 }
