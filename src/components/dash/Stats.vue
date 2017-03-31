@@ -264,7 +264,7 @@ module.exports = {
       dataCSV: '',  // CVS of data for download
       queryData: {}, // Data used for statistics
       eventData: {}, // Events
-      eventsTable: {}, // datatables object
+      eventsTable: null, // datatables object
       query: {
         timeres: 'hour',
         after: today,
@@ -290,11 +290,6 @@ module.exports = {
   },
   mounted: function () {
     window.addEventListener('resize', this.onResize)
-    // copied from Tickets to draw events table
-    this.$nextTick(function () {
-      this.initEventsTable()
-    })
-
     this.$watch('query.subs', function (newVal, oldVal) {
       var lastSub = this.query.subs[this.query.subs.length - 1]
       if (lastSub.cond !== '') {
@@ -427,6 +422,9 @@ module.exports = {
       this.resetQueryData()
       this.update()
     },
+    resetEventData: function () {
+      this.eventData = {}
+    },
     resetQueryData: function () {
       this.queryData = {
         results: [],
@@ -463,6 +461,7 @@ module.exports = {
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
+            this.initEventsTable()
             // parse the date_trunc strings into Date objects
             this.eventData = value
             this.updateEventsTable()
@@ -520,6 +519,10 @@ module.exports = {
         // no valid response
         this.resetQueryData()
       })
+
+      if (this.mode === 'events') {
+        this.destroyEventsTable()
+      }
     },
     prepareDownloads: function () {
       var svg = document.getElementById('chart1')
@@ -535,6 +538,9 @@ module.exports = {
     initEventsTable: function () {
       var that = this
 
+      if (this.eventsTable != null) {
+        return
+      }
       this.eventsTable = $('#events').DataTable({
         'data': [],
         'columns': [
@@ -568,11 +574,22 @@ module.exports = {
         }
       })
     },
+    destroyEventsTable: function () {
+      this.resetEventData()
+      if (this.eventsTable) {
+        this.updateEventsTable()
+        this.eventsTable.destroy()
+        this.eventsTable = null
+      }
+    },
+    resetEventsTable: function () {
+      this.eventsTable.clear()
+    },
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
       var e, r
-
-      this.eventsTable.clear()
+      console.log(this.eventData)
+      this.resetEventsTable()
       this.eventsTable.search('')
       for (var i = 0; i < this.eventData.length; i++) {
         e = this.eventData[i]
