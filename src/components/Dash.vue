@@ -7,7 +7,7 @@
         <!-- logo for regular state and mobile devices -->
         <div class="container logo-lg">
           <div class="pull-left image"><img src="/static/img/logo_sm.png" alt="Logo" class="img-responsive"></div>
-          <div class="pull-left info">Fody</div>
+          <div class="pull-left info">IntelMQ-Fody</div>
         </div>
       </a>
 
@@ -72,10 +72,11 @@
 
     <!-- Main Footer -->
     <footer class="main-footer">
+        <a href="https://github.com/Intevation/intelmq-fody">
+            IntelMQ-Fody Source Code</a>
         <div class="pull-right hidden-xs">
             <strong>Version: {{ this.$parent.version }}</strong>
         </div>
-        <a href="https://github.com/Intevation/intelmq-fody">Fody Source Code</a>
     </footer>
   </div>
   <!-- ./wrapper -->
