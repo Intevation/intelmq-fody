@@ -37,7 +37,7 @@
         </div> <!-- .box -->
       </div> <!-- .col... -->
       <div class='col-md-6 col-sm-6 col-xs-12'>
-        <div class='info-box col-md-2' v-on:click='useLastTicket'>
+        <div class='info-box linked-info-box col-md-2' v-on:click='useLastTicket'>
           <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
 
           <div class='info-box-content'>
@@ -53,8 +53,9 @@
           </div>
         </div>
       </div>
-      <div class='col-md-6 col-sm-6 col-xs-12'>
-        <div class='info-box col-md-2' v-if="recipient">
+      <div class='col-md-6 col-sm-6 col-xs-12'  v-if="recipient">
+        <router-link :to="{ path: 'contacts', query: { email: recipient.recipient_address }}">
+        <div class='info-box linked-info-box col-md-2'>
           <span class='info-box-icon bg-aqua'><i class='fa fa-user'></i></span>
 
           <div class='info-box-content'>
@@ -70,6 +71,7 @@
             </span>
           </div>
         </div>
+        </router-link>
       </div>
 
     </div> <!-- /.row -->
@@ -301,6 +303,13 @@ module.exports = {
   },
   created: function () {
     this.getLastTicketNumber()
+    // If the page was called with ?search=
+    // Start searching for the given parameter immediately
+    // and display the tickets
+    if (this.$route.query.search) {
+      this.ticketID = this.$route.query.search
+      this.lookupIDs()
+    }
   }
 }
 </script>
@@ -315,10 +324,6 @@ module.exports = {
 @import url('/static/js/plugins/datatables/jquery.dataTables.min.css');
 */
 @import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
-
-.info-box {
-  cursor: pointer;
-}
 
 table.dataTable thead > tr > th {
   text-align: right;

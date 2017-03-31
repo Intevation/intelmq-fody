@@ -439,6 +439,15 @@ module.exports = {
         // TODO unblock
       })
     }
+  },
+  created: function () {
+    // If the page was called with ?email= parameter
+    // Start searching for the given parameter immediately
+    // and display the tickets
+    if (this.$route.query.email) {
+      this.searchEmail = this.$route.query.email
+      this.lookupEmail()
+    }
   }
 }
 </script>
