@@ -72,8 +72,12 @@
 
     <!-- Main Footer -->
     <footer class="main-footer">
-        <a href="https://github.com/Intevation/intelmq-fody">
-            IntelMQ-Fody Source Code</a>
+        <div class="pull-left image">
+            <img src="/static/img/Sign_IntelMQ.png" alt="Sign" class="img-responsive" />
+        </div>
+        <span style="margin-left: 1em">
+            <a href="https://github.com/Intevation/intelmq-fody">IntelMQ-Fody Source Code</a>
+        </span>
         <div class="pull-right hidden-xs">
             <strong>Version: {{ this.$parent.version }}</strong>
         </div>
