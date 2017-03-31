@@ -8,7 +8,7 @@
           <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>Tickets today:</span>
+            <span class='info-box-text'>Tickets today</span>
             <span class='info-box-number'>
                 <div v-if="tickets >= 0">
                     {{ tickets }}
@@ -28,7 +28,7 @@
           <span class='info-box-icon bg-aqua'><i class='fa fa-server'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>Events today:</span>
+            <span class='info-box-text'>Events today</span>
             <span class='info-box-number'>
                 <div v-if="events >= 0">
                     {{ events }}
@@ -49,7 +49,7 @@
           <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>recently sent</span>
+            <span class='info-box-text'>Recently sent</span>
             <span class='info-box-number'>
                 <div v-if="lastTicketNumber != -1">
                         {{ lastTicketNumber }}

@@ -37,11 +37,12 @@
         </div> <!-- .box -->
       </div> <!-- .col... -->
       <div class='col-md-6 col-sm-6 col-xs-12'>
+        <div v-if="searchedForID === null">
         <div class='info-box linked-info-box col-md-2' v-on:click='useLastTicket'>
           <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>recently sent</span>
+            <span class='info-box-text'>Recently sent</span>
             <span class='info-box-number'>
                 <div v-if="lastTicketNumber != -1">
                     {{ lastTicketNumber }}
@@ -52,11 +53,29 @@
             </span>
           </div>
         </div>
+        </div>
+        <div v-else>
+        <div class='info-box col-md-2'>
+          <span class='info-box-icon bg-green'><i class='fa fa-ticket'></i></span>
+
+          <div class='info-box-content'>
+            <span class='info-box-text'>Currently showing</span>
+            <span class='info-box-number'>
+                <div v-if="searchedForID != null">
+                    {{ searchedForID }}
+                </div>
+                <div v-else>
+                    Error...
+                </div>
+            </span>
+          </div>
+        </div>
+        </div>
       </div>
       <div class='col-md-6 col-sm-6 col-xs-12'  v-if="recipient">
         <router-link :to="{ path: 'contacts', query: { email: recipient.recipient_address }}">
         <div class='info-box linked-info-box col-md-2'>
-          <span class='info-box-icon bg-aqua'><i class='fa fa-user'></i></span>
+          <span class='info-box-icon bg-green'><i class='fa fa-user'></i></span>
 
           <div class='info-box-content'>
             <span class='info-box-text'>Recipient</span>
@@ -121,7 +140,8 @@ module.exports = {
   data: function () {
     return {
       queryURL: '/api/checkticket/',  // base url for AJAJ service
-      ticketID: '',  // ticket to be examined
+      ticketID: '',  // ticket to be examined, not searched yet
+      searchedForID: null, // this ticket has been searched for
       eventIDs: [],  // list of cosrresponding ids for the ticket
       events: [],  // list of events details
       lastTicketNumber: -1, // (approximately) the most recent server ticket#
@@ -156,6 +176,7 @@ module.exports = {
             this.events = []
             this.updateEventsTable()
           }
+          this.searchedForID = this.ticketID
           this.loadReceiver(this.ticketID)
         })
       }, (response) => {
@@ -163,6 +184,7 @@ module.exports = {
         this.events = []
         this.updateEventsTable()
         this.recipient = null
+        this.searchedForID = null
       })
     },
     loadReceiver: function (ticket) {
