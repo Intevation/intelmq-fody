@@ -1,20 +1,34 @@
 <template>
   <section class="content">
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Switch Statistics Mode</h3>
-            <div class="box-body">
-                <div class="col-sm-12 col-xs-12">
-                    <!-- Switch the mode of the Statistics Interface -->
-                    <button class="btn" v-bind:class="[mode === 'events' ? 'btn-primary' : ' btn-default']" v-on:click="doEventStats">
-                        Events
-                    </button>
-                    <button class="btn" v-bind:class="[mode === 'tickets' ? 'btn-primary' : ' btn-default']" v-on:click="doTicketStats">
-                        Tickets
-                    </button>
+    <div class="row">
+      <div class='col-md-4 col-sm-4 col-xs-12'>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Switch Statistics Mode</h3>
+                <div class="box-body">
+                    <div class="col-sm-12 col-xs-12">
+                        <!-- Switch the mode of the Statistics Interface -->
+                        <button class="btn" v-bind:class="[mode === 'events' ? 'btn-primary' : ' btn-default']" v-on:click="doEventStats">
+                            Events
+                        </button>
+                        <button class="btn" v-bind:class="[mode === 'tickets' ? 'btn-primary' : ' btn-default']" v-on:click="doTicketStats">
+                            Tickets
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- /.box -->
+      </div>
+      <!-- /.col -->
+      <div class='col-md-4 col-sm-4 col-xs-12'>
+        <IBoxTicketsToday />
+       </div>
+      <!-- /.col -->
+      <div class='col-md-4 col-sm-4 col-xs-12'>
+        <IBoxEventsToday />
+      </div>
+      <!-- /.col -->
     </div>
     <!-- ./box -->
     <div class="box">
@@ -79,7 +93,92 @@
         </div>
     </div>
     <!-- ./box -->
-    <!-- Area where Charts and Data are shown -->
+    <!-- Area where some statistics are shown -->
+    <div class="row">
+        <div v-if='mode == "events"'>
+            <div v-if="queryData.total > 0">
+                <div class='col-md-4 col-sm-4 col-xs-12'>
+                    <div class='info-box info-box col-md-2'>
+                        <span class='info-box-icon bg-green'><i class='fa fa-server'></i></span>
+                        <div class='info-box-content'>
+                            <span class='info-box-text'>Events Total for this Query</span>
+                            <span class='info-box-number'>
+                                {{queryData.total}}
+                            </span>
+                            <div v-if="queryData.total <= 10000">
+                                <button class="btn btn-default" v-on:click="loadEvents">
+                                    Load Events
+                                </button>
+                            </div>
+                            <!-- ./ v-if -->
+                            <!--
+                            <div v-else>
+                                <button class="btn btn-disabled">
+                                    Load Events
+                                </button>
+                            </div>
+                            -->
+                            <!-- ./ v-else -->
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- ./ v-if -->
+        </div>
+        <!-- ./ v-if -->
+        <div v-if='mode == "tickets"'>
+            <div v-if="queryData.total > 0">
+                <div class='col-md-4 col-sm-4 col-xs-12'>
+                    <div class='info-box info-box col-md-2'>
+                        <span class='info-box-icon bg-green'><i class='fa fa-ticket'></i></span>
+                        <div class='info-box-content'>
+                            <span class='info-box-text'>Tickets Total for this Query</span>
+                            <span class='info-box-number'>
+                                {{queryData.total}}
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- ./col -->
+            </div>
+       </div>
+    </div>
+    <!-- ./row -->
+    <!-- Area where Data might be shown -->
+    <div class="row" v-if='mode == "events"'>
+    <div class="col-md-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Events</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <div class="dataTables_wrapper form-inline dt-bootstrap" id="events_wrapper">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div id="events_length" class="dataTables_length">
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12 table-responsive">
+                  <table id="events" class="display" width="100%"></table>
+                </div>
+              </div>
+            </div>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div> <!-- .col... -->
+    </div>
+    <!-- ./row -->
+    <!-- Area where Charts are shown -->
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">{{ modeHeader }}</h3>
@@ -126,13 +225,20 @@
 
 <script>
 import * as d3 from 'd3'
+import $ from 'jquery'
+
 import VueFlatpickr from 'vue-flatpickr'
 import 'vue-flatpickr/theme/airbnb.css'
+
+import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
+import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
 
 module.exports = {
   name: 'Stats',
   components: {
-    'Flatpickr': VueFlatpickr
+    'Flatpickr': VueFlatpickr,
+    IBoxTicketsToday,
+    IBoxEventsToday
   },
   data: function () {
     var tomorrow = new Date()
@@ -150,12 +256,15 @@ module.exports = {
       baseQueryURL: '',  // base url for AJAJ service
       eventsModeUrl: '/api/events',
       ticketsModeUrl: '/api/tickets',
+      lastQueryURL: '',
       modeHeader: '',
       mode: '',
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
-      queryData: {'results': []}, // Data used for statistics
+      queryData: {}, // Data used for statistics
+      eventData: {}, // Events
+      eventsTable: {}, // datatables object
       query: {
         timeres: 'hour',
         after: today,
@@ -181,6 +290,10 @@ module.exports = {
   },
   mounted: function () {
     window.addEventListener('resize', this.onResize)
+    // copied from Tickets to draw events table
+    this.$nextTick(function () {
+      this.initEventsTable()
+    })
 
     this.$watch('query.subs', function (newVal, oldVal) {
       var lastSub = this.query.subs[this.query.subs.length - 1]
@@ -311,8 +424,15 @@ module.exports = {
       }
       this.getSubQueries()
       // Clear graph an QueryData etc.
-      this.queryData.results = []
+      this.resetQueryData()
       this.update()
+    },
+    resetQueryData: function () {
+      this.queryData = {
+        results: [],
+        total: -1,
+        timeres: ''
+      }
     },
     doEventStats: function () {
       this.setMode('events')
@@ -334,20 +454,47 @@ module.exports = {
         return ['Observed after', 'Observed before']
       }
     },
+    loadEvents: function () {
+      var url = this.baseQueryURL + '/search?' +
+        this.lastQueryURL
+
+      this.$http.get(url).then((response) => {
+        // got valid response
+        response.json().then((value) => {
+          // json parsed correctly
+          if (value) {
+            // parse the date_trunc strings into Date objects
+            this.eventData = value
+            this.updateEventsTable()
+          }
+        })
+      }, (response) => {
+        // no valid response
+        this.eventData = {}
+        this.updateEventsTable()
+      })
+    },
     loadStats: function () {
       var qParams = this.getTimeResParams(this.mode)
-      var url = this.baseQueryURL + '/stats?' +
-        qParams[0] + '=' + this.query.after +
-        '&' + qParams[1] + '=' + this.query.before +
-        '&timeres=' + this.query.timeres
+
+      // Build a Query-URL so that other functions
+      // will perform the SAME query.
+      // add timeres later...
+      this.lastQueryURL = qParams[0] + '=' + this.query.after +
+        '&' + qParams[1] + '=' + this.query.before
 
       // add optional subqueries
       // we don't mind if some conditions appear several times
-      url += '&' +
+      this.lastQueryURL += '&' +
         this.query.subs
           .filter(q => q.cond !== '')
           .map(q => q.cond + '=' + q.value)
           .join('&')
+
+      // now add timeres
+      var url = this.baseQueryURL + '/stats?' +
+        this.lastQueryURL +
+        '&timeres=' + this.query.timeres
 
       this.$http.get(url).then((response) => {
         // got valid response
@@ -356,6 +503,7 @@ module.exports = {
           if (value) {
             // parse the date_trunc strings into Date objects
             this.queryData = {
+              total: value.total,
               timeres: value.timeres,
               results: value.results.map(d => {
                 return {
@@ -365,12 +513,12 @@ module.exports = {
               })
             }
           } else {
-            this.queryData = {}
+            this.resetQueryData()
           }
         })
       }, (response) => {
         // no valid response
-        this.queryData = {}
+        this.resetQueryData()
       })
     },
     prepareDownloads: function () {
@@ -383,7 +531,148 @@ module.exports = {
       this.svgXML = svgXML
 
       this.dataCSV = d3.csvFormat(this.queryData.results)
+    },
+    initEventsTable: function () {
+      var that = this
+
+      this.eventsTable = $('#events').DataTable({
+        'data': [],
+        'columns': [
+          { 'visible': false },  // internal index to this.events array
+          {
+            'className': 'details-control',
+            'orderable': false,
+            'title': '',
+            'defaultContent': ''
+          },
+          { 'title': 'Source IP' },
+          { 'title': 'Source Port' },
+          { 'title': 'Classification Type' },
+          { 'title': 'Observation Time' }
+        ],
+        'order': [[2, 'asc']]
+      })
+
+      $('#events tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr')
+        var row = that.eventsTable.row(tr)
+
+        if (row.child.isShown()) {
+          // This row is already open - close it
+          row.child.hide()
+          tr.removeClass('shown')
+        } else {
+          // Open this row
+          row.child(that.formatEventDetailRow(row.data())).show()
+          tr.addClass('shown')
+        }
+      })
+    },
+    updateEventsTable: function () {
+      // loads the events into the datatable and triggers a redraw
+      var e, r
+
+      this.eventsTable.clear()
+      this.eventsTable.search('')
+      for (var i = 0; i < this.eventData.length; i++) {
+        e = this.eventData[i]
+        r = [i, '']  // first columns: internal index, child row expansion
+        for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
+          if (e[column]) { r.push(e[column]) } else { r.push('') }
+        }
+        this.eventsTable.row.add(r)
+      }
+      this.eventsTable.draw()
+    },
+    formatEventDetailRow: function (d) {
+      var myEvent = this.eventData[d[0]]
+      var div, currentRow
+      var counter = 0
+
+      div = document.createElement('div')
+      div.classList.add('well')
+
+      currentRow = document.createElement('div')
+      currentRow.classList.add('row')
+
+      for (var column of Object.keys(myEvent).sort()) {
+        if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
+          if (counter > 0 && counter % 6 === 0) {
+            div.appendChild(currentRow)
+            currentRow = document.createElement('div')
+            currentRow.classList.add('row')
+          }
+          var el = document.createElement('div')
+          var c = document.createElement('strong')
+          var v = document.createElement('span')
+
+          el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
+          c.textContent = column + ': '
+          el.appendChild(c)
+          v.textContent = myEvent[column]
+          el.appendChild(v)
+          currentRow.appendChild(el)
+          counter++
+        }
+      }
+      div.appendChild(currentRow)
+
+      return div
     }
   }
 }
 </script>
+<style>
+/* Using the bootstrap style, but overriding the font to not draw in
+   the Glyphicons Halflings font as an additional requirement for sorting icons.
+
+   An alternative to the solution active below is to use the jquery style
+   which uses images, but the color on the images does not match adminlte.
+
+@import url('/static/js/plugins/datatables/jquery.dataTables.min.css');
+*/
+@import url('/static/js/plugins/datatables/dataTables.bootstrap.css');
+
+table.dataTable thead > tr > th {
+  text-align: right;
+  padding-left: 2px;
+  padding-right: 14px;
+}
+
+table.dataTable td {
+  text-align: right;
+}
+
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after {
+  top: 2px;
+  right: 0px;
+  font-family: 'FontAwesome';
+}
+
+table.dataTable thead .sorting:after {
+  content: "\f0dc";
+}
+
+table.dataTable thead .sorting_asc:after {
+  content: "\f0dd";
+}
+
+table.dataTable thead .sorting_desc:after {
+  content: "\f0de";
+}
+
+td.details-control::after {
+  cursor: pointer;
+  font-family: 'FontAwesome';
+  content: "\f196";
+}
+
+tr.shown td.details-control::after {
+  content: "\f147";
+}
+
+div.child-row-el {
+  text-align: left;
+}
+
+</style>
