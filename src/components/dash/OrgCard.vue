@@ -105,15 +105,6 @@
                     type="text" class="form-control"></input>
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-sm-4 control-label">
-                format_id
-              </label>
-                <div class="col-sm-8">
-                  <input v-model="org.contacts[index].format_id"
-                    type="number" class="form-control"></input>
-              </div>
-            </div>
             <button v-on:click="org.contacts.splice(index,1)"
                     class="btn btn-default btn-xs">
               <i class="fa fa-minus"></i>
@@ -227,8 +218,7 @@ module.exports = {
         email: '',
         tel: '',
         comment: '',
-        openpgp_fpr: '',
-        format_id: 2
+        openpgp_fpr: ''
       }
     }
   },
