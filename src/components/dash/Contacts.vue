@@ -318,7 +318,10 @@ module.exports = {
         'ti_handle': '',
         'first_handle': '',
         'asns': [],
-        'contacts': []
+        'contacts': [],
+        'networks': [],
+        'fqdns': [],
+        'national_certs': []
       })
       this.pendingOrgIndex.push('create')
     },
