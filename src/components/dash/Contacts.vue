@@ -337,6 +337,13 @@ module.exports = {
       delete newOrg['organisation_id']
       // add values that are needed for manual tables
       newOrg['annotations'] = []
+
+      for (var asn of newOrg['asns']) {
+        asn['annotations'] = []
+        delete asn['import_source']
+        delete asn['import_time']
+        delete asn['organisation_automatic_id']
+      }
       for (var network of newOrg['networks']) {
         network['annotations'] = []
       }
