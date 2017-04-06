@@ -20,6 +20,9 @@
         </div>
       </div>
     </div>
+    <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
+      <i class="fa fa-minus"></i>
+    </button>
   </div>
 </template>
 <script>

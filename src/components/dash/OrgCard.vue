@@ -159,12 +159,18 @@
         </div>
 
         <!-- networks section -->
-        <div v-if="org.networks.length > 0">
+        <div v-if="org.networks.length > 0" class="list-group">
           Networks:
-          <div v-for="(network, index) in org.networks">
-            <org-network v-model="org.networks[index]" v-bind:status="status"/>
+          <div v-for="(network, index) in org.networks"
+              class="list-group-item">
+            <org-network v-model="org.networks[index]" v-bind:status="status"
+              v-on:deleteMe="org.networks.splice(index, 1)" />
           </div>
-          </br>
+          <button v-if="editable"
+                  v-on:click="org.networks.push({address: '', annotations: [], comment: ''})"
+              class="list-group-item btn btn-default">
+            <i class="fa fa-plus"></i>
+          </button>
         </div>
 
         <!-- other attributes -->
