@@ -192,9 +192,10 @@
         </div>
 
         <!-- annotations -->
-        <div v-if="'annotations' in org && org.annotations.length > 0">
+        <div v-if="'annotations' in org && org.annotations.length > 0"
+            class="list-group">
           <div v-for="(annotation, index) in org.annotations"
-              class="list-group">
+              class="list-group-item">
             <org-annotation v-model="org.annotations[index]"
                       v-bind:status="status"
                       v-on:deleteMe="org.annotations.splice(index, 1)" />

@@ -7,9 +7,14 @@
   </div>
   <div v-else class="list-group form-horizontal">
     <div class="list-group-item">
-      <div class="form-group">
+      <div v-if="value.tag === 'inhibition'" class="form-group">
+        (inhibition editing not supported yet) {{ value.condition }}
       </div>
-      <div class="form-group">
+      <div v-else class="form-group">
+        <label class="col-sm-3 control-label">Tag</label>
+        <div class="col-sm-8">
+          <input type="text" v-model="value.tag" class="form-control" />
+        </div>
       </div>
     </div>
     <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
