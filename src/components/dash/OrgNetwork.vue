@@ -1,6 +1,8 @@
 <template>
-  <div v-if="!editable">
+  <div v-if="!editable" class="list-group">
+    <div class="list-group-item">
     {{ value.address }}
+    </div>
     <div v-if="'annotations' in value && value.annotations.length > 0">
       <div v-for="(annotation, index) in value.annotations"
            class="list-group-item">
@@ -9,13 +11,14 @@
                         v-on:deleteMe="value.annotations.splice(index, 1)" />
       </div>
       <button v-if="editable"
-          v-on:click="org.networks.push({tag: '', value: ''})"
+          v-on:click="org.networks.push({tag: ''})"
           class="list-group-item btn btn-default btn-xs">
         <i class="fa fa-plus"></i>
       </button>
     </div>
 
-    <em v-if="value.comment !== ''">({{ value.comment }})</em>
+    <em v-if="value.comment !== ''" class="list-group-item"
+      >({{ value.comment }})</em>
   </div>
   <div v-else class="list-group form-horizontal">
     <div class="list-group-item">

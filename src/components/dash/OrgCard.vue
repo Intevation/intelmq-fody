@@ -179,7 +179,7 @@
               <strong>{{ key }}</strong>: {{ otherAttributes[key] }}
           </div>
         </div>
-        <div v-if="editable" class="well form-horizontal">
+        <div v-else class="well form-horizontal">
           <div v-for="(value, key) in otherAttributes" class="form-group">
             <label class="col-sm-4 control-label">{{ key }}</label>
             <div class="col-sm-8">
@@ -190,6 +190,22 @@
             </div>
           </div>
         </div>
+
+        <!-- annotations -->
+        <div v-if="'annotations' in org && org.annotations.length > 0">
+          <div v-for="(annotation, index) in org.annotations"
+              class="list-group">
+            <org-annotation v-model="org.annotations[index]"
+                      v-bind:status="status"
+                      v-on:deleteMe="org.annotations.splice(index, 1)" />
+          </div>
+          <button v-if="editable"
+              v-on:click="org.annotations.push({tag: ''})"
+              class="list-group-item btn btn-default btn-xs">
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+
         <button v-if="editable || status === 'delete'" v-on:click="trashMe"
           ><i class="fa fa-trash-o rme"></i>Scratch</button>
         <button v-if="status === 'auto'" v-on:click="cloneMe"
@@ -208,6 +224,7 @@
 
 <script>
 import orgNetwork from './OrgNetwork.vue'
+import orgAnnotation from './OrgAnnotation.vue'
 
 module.exports = {
   name: 'org-card',
@@ -225,6 +242,7 @@ module.exports = {
       // for knownOrgKeys, the display is handled explicitely
       knownOrgKeys: {
         'asns': 0,
+        'annotations': 0,
         'contacts': 0,
         'name': 0,
         'networks': 0,
@@ -241,7 +259,7 @@ module.exports = {
     }
   },
   components: {
-    orgNetwork
+    orgNetwork, orgAnnotation
   },
   computed: {
     otherAttributes: function () {

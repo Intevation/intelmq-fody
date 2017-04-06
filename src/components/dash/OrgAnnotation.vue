@@ -1,6 +1,9 @@
 <template>
   <div v-if="!editable">
-    {{ value }}
+    <span v-if="value.tag !== 'inhibition'" class="label label-info"
+      >{{ value.tag }}</span>
+    <span v-else class="label label-warning"
+      >{{ value.condition }}</span>
   </div>
   <div v-else class="list-group form-horizontal">
     <div class="list-group-item">
