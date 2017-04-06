@@ -42,6 +42,10 @@ and real world usage patterns. It may be that using a single `fqdn`
 in different organisations is rare, so 2.'s potential drawback can be neglected.
 Or it could be the other way round.
 
+Lacking better information to decide, we could chose any of the two ways.
+And thus implement the second way because we estimate it is the easiest
+mental model and the least work to implement.
+
 
 #### Contacts Editing: a single commit request
 
