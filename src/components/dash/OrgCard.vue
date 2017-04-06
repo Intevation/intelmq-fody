@@ -139,7 +139,7 @@
                     type="number" class="form-control"></input>
               </div>
             </div>
-            <ul v-if="'annotations' in asn" class="list-group">
+            <ul v-if="asn['annotations'].length > 0" class="list-group">
               <em>(editing not yet supported):</em>
               <li v-for="anno in asn['annotations']" class="list-group-item">
                 {{ anno }}
@@ -156,6 +156,15 @@
             <i class="fa fa-plus"></i>
             <i class="fa fa-hdd-o"></i>
           </button>
+        </div>
+
+        <!-- networks section -->
+        <div v-if="org.networks.length > 0">
+          Networks:
+          <div v-for="(network, index) in org.networks">
+            <org-network v-model="org.networks[index]" v-bind:status="status"/>
+          </div>
+          </br>
         </div>
 
         <!-- other attributes -->
@@ -192,6 +201,8 @@
 </template>
 
 <script>
+import orgNetwork from './OrgNetwork.vue'
+
 module.exports = {
   name: 'org-card',
   // because our prop 'org' is an object it is passed by reference (see
@@ -209,8 +220,9 @@ module.exports = {
       knownOrgKeys: {
         'asns': 0,
         'contacts': 0,
-        'organisation_id': 0,
-        'name': 0
+        'name': 0,
+        'networks': 0,
+        'organisation_id': 0
       },
       contactTemplate: {
         firstname: '',
@@ -221,6 +233,9 @@ module.exports = {
         openpgp_fpr: ''
       }
     }
+  },
+  components: {
+    orgNetwork
   },
   computed: {
     otherAttributes: function () {
