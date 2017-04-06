@@ -1,8 +1,20 @@
 <template>
   <div v-if="!editable">
     {{ value.address }}
-    <div v-if="annotations in value && value.annotations.length > 0"
-      >({{ value.annotations }})</div>
+    <div v-if="'annotations' in value && value.annotations.length > 0">
+      <div v-for="(annotation, index) in value.annotations"
+           class="list-group-item">
+        <org-annotation v-model="value.annotations[index]"
+                        v-bind:status="status"
+                        v-on:deleteMe="value.annotations.splice(index, 1)" />
+      </div>
+      <button v-if="editable"
+          v-on:click="org.networks.push({tag: '', value: ''})"
+          class="list-group-item btn btn-default btn-xs">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+
     <em v-if="value.comment !== ''">({{ value.comment }})</em>
   </div>
   <div v-else class="list-group form-horizontal">
@@ -26,12 +38,17 @@
   </div>
 </template>
 <script>
+import orgAnnotation from './OrgAnnotation.vue'
+
 module.exports = {
   name: 'org-network',
   props: ['status', 'value'],
   data: function () {
     return {
     }
+  },
+  components: {
+    orgAnnotation
   },
   computed: {
     editable: function () {
