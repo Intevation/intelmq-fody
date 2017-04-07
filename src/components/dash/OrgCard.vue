@@ -153,7 +153,7 @@
         </div>
 
         <!-- networks section -->
-        <div class="list-group">
+        <div v-if="editable || org.networks.length > 0" class="list-group">
           Networks:
           <div v-for="(network, index) in org.networks"
               class="list-group-item">

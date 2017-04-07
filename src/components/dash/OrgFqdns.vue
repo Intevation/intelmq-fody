@@ -1,5 +1,8 @@
 <template>
-  <div class="list-group">
+  <div v-if="!editable && value.length === 0">
+  <!-- empty -->
+  </div>
+  <div v-else class="list-group">
     <div v-if="!editable">Domains:
     </div>
     <div v-for="(fqdn, index) in value" class="list-group-item">
