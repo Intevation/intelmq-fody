@@ -171,7 +171,11 @@
 
         <!-- fqdns section -->
         <org-fqdns v-model="org.fqdns" v-bind:status="status"
-          v-bind:annotation-hints="annotationHints"/>
+                   v-bind:annotation-hints="annotationHints"/>
+
+        <!-- national_certs -->
+        <org-national-certs v-model="org.national_certs"
+                            v-bind:status="status"/>
 
         <!-- other attributes -->
         <div v-if="!editable" class="well">
@@ -212,9 +216,10 @@
 </template>
 
 <script>
-import orgFqdns from './OrgFqdns.vue'
-import orgNetwork from './OrgNetwork.vue'
 import orgAnnotations from './OrgAnnotations.vue'
+import orgFqdns from './OrgFqdns.vue'
+import orgNationalCerts from './OrgNationalCerts.vue'
+import orgNetwork from './OrgNetwork.vue'
 
 module.exports = {
   name: 'org-card',
@@ -246,6 +251,7 @@ module.exports = {
         'fqdns': 0,
         'name': 0,
         'networks': 0,
+        'national_certs': 0,
         'organisation_id': 0
       },
       contactTemplate: {
@@ -259,7 +265,7 @@ module.exports = {
     }
   },
   components: {
-    orgNetwork, orgAnnotations, orgFqdns
+    orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
   },
   computed: {
     otherAttributes: function () {
