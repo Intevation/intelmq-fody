@@ -21,7 +21,8 @@
     </div>
     <org-annotations
       v-if="'annotations' in value && value.annotations.length > 0"
-      v-model="value.annotations" v-bind:status="status"/>
+      v-model="value.annotations" v-bind:status="status"
+      v-bind:annotation-hints="annotationHints"/>
     <div v-if="editable" class="list-group form-horizontal">
       <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
         <i class="fa fa-minus"></i>
@@ -34,7 +35,16 @@ import orgAnnotations from './OrgAnnotations.vue'
 
 module.exports = {
   name: 'org-network',
-  props: ['status', 'value'],
+  props: {
+    'status': String,
+    'value': Object,
+    'annotationHints': {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
     }

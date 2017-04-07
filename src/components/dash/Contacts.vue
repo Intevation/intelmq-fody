@@ -110,6 +110,7 @@
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
+                v-bind:annotation-hints="annotationHints"
                 v-on:clone="cloneOrg(index, $event)"
                 v-on:trash="trashOrg(index)"
                 ></org-card>
@@ -152,10 +153,11 @@ module.exports = {
       searchASN: '',  // asn we are searching for
       searchEmail: '',  // email we are searching for
       searchName: '',  // org name we want to look up
-      manualOrgIDs: [], // list of ids of manual orgs we currently show
+      manualOrgIDs: [],  // list of ids of manual orgs we currently show
       manualOrgs: [],
-      autoOrgIDs: [], // list of ids of auto entries we currently show
+      autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
+      annotationHints: {},  // from the server to help editing annotations
       // state of the entries in pendingOrgs, three values
       //   'delete' for removing the manual entry with org.id
       //   'create' for adding a new manual entry
@@ -304,6 +306,20 @@ module.exports = {
       }, (response) => {
         // no valid response
         orgList[index] = null
+      })
+    },
+    getAnnotationHints () {
+      var url = this.baseQueryURL + '/annotation/hints'
+      this.$http.get(url).then((response) => {
+        // got valid response
+        response.json().then((value) => {
+          // json parsed correctly
+          if (value) {
+            this.annotationHints = value
+          }
+        })
+      }, (response) => {
+        // no valid response
       })
     },
     newOrg: function () {
@@ -479,6 +495,9 @@ module.exports = {
       this.searchName = this.$route.query.name
       this.lookupName()
     }
+
+    // Start getting the annotationHints
+    this.getAnnotationHints()
   }
 }
 </script>

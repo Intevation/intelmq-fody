@@ -137,8 +137,9 @@
                     type="number" class="form-control"></input>
               </div>
             </div>
-            <org-annotations v-if="asn['annotations'].length > 0"
-              v-model="asn.annotations" v-bind:status="status"/>
+            <org-annotations v-if="asn.annotations.length > 0"
+              v-model="asn.annotations" v-bind:status="status"
+              v-bind:annotation-hints="annotationHints"/>
             <button v-on:click="org.asns.splice(index,1)"
                     class="btn btn-default btn-xs">
               <i class="fa fa-minus"></i>
@@ -157,7 +158,8 @@
           <div v-for="(network, index) in org.networks"
               class="list-group-item">
             <org-network v-model="org.networks[index]" v-bind:status="status"
-              v-on:deleteMe="org.networks.splice(index, 1)" />
+              v-on:deleteMe="org.networks.splice(index, 1)"
+              v-bind:annotation-hints="annotationHints"/>
           </div>
           <button v-if="editable"
                   v-on:click="org.networks.push({address: '', annotations: [], comment: ''})"
@@ -187,7 +189,8 @@
         <!-- annotations -->
         <org-annotations
           v-if="'annotations' in org && org.annotations.length > 0"
-          v-model="org.annotations" v-bind:status="status"/>
+          v-model="org.annotations" v-bind:status="status"
+              v-bind:annotation-hints="annotationHints"/>
 
         <button v-if="editable || status === 'delete'" v-on:click="trashMe"
           ><i class="fa fa-trash-o rme"></i>Scratch</button>
@@ -219,7 +222,16 @@ module.exports = {
   // HINT: This makes "our app’s data flow harder to reason about" and violates
   // vue's intentions, but a better encapsulation can be developed later, if
   // at all necessary.
-  props: ['status', 'org'],
+  props: {
+    'status': String,
+    'org': Object,
+    'annotationHints': {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
       // for knownOrgKeys, the display is handled explicitely

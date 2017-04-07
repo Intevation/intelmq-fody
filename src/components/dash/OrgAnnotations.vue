@@ -4,6 +4,7 @@
       class="list-group-item">
     <org-annotation v-model="value[index]"
               v-bind:status="status"
+              v-bind:annotation-hints="annotationHints"
               v-on:deleteMe="deleteMe(index)" />
   </div>
   <div v-if="editable" class="list-group-item">
@@ -25,7 +26,16 @@ import orgAnnotation from './OrgAnnotation.vue'
 
 module.exports = {
   name: 'org-annotations',
-  props: ['status', 'value'],
+  props: {
+    'status': String,
+    'value': Array,
+    'annotationHints': {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
     }

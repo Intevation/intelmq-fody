@@ -25,7 +25,16 @@
 <script>
 module.exports = {
   name: 'org-annotation',
-  props: ['status', 'value'],
+  props: {
+    'status': String,
+    'value': Object,
+    'annotationHints': {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
     }
