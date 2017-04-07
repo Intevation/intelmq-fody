@@ -2,11 +2,11 @@
   <div v-if="!editable">
     <span v-if="value.tag !== 'inhibition'" class="label label-info"
       >{{ value.tag }}</span>
-    <span v-else class="label label-warning"
+    <span v-else v-bind:class="annoClass"
       >{{ value.condition }}</span>
   </div>
   <div v-else class="list-group form-horizontal">
-    <div class="list-group-item">
+    <div v-bind:class="annoClass">
       <div v-if="value.tag === 'inhibition'" class="form-group">
         (inhibition editing not supported yet) {{ value.condition }}
       </div>
@@ -33,7 +33,19 @@ module.exports = {
   computed: {
     editable: function () {
       return (this.status === 'create' || this.status === 'update')
+    },
+    annoClass: function () {
+      return {
+        'list-group-item': this.value.tag !== 'inhibition',
+        'list-group-item list-group-item-warning':
+          this.value.tag === 'inhibition'
+      }
     }
   }
 }
 </script>
+<style>
+.label {
+  display: inline-block;
+}
+</style>

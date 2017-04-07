@@ -122,11 +122,9 @@
           <li v-for="asn of org.asns" class="list-group-item">
             <i class="fa fa-hdd-o rme"></i>
             ASN{{ asn.asn }}
-            <ul v-if="'annotations' in asn" class="list-group">
-              <li v-for="anno in asn['annotations']" class="list-group-item">
-                {{ anno }}
-              </li>
-            </ul>
+            <org-annotations
+              v-if="'annotations' in asn && asn.annotations.length > 0"
+              v-model="asn.annotations" v-bind:status="status"/>
           </li>
         </ul>
         <div v-if="editable" class="list-group form-horizontal">
@@ -139,13 +137,8 @@
                     type="number" class="form-control"></input>
               </div>
             </div>
-            <ul v-if="asn['annotations'].length > 0" class="list-group">
-              <em>(editing not yet supported):</em>
-              <li v-for="anno in asn['annotations']" class="list-group-item">
-                {{ anno }}
-              </li>
-            </ul>
-
+            <org-annotations v-if="asn['annotations'].length > 0"
+              v-model="asn.annotations" v-bind:status="status"/>
             <button v-on:click="org.asns.splice(index,1)"
                     class="btn btn-default btn-xs">
               <i class="fa fa-minus"></i>
@@ -192,20 +185,9 @@
         </div>
 
         <!-- annotations -->
-        <div v-if="'annotations' in org && org.annotations.length > 0"
-            class="list-group">
-          <div v-for="(annotation, index) in org.annotations"
-              class="list-group-item">
-            <org-annotation v-model="org.annotations[index]"
-                      v-bind:status="status"
-                      v-on:deleteMe="org.annotations.splice(index, 1)" />
-          </div>
-          <button v-if="editable"
-              v-on:click="org.annotations.push({tag: ''})"
-              class="list-group-item btn btn-default btn-xs">
-            <i class="fa fa-plus"></i>
-          </button>
-        </div>
+        <org-annotations
+          v-if="'annotations' in org && org.annotations.length > 0"
+          v-model="org.annotations" v-bind:status="status"/>
 
         <button v-if="editable || status === 'delete'" v-on:click="trashMe"
           ><i class="fa fa-trash-o rme"></i>Scratch</button>
@@ -225,7 +207,7 @@
 
 <script>
 import orgNetwork from './OrgNetwork.vue'
-import orgAnnotation from './OrgAnnotation.vue'
+import orgAnnotations from './OrgAnnotations.vue'
 
 module.exports = {
   name: 'org-card',
@@ -260,7 +242,7 @@ module.exports = {
     }
   },
   components: {
-    orgNetwork, orgAnnotation
+    orgNetwork, orgAnnotations
   },
   computed: {
     otherAttributes: function () {

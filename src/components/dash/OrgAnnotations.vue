@@ -1,0 +1,59 @@
+<template>
+<div v-bind:class="outerClass">
+  <div v-for="(annotation, index) in value"
+      class="list-group-item">
+    <org-annotation v-model="value[index]"
+              v-bind:status="status"
+              v-on:deleteMe="deleteMe(index)" />
+  </div>
+  <div v-if="editable" class="list-group-item">
+    <button v-on:click="newAnnotation({'tag': ''})"
+        class="btn btn-default btn-xs">
+      <i class="fa fa-plus"></i>
+      Tag
+    </button>
+    <button v-on:click="newAnnotation({'tag': 'inhibition', 'condition': ''})"
+        class="btn btn-default btn-xs">
+      <i class="fa fa-plus"></i>
+      Inhibition
+    </button>
+  </div>
+</div>
+</template>
+<script>
+import orgAnnotation from './OrgAnnotation.vue'
+
+module.exports = {
+  name: 'org-annotations',
+  props: ['status', 'value'],
+  data: function () {
+    return {
+    }
+  },
+  components: {
+    orgAnnotation
+  },
+  computed: {
+    editable: function () {
+      return (this.status === 'create' || this.status === 'update')
+    },
+    outerClass: function () {
+      return {
+        'list-group': !this.editable,
+        'list-group form-horizontal': this.editable
+      }
+    }
+  },
+  methods: {
+    deleteMe: function (index) {
+      this.value.splice(index, 1)
+      this.$emit('input', this.value)
+    },
+    newAnnotation: function (template) {
+      this.value.push(template)
+      this.$emit('input', this.value)
+    }
+  }
+}
+
+</script>
