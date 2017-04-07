@@ -168,6 +168,10 @@
           </button>
         </div>
 
+        <!-- fqdns section -->
+        <org-fqdns v-if="org.fqdns.length > 0" v-model="org.fqdns"
+           v-bind:status="status" v-bind:annotation-hints="annotationHints"/>
+
         <!-- other attributes -->
         <div v-if="!editable" class="well">
           <div v-for="key in Object.keys(otherAttributes).sort()">
@@ -209,6 +213,7 @@
 </template>
 
 <script>
+import orgFqdns from './OrgFqdns.vue'
 import orgNetwork from './OrgNetwork.vue'
 import orgAnnotations from './OrgAnnotations.vue'
 
@@ -239,6 +244,7 @@ module.exports = {
         'asns': 0,
         'annotations': 0,
         'contacts': 0,
+        'fqdns': 0,
         'name': 0,
         'networks': 0,
         'organisation_id': 0
@@ -254,7 +260,7 @@ module.exports = {
     }
   },
   components: {
-    orgNetwork, orgAnnotations
+    orgNetwork, orgAnnotations, orgFqdns
   },
   computed: {
     otherAttributes: function () {

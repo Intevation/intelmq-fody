@@ -4,13 +4,13 @@
       <div v-if="editable" class="form-group">
         <label class="col-sm-4 control-label">Address</label>
         <div class="col-sm-8">
-          <input type="text" v-model="value.address" class="col-sm-8" />
+          <input type="text" v-model="value.address" class="col-sm-8"/>
         </div>
       </div>
       <div v-else>
         {{ value.address }}
       </div>
-      <div  v-if="editable" class="form-group">
+      <div v-if="editable" class="form-group">
         <label class="col-sm-4 control-label">Comment</label>
         <div class="col-sm-8">
           <input type="text" v-model="value.comment" class="form-control" />
@@ -19,10 +19,10 @@
       <em v-else-if="value.comment !== ''" class="list-group-item"
       >({{ value.comment }})</em>
     </div>
+
     <org-annotations
-      v-if="'annotations' in value && value.annotations.length > 0"
-      v-model="value.annotations" v-bind:status="status"
-      v-bind:annotation-hints="annotationHints"/>
+      v-if="'annotations' in value" v-model="value.annotations"
+      v-bind:status="status" v-bind:annotation-hints="annotationHints"/>
     <div v-if="editable" class="list-group form-horizontal">
       <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
         <i class="fa fa-minus"></i>
