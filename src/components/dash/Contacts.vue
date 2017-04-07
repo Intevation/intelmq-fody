@@ -442,11 +442,16 @@ module.exports = {
     },
     commitPendingOrgs () {
       // console.log('commitPendingOrgs() called')
+
+      // TODO clear out empty values for asns, networks, fqdns, annotations
+      // those will fail when commiting
+
       var url = this.baseQueryURL + '/org/manual/commit'
       var commitObject = {
         'commands': this.pendingOrgIndex,
         'orgs': this.pendingOrgs
       }
+
 
       // TODO block until we have a response
       this.$http.post(url, commitObject).then(response => {
