@@ -154,7 +154,7 @@
 
         <!-- networks section -->
         <div v-if="editable || org.networks.length > 0" class="list-group">
-          Networks:
+          <div v-if="!editable">Networks:</div>
           <div v-for="(network, index) in org.networks"
               class="list-group-item">
             <org-network v-model="org.networks[index]" v-bind:status="status"
