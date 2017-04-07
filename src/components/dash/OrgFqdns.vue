@@ -39,6 +39,7 @@
         v-on:click="newFqdn({'address': '', 'comment': '', 'annotations': []})"
         class="list-group-item btn btn-default">
       <i class="fa fa-plus"></i>
+      Domain
     </button>
   </div>
 </template>

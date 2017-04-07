@@ -153,7 +153,7 @@
         </div>
 
         <!-- networks section -->
-        <div v-if="org.networks.length > 0" class="list-group">
+        <div class="list-group">
           Networks:
           <div v-for="(network, index) in org.networks"
               class="list-group-item">
@@ -165,12 +165,13 @@
                   v-on:click="org.networks.push({address: '', annotations: [], comment: ''})"
               class="list-group-item btn btn-default">
             <i class="fa fa-plus"></i>
+            Network
           </button>
         </div>
 
         <!-- fqdns section -->
-        <org-fqdns v-if="org.fqdns.length > 0" v-model="org.fqdns"
-           v-bind:status="status" v-bind:annotation-hints="annotationHints"/>
+        <org-fqdns v-model="org.fqdns" v-bind:status="status"
+          v-bind:annotation-hints="annotationHints"/>
 
         <!-- other attributes -->
         <div v-if="!editable" class="well">
@@ -191,10 +192,8 @@
         </div>
 
         <!-- annotations -->
-        <org-annotations
-          v-if="'annotations' in org && org.annotations.length > 0"
-          v-model="org.annotations" v-bind:status="status"
-              v-bind:annotation-hints="annotationHints"/>
+        <org-annotations v-if="'annotations' in org" v-model="org.annotations"
+          v-bind:status="status" v-bind:annotation-hints="annotationHints"/>
 
         <button v-if="editable || status === 'delete'" v-on:click="trashMe"
           ><i class="fa fa-trash-o rme"></i>Scratch</button>

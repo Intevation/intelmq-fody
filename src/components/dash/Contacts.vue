@@ -452,7 +452,6 @@ module.exports = {
         'orgs': this.pendingOrgs
       }
 
-
       // TODO block until we have a response
       this.$http.post(url, commitObject).then(response => {
         // request was good, remove pending items
@@ -506,4 +505,3 @@ module.exports = {
   }
 }
 </script>
-
