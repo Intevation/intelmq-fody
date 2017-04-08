@@ -124,7 +124,8 @@
             ASN{{ asn.asn }}
             <org-annotations
               v-if="'annotations' in asn && asn.annotations.length > 0"
-              v-model="asn.annotations" v-bind:status="status"/>
+              v-model="asn.annotations" v-bind:status="status"
+              v-bind:annotation-hints="annotationHints"/>
           </li>
         </ul>
         <div v-if="editable" class="list-group form-horizontal">

@@ -99,12 +99,14 @@
       <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" status="manual"
+                v-bind:annotation-hints="annotationHints"
                 v-on:edit="editOrg(index)"
                 v-on:delete="deleteOrg(index)"
                 ></org-card>
       <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" status="auto"
+                v-bind:annotation-hints="annotationHints"
                 v-on:clone="cloneOrg(index, $event)"></org-card>
 
       <org-card v-for="(org, index) of pendingOrgs"

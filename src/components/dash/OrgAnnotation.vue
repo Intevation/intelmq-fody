@@ -2,13 +2,21 @@
   <div v-if="!editable">
     <span v-if="value.tag !== 'inhibition'" class="label label-info"
       >{{ value.tag }}</span>
-    <span v-else v-bind:class="annoClass"
-      >{{ value.condition }}</span>
+    <div v-else class="list-group-item-warning">
+      <div class="col-sm-2">Inhibition:
+      </div>
+      <annotation-condition class="col-sm-10"
+        v-model="value.condition" v-bind:status="status"
+        v-bind:condition-hints="conditionHints"/>
+    </div>
   </div>
   <div v-else class="list-group form-horizontal">
     <div v-bind:class="annoClass">
       <div v-if="value.tag === 'inhibition'" class="form-group">
-        (inhibition editing not supported yet) {{ value.condition }}
+        Inhibition:
+        <annotation-condition v-model="value.condition"
+          v-bind:status="status"
+          v-bind:condition-hints="conditionHints"/>
       </div>
       <div v-else class="form-group">
         <label class="col-sm-3 control-label">Tag</label>
@@ -23,6 +31,8 @@
   </div>
 </template>
 <script>
+import annotationCondition from './AnnotationCondition.vue'
+
 module.exports = {
   name: 'org-annotation',
   props: {
@@ -39,7 +49,17 @@ module.exports = {
     return {
     }
   },
+  components: {
+    annotationCondition
+  },
   computed: {
+    conditionHints: function () {
+      if ('conditions' in this.annotationHints) {
+        return this.annotationHints.conditions
+      } else {
+        return {}
+      }
+    },
     editable: function () {
       return (this.status === 'create' || this.status === 'update')
     },
