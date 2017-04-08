@@ -60,6 +60,24 @@ module.exports = {
       this.$emit('input', this.value)
     },
     newAnnotation: function (template) {
+      // preload if inhibition and ..
+      if ('condition' in template &&
+          'conditions' in this.annotationHints) {
+        console.log('preloading')
+        var conditions = this.annotationHints.conditions
+        // .. we only have one binary_operator
+        if ('binary_operators' in conditions &&
+            Object.keys(conditions.binary_operators).length === 1) {
+          console.log('yo')
+          template.condition = [
+            Object.keys(conditions.binary_operators)[0], '', '']
+        }
+        // .. we only have one field
+        if ('fields' in conditions &&
+            Object.keys(conditions.fields).length === 1) {
+          template.condition[1] = [Object.keys(conditions.fields)[0], '']
+        }
+      }
       this.value.push(template)
       this.$emit('input', this.value)
     }

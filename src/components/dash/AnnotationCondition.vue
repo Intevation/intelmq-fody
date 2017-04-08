@@ -1,27 +1,37 @@
 <template>
 <!-- Binary Operator -->
-<div v-if="isBinaryOperator(value[0])" class="group-inline">
-  <annotation-condition v-model="value[1]" v-bind:status="status"
+<div v-if="condition[0] in binary_operators" class="group-inline">
+  <annotation-condition v-model="condition[1]" v-bind:status="status"
     v-bind:condition-hints="conditionHints"/>
   <div v-if="editable" class="col-sm-2">
-      TODO select operator {{ conditionHints.binary_operators[value[0]] }}
+    <div v-if="Object.keys(binary_operators).length === 1">
+      {{ binary_operators[condition[0]] }}
+    </div>
+    <div v-else>
+      TODO select operator {{ conditionHints.binary_operators[condition[0]] }}
+    </div>
   </div>
   <div v-else class="col-sm-1 inline"
-    >{{ conditionHints.binary_operators[value[0]]}}
+    >{{ conditionHints.binary_operators[condition[0]]}}
   </div>
-  <annotation-condition v-model="value[2]" v-bind:status="status"
+  <annotation-condition v-model="condition[2]" v-bind:status="status"
     v-bind:condition-hints="conditionHints"/>
 </div>
 
 <!-- Field (or unary operator) -->
-<div v-else-if="isField(value[0])" class="col-sm-6 inline">
+<div v-else-if="condition[0] in fields" class="col-sm-6 inline">
   <div v-if="editable" class="col-sm-5 inline">
-    TODO select field {{value[0]}}
+    <div v-if="Object.keys(fields).length === 1">
+      {{ Object.keys(fields)[0] }}
+    </div>
+    <div v-else>
+      TODO select field {{condition[0]}}
+    </div>
   </div>
   <div v-else class="col-sm-6 inline">
-  {{value[0]}}
+  {{condition[0]}}
   </div>
-  [<annotation-condition v-model="value[1]"
+  [<annotation-condition v-model="condition[1]"
     v-bind:status="status"
     v-bind:condition-hints="conditionHints"/>]
 </div>
@@ -29,10 +39,11 @@
 <!-- Constant -->
 <div v-else class="col-sm-5 inline">
   <div v-if="editable">
-  TODO select constant '{{ value }}'
+    <input class="form-control" type="text" v-bind:value="condition"
+    v-on:input="updateValue($event.target.value)"/>
   </div>
   <div v-else>
-  '{{ value }}'
+  '{{ condition }}'
   </div>
 </div>
 </template>
@@ -53,6 +64,7 @@ module.exports = {
   },
   data: function () {
     return {
+      condition: this.value
     }
   },
   components: {
@@ -61,16 +73,25 @@ module.exports = {
   computed: {
     editable: function () {
       return (this.status === 'create' || this.status === 'update')
+    },
+    binary_operators: function () {
+      if ('binary_operators' in this.conditionHints) {
+        return this.conditionHints.binary_operators
+      } else {
+        return {}
+      }
+    },
+    fields: function () {
+      if ('fields' in this.conditionHints) {
+        return this.conditionHints.fields
+      } else {
+        return {}
+      }
     }
   },
   methods: {
-    isBinaryOperator: function (node) {
-      return ('binary_operators' in this.conditionHints &&
-              node in this.conditionHints.binary_operators)
-    },
-    isField: function (node) {
-      return ('fields' in this.conditionHints &&
-              node in this.conditionHints.fields)
+    updateValue: function (value) {
+      this.$emit('input', String(value))
     }
   }
 }
