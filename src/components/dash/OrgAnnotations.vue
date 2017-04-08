@@ -63,12 +63,10 @@ module.exports = {
       // preload if inhibition and ..
       if ('condition' in template &&
           'conditions' in this.annotationHints) {
-        console.log('preloading')
         var conditions = this.annotationHints.conditions
         // .. we only have one binary_operator
         if ('binary_operators' in conditions &&
             Object.keys(conditions.binary_operators).length === 1) {
-          console.log('yo')
           template.condition = [
             Object.keys(conditions.binary_operators)[0], '', '']
         }
