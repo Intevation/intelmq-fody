@@ -1,3 +1,9 @@
+intelmq-fody (0.4.2~rc1) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Gernot Schulz <gernot@intevation.de>  Mon, 10 Apr 2017 15:20:30 +0200
+
 intelmq-fody (0.4.1~rc1) unstable; urgency=low
 
   * Various fixes and improvements.
