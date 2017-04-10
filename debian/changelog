@@ -1,3 +1,15 @@
+intelmq-fody (0.4.1~rc1) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 07 Apr 2017 17:15:29 +0200
+
+intelmq-fody (0.4.0~rc2) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Sascha Wilde <wilde@intevation.de>  Thu, 06 Apr 2017 16:53:49 +0200
+
 intelmq-fody (0.4.0~rc1) unstable; urgency=low
 
   * Added statistics.
