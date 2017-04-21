@@ -1,7 +1,6 @@
 <template>
 <div v-bind:class="outerClass">
-  <div v-for="(annotation, index) in value"
-      class="list-group-item">
+  <div v-for="(annotation, index) in value">
     <org-annotation v-model="value[index]"
               v-bind:status="status"
               v-bind:annotation-hints="annotationHints"
