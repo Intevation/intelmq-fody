@@ -138,7 +138,7 @@
                     type="number" class="form-control"></input>
               </div>
             </div>
-            <org-annotations v-if="asn.annotations.length > 0"
+            <org-annotations v-if="'annotations' in asn"
               v-model="asn.annotations" v-bind:status="status"
               v-bind:annotation-hints="annotationHints"/>
             <button v-on:click="org.asns.splice(index,1)"
