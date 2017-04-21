@@ -1,3 +1,11 @@
+intelmq-fody (0.4.2) unstable; urgency=medium
+
+  * Improves annotation handling and display:
+    Inhibitions can now be edited and display nicer.
+    Annotations can be added to ASNs.
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 21 Apr 2017 17:48:37 +0200
+
 intelmq-fody (0.4.2~rc1) unstable; urgency=low
 
   * Various fixes and improvements.
