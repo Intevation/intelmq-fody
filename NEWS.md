@@ -1,3 +1,19 @@
+## 0.4.1 to 0.4.2
+ * Contacts: Adds cidr search.
+ * Contacts: Improves annotation handling and display:
+   Inhibitions can now be edited and display nicer.
+   Annotations can be added to ASNs.
+
+### Upgrade
+ * technical:
+   Needs fody-backend v>=0.4.2.
+
+
+## 0.2.1 to 0.4.1
+
+TODO
+
+
 ## 0.2.0 to 0.2.1-dev
 
 ### Upgrade
@@ -10,6 +26,7 @@
    def root():
            return("/home/fody/www/index.html")
    ```
+
 
 ## 0.1.2 to 0.2.0
 

@@ -1,9 +1,10 @@
 <template>
   <div v-if="!editable">
     <span v-if="value.tag !== 'inhibition'" class="label label-info"
+      style="display:box"
       >{{ value.tag }}</span>
-    <div v-else class="list-group-item-warning">
-      <div class="col-sm-2">Inhibition:
+    <div v-else class="list-group-item list-group-item-warning row">
+      <div>Inhibition:
       </div>
       <annotation-condition class="col-sm-10"
         v-model="value.condition" v-bind:status="status"
@@ -66,7 +67,7 @@ module.exports = {
     annoClass: function () {
       return {
         'list-group-item': this.value.tag !== 'inhibition',
-        'list-group-item list-group-item-warning':
+        'list-group-item list-group-item-warning row':
           this.value.tag === 'inhibition'
       }
     }
