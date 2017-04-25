@@ -33,23 +33,23 @@
         </div> <!-- .box -->
       </div>
       <div class="col-md-3 col-sm-6">
-        <div class='box' v-bind:class='CIDRInputClass'>
+        <div class='box' v-bind:class='CFNInputClass'>
           <div class="box-body">
-            <h5>Search CIDR</h5>
+            <h5>Search CIDR/FQDN/NC</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
               <input type="text" class="form-control"
-                v-model.lazy.trim:title="searchCIDR"
-                v-on:change="lookupCIDR"
-                placeholder="195.37.231.192/28 or 2001:638:81e::/48"
+                v-model.lazy.trim:title="searchCFN"
+                v-on:change="lookupCFN"
+                placeholder="2001:638:81e::/48"
               >
               <span class="input-group-btn">
-                <button class="btn btn-default" v-on:click="lookupCIDR">
+                <button class="btn btn-default" v-on:click="lookupCFN">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
             </div>
-            <span v-if="searchCIDR !== ''">
+            <span v-if="searchCFN !== ''">
               <span class="help-block"
                   v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
                 Not found.
@@ -186,7 +186,7 @@ module.exports = {
       searchASN: '',  // asn we are searching for
       searchEmail: '',  // email we are searching for
       searchName: '',  // org name we want to look up
-      searchCIDR: '', // cidr style address we want to look up
+      searchCFN: '', // contents of multi search field for cidr, fqdn and nc
       manualOrgIDs: [],  // list of ids of manual orgs we currently show
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
@@ -228,11 +228,11 @@ module.exports = {
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
       }
     },
-    CIDRInputClass: function () {
+    CFNInputClass: function () {
       return {
-        'has-error': (this.searchCIDR !== '' &&
+        'has-error': (this.searchCFN !== '' &&
                       this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
-        'has-success': (this.searchCIDR !== '' &&
+        'has-success': (this.searchCFN !== '' &&
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
       }
     },
@@ -290,7 +290,7 @@ module.exports = {
 
       this.searchEmail = ''
       this.searchName = ''
-      this.searchCIDR = ''
+      this.searchCFN = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -301,7 +301,7 @@ module.exports = {
 
       this.searchASN = ''
       this.searchName = ''
-      this.searchCIDR = ''
+      this.searchCFN = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -312,22 +312,32 @@ module.exports = {
 
       this.searchASN = ''
       this.searchEmail = ''
-      this.searchCIDR = ''
+      this.searchCFN = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
     },
-    lookupCIDR: function () {
+    lookupCFN: function () {
       // FUTURE: we may need some debounce or throttle function here
 
       this.searchASN = ''
       this.searchEmail = ''
       this.searchName = ''
-      this.getOrgIDs('/searchcidr?address=' + this.searchCIDR)
+      if (this.searchCFN.length === 2) {
+        this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
+      } else if (/\.[^0-9:.]+$|^[^0-9:.]+$/.test(this.searchCFN)) {
+        // the test for a domain or hostname assumes
+        // that top level domains (TLDs) do not contain digits
+        // this assumption **does not hold for the domain names of
+        //   internationaled TLDs**.
+        this.getOrgIDs('/searchfqdn?domain=' + this.searchCFN)
+      } else {
+        this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
+      }
 
       // Modify the URL, this enables bookmarking of this search.
-      this.$router.replace({query: {cidr: this.searchCIDR}})
+      this.$router.replace({query: {cfn: this.searchCFN}})
     },
     refreshCurrentSearch: function () {
       // simple version to just repeat the search we'd done before
@@ -343,8 +353,8 @@ module.exports = {
         this.lookupName()
         return
       }
-      if (this.searchCIDR !== '') {
-        this.lookupCIDR()
+      if (this.searchCFN !== '') {
+        this.lookupCFN()
         return
       }
     },
@@ -558,9 +568,9 @@ module.exports = {
     } else if (this.$route.query.name) {
       this.searchName = this.$route.query.name
       this.lookupName()
-    } else if (this.$route.query.cidr) {
-      this.searchCIDR = this.$route.query.cidr
-      this.lookupCIDR()
+    } else if (this.$route.query.cfn) {
+      this.searchCFN = this.$route.query.cfn
+      this.lookupCFN()
     }
 
     // Start getting the annotationHints
