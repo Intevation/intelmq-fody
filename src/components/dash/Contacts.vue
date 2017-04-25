@@ -326,11 +326,7 @@ module.exports = {
       this.searchName = ''
       if (this.searchCFN.length === 2) {
         this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
-      } else if (/\.[^0-9:.]+$|^[^0-9:.]+$/.test(this.searchCFN)) {
-        // the test for a domain or hostname assumes
-        // that top level domains (TLDs) do not contain digits
-        // this assumption **does not hold for the domain names of
-        //   internationaled TLDs**.
+      } else if (/\.[^0-9:.]+$|^[^0-9:.]+$|\.xn--[^.]*$/.test(this.searchCFN)) {
         this.getOrgIDs('/searchfqdn?domain=' + this.searchCFN)
       } else {
         this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
