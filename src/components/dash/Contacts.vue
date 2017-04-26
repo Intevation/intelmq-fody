@@ -125,7 +125,11 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
-    </div>
+      <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
+        Shown entries limited to {{ loadLimit }} per auto or manual.
+        Try a more specific search.
+      </div>
+    </div> <!-- .row -->
     <div class="row">
       <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
@@ -191,6 +195,8 @@ module.exports = {
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
+      loadLimit: 100, // max number of manual- and autoorgs to load
+      limited: false,  // if we are only loading some of the search results
       annotationHints: {},  // from the server to help editing annotations
       // state of the entries in pendingOrgs, three values
       //   'delete' for removing the manual entry with org.id
@@ -244,19 +250,37 @@ module.exports = {
   },
   watch: {
     manualOrgIDs: function (newManualOrgIDs) {
-      // deleting all objects and reloading them. (A more clever approach
-      // is unnecessary, because we expect only to load a few
-      this.manualOrgs = Array(newManualOrgIDs.length).fill(null)
-      for (var index in newManualOrgIDs) {
-        this.lookupOrg(this.manualOrgs, 'manual', this.manualOrgIDs, index)
+      var numberToLoad
+
+      if (newManualOrgIDs.length > this.loadLimit) {
+        numberToLoad = this.loadLimit
+        this.limited = true
+      } else {
+        numberToLoad = newManualOrgIDs.length
+        this.limited = false
+      }
+      // deleting all objects and reloading them, as even the existing ones
+      // could have changed
+      this.manualOrgs = Array(numberToLoad).fill(null)
+      for (var i = 0; i < numberToLoad; i++) {
+        this.lookupOrg(this.manualOrgs, 'manual', this.manualOrgIDs, i)
       }
     },
     autoOrgIDs: function (newAutoOrgIDs) {
-      // deleting all objects and reloading them. (A more clever approach
-      // is unnecessary, because we expect only to load a few
-      this.autoOrgs = Array(newAutoOrgIDs.length).fill(null)
-      for (var index in newAutoOrgIDs) {
-        this.lookupOrg(this.autoOrgs, 'auto', this.autoOrgIDs, index)
+      var numberToLoad
+
+      if (newAutoOrgIDs.length > this.loadLimit) {
+        numberToLoad = this.loadLimit
+        this.limited = true
+      } else {
+        numberToLoad = newAutoOrgIDs.length
+        this.limited = false
+      }
+      // deleting all objects and reloading them, as even the existing ones
+      // could have changed
+      this.autoOrgs = Array(numberToLoad).fill(null)
+      for (var i = 0; i < numberToLoad; i++) {
+        this.lookupOrg(this.autoOrgs, 'auto', this.autoOrgIDs, i)
       }
     }
   },
