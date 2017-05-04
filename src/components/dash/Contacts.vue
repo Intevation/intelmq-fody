@@ -35,7 +35,7 @@
       <div class="col-md-3 col-sm-6">
         <div class='box' v-bind:class='CFNInputClass'>
           <div class="box-body">
-            <h5>Search CIDR/FQDN/CC</h5>
+            <h5>Search IP/CIDR/FQDN/CC</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
               <input type="text" class="form-control"
