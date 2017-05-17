@@ -1,3 +1,12 @@
+## 0.4.3 to (pending)
+ * Adds a logo for fody.
+
+## 0.4.2 to 0.4.3
+ * Contacts: Changes cidr search into one that searches cidr, IPs, domains
+   and national certs.
+ * Contacts: Limits the number of displayed search results
+   (fixes https://github.com/Intevation/intelmq-fody/issues/51)
+
 ## 0.4.1 to 0.4.2
  * Contacts: Adds cidr search.
  * Contacts: Improves annotation handling and display:
