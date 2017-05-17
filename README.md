@@ -77,3 +77,11 @@ and licensed under [MIT](http://opensource.org/licenses/MIT).
 
 CoPilot is based on the [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 template.
+
+Credits
+-------
+Exclusive usage rights: German Federal Office for Information Security (BSI).
+
+Software-Engineering by Intevation.
+
+Logo by Marcel "Howly" Newman
