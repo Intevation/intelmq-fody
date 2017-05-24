@@ -11,19 +11,25 @@
         v-bind:condition-hints="conditionHints"/>
     </div>
   </div>
-  <div v-else class="list-group form-horizontal">
+  <div v-else class="list-group form-inline">
     <div v-bind:class="annoClass">
-      <div v-if="value.tag === 'inhibition'" class="form-group">
+      <div v-if="value.tag === 'inhibition'" class="form-group-sm">
         Inhibition:
         <annotation-condition v-model="value.condition"
           v-bind:status="status"
           v-bind:condition-hints="conditionHints"/>
       </div>
-      <div v-else class="form-group">
-        <label class="col-sm-3 control-label">Tag</label>
-        <div class="col-sm-8">
-          <input type="text" v-model="value.tag" class="form-control" />
-        </div>
+      <div v-else class="form-group-sm">
+        <label class="control-label">Tag</label>
+        <select v-model='value.tag' class="form-control btn-info">
+          <option disabled value="">custom</option>
+          <option>whitelist-malware</option>
+          <option>whitelist-opendns</option>
+          <option>cert.at-realtime-xmpp</option>
+          <option>de-provider-xarf</option>
+          <option>erhalte-de</option>
+        </select>
+        <input type="text" v-model="value.tag" class="form-control" />
       </div>
     </div>
     <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
