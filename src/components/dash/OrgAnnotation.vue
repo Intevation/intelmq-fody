@@ -21,8 +21,8 @@
       </div>
       <div v-else class="form-group-sm">
         <label class="control-label">Tag</label>
-        <select v-model='value.tag' class="form-control btn-info">
-          <option disabled value="">custom</option>
+        <select v-model='selectionValue' class="form-control btn-info">
+          <option disabled value="">(custom)</option>
           <option v-for="tag in annotationHints.tags">{{ tag }}</option>
         </select>
         <input type="text" v-model="value.tag" class="form-control" />
@@ -50,6 +50,7 @@ module.exports = {
   },
   data: function () {
     return {
+      selectionValue: String  // value of tag's <select>
     }
   },
   components: {
@@ -72,6 +73,27 @@ module.exports = {
         'list-group-item list-group-item-warning row':
           this.value.tag === 'inhibition'
       }
+    }
+  },
+  watch: {
+    // we want to allow value.tag to have either a value from the
+    // <select> options from annotationHints.tags or a custom,
+    // so we have to use a second variable 'selectionValue' and functions
+    // to implement that behaviour via watching it an value.tag:
+    selectionValue: function (newSelectionValue) {
+      if (newSelectionValue !== '') {
+        this.value.tag = newSelectionValue
+      }
+    },
+    value: {
+      handler: function (newValue) {
+        if (this.annotationHints.tags.indexOf(newValue.tag) >= 0) {
+          this.selectionValue = newValue.tag
+        } else {
+          this.selectionValue = ''
+        }
+      },
+      deep: true
     }
   }
 }
