@@ -23,11 +23,7 @@
         <label class="control-label">Tag</label>
         <select v-model='value.tag' class="form-control btn-info">
           <option disabled value="">custom</option>
-          <option>whitelist-malware</option>
-          <option>whitelist-opendns</option>
-          <option>cert.at-realtime-xmpp</option>
-          <option>de-provider-xarf</option>
-          <option>erhalte-de</option>
+          <option v-for="tag in annotationHints.tags">{{ tag }}</option>
         </select>
         <input type="text" v-model="value.tag" class="form-control" />
       </div>
