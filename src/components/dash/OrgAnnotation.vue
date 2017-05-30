@@ -50,7 +50,7 @@ module.exports = {
   },
   data: function () {
     return {
-      selectionValue: String  // value of tag's <select>
+      selectionValue: ''  // value of tag's <select>
     }
   },
   components: {
@@ -86,15 +86,22 @@ module.exports = {
       }
     },
     value: {
-      handler: function (newValue) {
-        if (this.annotationHints.tags.indexOf(newValue.tag) >= 0) {
-          this.selectionValue = newValue.tag
-        } else {
-          this.selectionValue = ''
-        }
-      },
+      handler: function (newValue) { this.updateSelection(newValue) },
       deep: true
     }
+  },
+  methods: {
+    updateSelection: function (newValue) {
+      if (this.annotationHints.tags.indexOf(newValue.tag) >= 0) {
+        this.selectionValue = newValue.tag
+      } else {
+        this.selectionValue = ''
+      }
+    }
+  },
+  mounted: function () {
+    // make sure the select choice reflects the initial value.tag.
+    this.updateSelection(this.value)
   }
 }
 </script>
