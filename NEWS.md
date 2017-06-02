@@ -1,11 +1,20 @@
 ## 0.4.3 to (pending)
+ * Contacts: Adds search field for tags.
+ * Contacts: Improves editing of annotation.tags, by offering the choice
+     of commonly used tags loaded from the backend.
  * Adds a logo for fody.
+
+### Upgrade
+ * technical:
+   Needs fody-backend v>=0.5.1
+
 
 ## 0.4.2 to 0.4.3
  * Contacts: Changes cidr search into one that searches cidr, IPs, domains
    and national certs.
  * Contacts: Limits the number of displayed search results
    (fixes https://github.com/Intevation/intelmq-fody/issues/51)
+
 
 ## 0.4.1 to 0.4.2
  * Contacts: Adds cidr search.
