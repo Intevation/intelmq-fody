@@ -125,6 +125,37 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
+      <div class="col-md-4 col-sm-6">
+        <div class='box' v-bind:class='TagInputClass'>
+          <div class="box-body">
+            <h5>Search Tag</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-tag"></i></span>
+              <input class="form-control"
+                v-model.lazy.trim:title="searchTag"
+                v-on:change="lookupTag"
+                placeholder="whitelist-opendns"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupTag">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchTag !== ''">
+              <!-- only manual orgs may have annotations -->
+              <span class="help-block"
+                  v-if="manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="manualOrgIDs.length > 0">
+                Found {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
       <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
         Shown entries limited to {{ loadLimit }} per auto or manual.
         Try a more specific search.
@@ -187,10 +218,11 @@ module.exports = {
   data: function () {
     return {
       baseQueryURL: '/api/contactdb',  // base url for AJAJ service
-      searchASN: '',  // asn we are searching for
+      searchASN: '',  // asn we want to look up
       searchEmail: '',  // email we are searching for
-      searchName: '',  // org name we want to look up
+      searchName: '',  // org name we are searching for
       searchCFN: '', // contents of multi search field for cidr, fqdn and nc
+      searchTag: '', // annotation.tag substring we are searching for
       manualOrgIDs: [],  // list of ids of manual orgs we currently show
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
@@ -240,6 +272,17 @@ module.exports = {
                       this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
         'has-success': (this.searchCFN !== '' &&
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
+      }
+    },
+    TagInputClass: function () {
+      // only manual orgs may have annotations
+      return {
+        'has-error': (this.searchTag !== '' &&
+                      (this.manualOrgIDs.length === 0 ||
+                      this.autoOrgIDs.length > 0)),
+        'has-success': (this.searchTag !== '' &&
+                        this.manualOrgIDs.length > 0 &&
+                        this.autoOrgIDs.length === 0)
       }
     },
     ActionDisabled: function () {
@@ -315,6 +358,7 @@ module.exports = {
       this.searchEmail = ''
       this.searchName = ''
       this.searchCFN = ''
+      this.searchTag = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -326,6 +370,7 @@ module.exports = {
       this.searchASN = ''
       this.searchName = ''
       this.searchCFN = ''
+      this.searchTag = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -337,6 +382,7 @@ module.exports = {
       this.searchASN = ''
       this.searchEmail = ''
       this.searchCFN = ''
+      this.searchTag = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -348,6 +394,7 @@ module.exports = {
       this.searchASN = ''
       this.searchEmail = ''
       this.searchName = ''
+      this.searchTag = ''
       if (this.searchCFN.length === 2) {
         this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
       } else if (/\.[^0-9:.]+$|^[^0-9:.]+$|\.xn--[^.]*$/.test(this.searchCFN)) {
@@ -358,6 +405,16 @@ module.exports = {
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {cfn: this.searchCFN}})
+    },
+    lookupTag: function () {
+      // (general comments of other lookup*() functions apply.)
+      this.searchASN = ''
+      this.searchEmail = ''
+      this.searchName = ''
+      this.searchCFN = ''
+
+      this.getOrgIDs('/annotation/search?tag=' + this.searchTag)
+      this.$router.replace({query: {tag: this.searchTag}})
     },
     refreshCurrentSearch: function () {
       // simple version to just repeat the search we'd done before
