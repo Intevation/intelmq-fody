@@ -1,4 +1,4 @@
-## 0.4.3 to (pending)
+## 0.4.3 to 0.5.0
  * Contacts: Adds search field for tags.
  * Contacts: Improves editing of annotation.tags, by offering the choice
      of commonly used tags loaded from the backend.
