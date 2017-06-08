@@ -1,7 +1,10 @@
 ## 0.5.0 to 0.5.1 (unreleased)
 
+ (TODO)
+ * Contacts: Fixes tag search to repeat the search after a commit.
  * Contacts: (minor) Display comment in brackets (except for the organisation)
    to be more consistent.
+
 
 ## 0.4.3 to 0.5.0
  * Contacts: Adds search field for tags.

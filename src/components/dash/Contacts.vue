@@ -434,6 +434,10 @@ module.exports = {
         this.lookupCFN()
         return
       }
+      if (this.searchTag !== '') {
+        this.lookupTag()
+        return
+      }
     },
     lookupOrg: function (orgList, type, ids, index) {
       var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
