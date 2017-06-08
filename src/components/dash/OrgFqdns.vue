@@ -16,6 +16,7 @@
           </div>
           <div v-else>
             {{ fqdn.fqdn }}
+            <em v-if="fqdn.comment !== ''">({{ fqdn.comment }})</em>
           </div>
           <div v-if="editable" class="form-group">
             <label class="col-sm-4 control-label">Comment</label>
@@ -23,8 +24,6 @@
               <input type="text" v-model="fqdn.comment" class="form-control" />
             </div>
           </div>
-          <em v-else-if="fqdn.comment !== ''" class="list-group-item"
-          >({{ fqdn.comment }})</em>
         </div>
 
         <org-annotations

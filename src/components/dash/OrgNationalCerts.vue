@@ -11,8 +11,10 @@
             class="col-sm-8"/>
         </div>
       </div>
-      <div v-else class="col-sm-2">
+      <div v-else>
         {{ national_cert.country_code }}
+        <em v-if="national_cert.comment !== ''"
+          >({{ national_cert.comment }})</em>
       </div>
       <div v-if="editable" class="form-group">
         <label class="col-sm-4 control-label">Comment</label>
@@ -20,9 +22,6 @@
               <input type="text" v-model="national_cert.comment"
                  class="form-control" />
           </div>
-      </div>
-      <div v-else-if="national_cert.comment !== ''" class="col-sm-10"
-        ></em>({{ national_cert.comment }})</em>
       </div>
     </div>
       <div v-if="editable" class="list-group form-horizontal">
