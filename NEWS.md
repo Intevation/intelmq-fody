@@ -1,3 +1,8 @@
+## 0.5.1 to 0.5.2 (unreleased)
+
+(TODO)
+
+
 ## 0.5.0 to 0.5.1
 
  * Contacts: Fixes tag search to repeat the search after a commit.
