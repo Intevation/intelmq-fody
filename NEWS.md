@@ -1,6 +1,5 @@
-## 0.5.0 to 0.5.1 (unreleased)
+## 0.5.0 to 0.5.1
 
- (TODO)
  * Contacts: Fixes tag search to repeat the search after a commit.
  * Contacts: (minor) Display comment in brackets (except for the organisation)
    to be more consistent.
