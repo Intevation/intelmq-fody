@@ -357,7 +357,7 @@ module.exports = {
         return d => d.toISOString().slice(0, 10)
       } else {
         return d => d.toISOString().slice(0, 10) + '.' +
-                    d.toISOString().slice(11, 13)
+                    d.toISOString().slice(11, 16)
       }
     },
     update: function () {
@@ -533,7 +533,15 @@ module.exports = {
       var svgXML = (new XMLSerializer()).serializeToString(svg)
       this.svgXML = svgXML
 
-      this.dataCSV = d3.csvFormat(this.queryData.results)
+      this.dataCSV = d3.csvFormatRows([[
+        "count", "datetime", "date_trunc"
+        ]].concat(this.queryData.results.map(d => {
+            return [
+              d.count,
+              this.formatXTick()(d.date_trunc),
+              d.date_trunc
+            ]
+      }))
     },
     initEventsTable: function () {
       var that = this
