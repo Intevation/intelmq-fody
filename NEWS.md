@@ -1,6 +1,9 @@
 ## 0.5.1 to 0.5.2 (unreleased)
 
 (TODO)
+ * Stats: Makes csv export files directly parsable for libreoffice by adding
+   an ISO 8601 column.
+ * Stats: (minor) Adds minutes to the hourly x-axis-label to be more common.
 
 
 ## 0.5.0 to 0.5.1

@@ -350,14 +350,23 @@ module.exports = {
     },
     ticksX: function () {
       // how many ticks shall we display?
-      return Math.floor(this.padded.width / 110)
+      if (this.queryData.timeres === 'hour') {
+        return Math.floor(this.padded.width / 145)
+      } else {
+        return Math.floor(this.padded.width / 110)
+      }
     },
     formatXTick: function () {
-      if (this.queryData.timeres === 'day') {
-        return d => d.toISOString().slice(0, 10)
-      } else {
+      // Needed for x-axis label and CSV export (see usage below).
+      // Using UTC for simplicity (there is no simple javascript function
+      // to get a timezone-shifted ISO 8601 style string and there is no
+      // easy way to find out in which time zone the browser would want it
+      // displayed in).
+      if (this.queryData.timeres === 'hour') {
         return d => d.toISOString().slice(0, 10) + '.' +
                     d.toISOString().slice(11, 16)
+      } else {
+        return d => d.toISOString().slice(0, 10)
       }
     },
     update: function () {
@@ -533,15 +542,17 @@ module.exports = {
       var svgXML = (new XMLSerializer()).serializeToString(svg)
       this.svgXML = svgXML
 
+      // we use d3.csvFormatRows() instead of d3.csvFormat() to be
+      // able to explicitely transform the values into an ISO 8601 format
+      // that libreoffice can read as a date (tested with libreoffice 5.2.7).
+      // We still give the original Date object coerced as string in an
+      // additional column for showing the timezone.
+      var dateToUTC = this.formatXTick()
       this.dataCSV = d3.csvFormatRows([[
-        "count", "datetime", "date_trunc"
-        ]].concat(this.queryData.results.map(d => {
-            return [
-              d.count,
-              this.formatXTick()(d.date_trunc),
-              d.date_trunc
-            ]
-      }))
+        'count', 'date_trunc_utc', 'date_trunc'
+      ]].concat(this.queryData.results.map(d => {
+        return [d.count, dateToUTC(d.date_trunc), d.date_trunc]
+      })))
     },
     initEventsTable: function () {
       var that = this
