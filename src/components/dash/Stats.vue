@@ -363,7 +363,7 @@ module.exports = {
       // easy way to find out in which time zone the browser would want it
       // displayed in).
       if (this.queryData.timeres === 'hour') {
-        return d => d.toISOString().slice(0, 10) + '.' +
+        return d => d.toISOString().slice(0, 10) + ' ' +
                     d.toISOString().slice(11, 16)
       } else {
         return d => d.toISOString().slice(0, 10)
