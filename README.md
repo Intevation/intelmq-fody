@@ -37,13 +37,8 @@ yarn run build
 
 
 
-For data to be retrieved, you need to serve the
-[checkticket](https://github.com/Intevation/intelmq-mailgen/tree/master/extras/checkticket-spa)
-and
-[contactdb](https://github.com/Intevation/intelmq-mailgen/tree/master/extras/contactdb_api)
-apis via http for your Intelmq setup.
-As long as [#30](https://github.com/Intevation/intelmq-fody/issues/30) is
-unsolved the apis needs to be server single-threaded.
+For data to be retrieved, you need to have http(s) access to the
+[intelmq-fody-backend](https://github.com/Intevation/intelmq-fody-backend).
 
 See the [setup example for Ubuntu](docs/SetupExampleUbuntu.md) for a complete example.
 
