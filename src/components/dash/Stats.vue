@@ -467,6 +467,8 @@ module.exports = {
 
       this.$http.get(url).then((response) => {
         // got valid response
+        console.log('sent url')
+        console.log(url)
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
@@ -570,10 +572,22 @@ module.exports = {
             'title': '',
             'defaultContent': ''
           },
-          { 'title': 'Source IP' },
-          { 'title': 'Source Port' },
-          { 'title': 'Classification Type' },
-          { 'title': 'Observation Time' }
+          { 'title': 'time.source' },
+          { 'title': 'classification.type' },
+          { 'title': 'classification.identifier' },
+          { 'title': 'feed.name' },
+          { 'title': 'feed.provider' },
+          { 'title': 'source.ip' },
+          { 'title': 'source.asn' },
+          { 'title': 'source.fqdn' },
+          { 'title': 'source.port' },
+          { 'title': 'source.revers_dns' },
+          { 'title': 'destination.ip' },
+          { 'title': 'destination.fqdn' },
+          { 'title': 'destination.url' },
+          { 'title': 'malware.name' },
+          { 'title': 'rtir_report' },
+          { 'title': 'rtir_investigation_id' }
         ],
         'order': [[2, 'asc']]
       })
@@ -588,6 +602,8 @@ module.exports = {
           tr.removeClass('shown')
         } else {
           // Open this row
+          console.log('row.data()')
+          console.log(row.data())
           row.child(that.formatEventDetailRow(row.data())).show()
           tr.addClass('shown')
         }
@@ -613,7 +629,7 @@ module.exports = {
       for (var i = 0; i < this.eventData.length; i++) {
         e = this.eventData[i]
         r = [i, '']  // first columns: internal index, child row expansion
-        for (var column of ['source.ip', 'source.port', 'classification.type', 'time.observation']) {
+        for (var column of ['time.source', 'classification.type', 'classification.identifier', 'feed.name', 'feed.provider', 'source.ip', 'source.asn', 'source.fqdn', 'source.port', 'source.reverse_dns', 'destination.ip', 'destination.fqdn', 'destination.url', 'malware.name', 'rtir_report_id', 'rtir_investigation_id']) {
           if (e[column]) { r.push(e[column]) } else { r.push('') }
         }
         this.eventsTable.row.add(r)
@@ -632,8 +648,9 @@ module.exports = {
       currentRow.classList.add('row')
 
       for (var column of Object.keys(myEvent).sort()) {
-        if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
-          if (counter > 0 && counter % 6 === 0) {
+        if (['raw', 'time.source', 'classification.type', 'classification.identifier', 'feed.name', 'feed.provider', 'source.ip', 'source.asn', 'source.fqdn', 'source.port', 'source.reverse_dns', 'destination.ip', 'destination.fqdn', 'destination.url', 'malware.name', 'rtir_report_id', 'rtir_investigation_id'].indexOf(column) === -1) {
+          // mod calculation used for number of columns within details
+          if (counter > 0 && counter % 2 === 0) {
             div.appendChild(currentRow)
             currentRow = document.createElement('div')
             currentRow.classList.add('row')

@@ -41,7 +41,7 @@
           <li class="header">TOOLS</li>
           <li class="active pageLink" v-on:click="toggleMenu"><router-link to="/"><i class="fa fa-desktop"></i><span class="page">Dashboard</span></router-link></li>
           <li class="pageLink" v-on:click="toggleMenu"><router-link to="tickets"><i class="fa fa-ticket"></i><span class="page">Tickets</span></router-link></li>
-          <li class="pageLink" v-on:click="toggleMenu"><router-link to="contacts"><i class="fa fa-address-book-o"></i><span class="page">Contacts</span></router-link></li>
+          <!-- <li class="pageLink" v-on:click="toggleMenu"><router-link to="contacts"><i class="fa fa-address-book-o"></i><span class="page">Contacts</span></router-link></li>  -->
           <li class="pageLink" v-on:click="toggleMenu"><router-link to="stats"><i class="fa fa-bar-chart"></i><span class="page">Statistics</span></router-link></li>
           <li v-if="debugPages" class="header">PAGES</li>
           <li v-if="debugPages" class="pageLink" v-on:click="toggleMenu"><router-link to="/login"><i class="fa fa-circle-o text-yellow"></i> <span class="page">Login</span></router-link></li>
