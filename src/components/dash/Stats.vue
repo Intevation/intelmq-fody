@@ -241,13 +241,14 @@ module.exports = {
     IBoxEventsToday
   },
   data: function () {
-    var tomorrow = new Date()
-    var today = new Date()
+    var beforeDate = new Date()
+    var afterDate = new Date()
 
-    tomorrow.setDate(tomorrow.getDate() + 1)
+    beforeDate.setDate(beforeDate.getDate() + 1)
+    afterDate.setMonth(afterDate.getMonth() - 1)
 
-    today = today.toJSON().split('T')[0]
-    tomorrow = tomorrow.toJSON().split('T')[0]
+    afterDate = afterDate.toJSON().split('T')[0]
+    beforeDate = beforeDate.toJSON().split('T')[0]
 
     return {
       width: 0,
@@ -267,8 +268,8 @@ module.exports = {
       eventsTable: null, // datatables object
       query: {
         timeres: 'hour',
-        after: today,
-        before: tomorrow,
+        after: afterDate,
+        before: beforeDate,
         subs: [{cond: '', value: ''}]
       },
       fpOptions: {
@@ -277,7 +278,7 @@ module.exports = {
         time_24hr: true,
         enableTime: true,
         weekNumbers: true,
-        maxDate: tomorrow
+        maxDate: beforeDate
       }
     }
   },
