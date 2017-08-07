@@ -38,14 +38,14 @@
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[0] }}</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-7">
                             <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
                                 class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[1] }}</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-7">
                             <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
                                 class="form-control"/>
                         </div>
@@ -61,9 +61,14 @@
                                 </select>
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
-                            <div class="col-sm-8">
+                            <div class="col-sm-7">
                                 <input v-model="sq.value" type="text" class="form-control">
                             </div>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" v-on:click="removeFilter(index)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -105,9 +110,15 @@
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="queryData.total <= 10000">
+                            <div v-if="checkLoadingLimits(queryData.total) === 'auto'">
+                                <span class='info-box-text'>Events loaded automatically</span>
+                            </div>
+                            <div v-else-if="checkLoadingLimits(queryData.total) === 'stop'">
+                                <span class='info-box-text'>too much Events</span>
+                            </div>
+                            <div v-else-if="checkLoadingLimits(queryData.total) === 'ask'">
                                 <button class="btn btn-default" v-on:click="loadEvents">
-                                    Load Events
+                                    Load Events?
                                 </button>
                             </div>
                             <!-- ./ v-if -->
@@ -319,6 +330,12 @@ module.exports = {
     }
   },
   methods: {
+    removeFilter: function (cond) {
+      console.log('remove filter')
+      console.log(cond)
+      console.log(this.query.subs[cond].cond)
+      this.query.subs[cond].cond = ''
+    },
     onResize: function () {
       this.width = document.getElementById('chart_container').offsetWidth
       this.height = this.width / 1.61803 // golden ratio
@@ -532,6 +549,16 @@ module.exports = {
 
       if (this.mode === 'events') {
         this.destroyEventsTable()
+      }
+    },
+    checkLoadingLimits: function (amount) {
+      if (amount < 1000) {
+        this.loadEvents()
+        return 'auto'
+      } else if (amount > 1000000) {
+        return 'stop'
+      } else if (amount < 10000) {
+        return 'ask'
       }
     },
     prepareDownloads: function () {
