@@ -644,30 +644,32 @@ module.exports = {
       currentRow.classList.add('row')
 
       for (var column of Object.keys(myEvent).sort()) {
-        if (['time.source', 'classification.type', 'classification.identifier', 'feed.name', 'feed.provider', 'source.ip', 'source.asn', 'source.fqdn', 'source.port', 'source.reverse_dns', 'destination.ip', 'destination.fqdn', 'destination.url', 'malware.name', 'rtir_report_id', 'rtir_investigation_id'].indexOf(column) === -1) {
-          // mod calculation used for number of columns within details
-          if (counter > 0 && counter % 2 === 0) {
-            div.appendChild(currentRow)
-            currentRow = document.createElement('div')
-            currentRow.classList.add('row')
-          }
-          var el = document.createElement('div')
-          var c = document.createElement('strong')
-          var v
-          if (column === 'raw' && myEvent[column] !== null) {
-            v = document.createElement('span')
-            v.textContent = atob(myEvent[column])
-          } else {
-            v = document.createElement('span')
-            v.textContent = myEvent[column]
-          }
+        if (myEvent[column] !== null) {
+          if (['time.source', 'classification.type', 'classification.identifier', 'feed.name', 'feed.provider', 'source.ip', 'source.asn', 'source.fqdn', 'source.port', 'source.reverse_dns', 'destination.ip', 'destination.fqdn', 'destination.url', 'malware.name', 'rtir_report_id', 'rtir_investigation_id'].indexOf(column) === -1) {
+            // mod calculation used for number of columns within details
+            if (counter > 0 && counter % 2 === 0) {
+              div.appendChild(currentRow)
+              currentRow = document.createElement('div')
+              currentRow.classList.add('row')
+            }
+            var el = document.createElement('div')
+            var c = document.createElement('strong')
+            var v
+            if (column === 'raw') {
+              v = document.createElement('span')
+              v.textContent = atob(myEvent[column])
+            } else {
+              v = document.createElement('span')
+              v.textContent = myEvent[column]
+            }
 
-          el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
-          c.textContent = column + ': '
-          el.appendChild(c)
-          el.appendChild(v)
-          currentRow.appendChild(el)
-          counter++
+            el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
+            c.textContent = column + ': '
+            el.appendChild(c)
+            el.appendChild(v)
+            currentRow.appendChild(el)
+            counter++
+          }
         }
       }
       div.appendChild(currentRow)
