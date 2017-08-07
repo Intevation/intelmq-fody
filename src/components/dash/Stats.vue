@@ -270,7 +270,7 @@ module.exports = {
         timeres: 'hour',
         after: afterDate,
         before: beforeDate,
-        subs: [{cond: '', value: ''}]
+        subs: [{cond: 'source-ip_is', value: ''}]
       },
       fpOptions: {
         onValueUpdate: null,
@@ -468,8 +468,6 @@ module.exports = {
 
       this.$http.get(url).then((response) => {
         // got valid response
-        console.log('sent url')
-        console.log(url)
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
@@ -603,8 +601,6 @@ module.exports = {
           tr.removeClass('shown')
         } else {
           // Open this row
-          console.log('row.data()')
-          console.log(row.data())
           row.child(that.formatEventDetailRow(row.data())).show()
           tr.addClass('shown')
         }
@@ -624,7 +620,6 @@ module.exports = {
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
       var e, r
-      console.log(this.eventData)
       this.resetEventsTable()
       this.eventsTable.search('')
       for (var i = 0; i < this.eventData.length; i++) {
