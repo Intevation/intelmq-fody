@@ -62,7 +62,7 @@
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
                             <div class="col-sm-7">
-                                <input v-model="sq.value" type="text" class="form-control">
+                                <input v-model.trim="sq.value" type="text" v-on:keyup.enter='loadStats' class="form-control" autofocus>
                             </div>
                             <span class="input-group-btn">
                                 <button class="btn btn-default" v-on:click="removeFilter(index)">
@@ -331,9 +331,6 @@ module.exports = {
   },
   methods: {
     removeFilter: function (cond) {
-      console.log('remove filter')
-      console.log(cond)
-      console.log(this.query.subs[cond].cond)
       this.query.subs[cond].cond = ''
     },
     onResize: function () {
@@ -482,7 +479,6 @@ module.exports = {
     loadEvents: function () {
       var url = this.baseQueryURL + '/search?' +
         this.lastQueryURL
-
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {
@@ -552,13 +548,16 @@ module.exports = {
       }
     },
     checkLoadingLimits: function (amount) {
-      if (amount < 1000) {
+      var lowerLimit = 100
+      var upperLimit = 800
+
+      if (amount < lowerLimit) {
         this.loadEvents()
         return 'auto'
-      } else if (amount > 1000000) {
-        return 'stop'
-      } else if (amount < 10000) {
+      } else if ((amount >= lowerLimit) && (amount < upperLimit)) {
         return 'ask'
+      } else {
+        return 'stop'
       }
     },
     prepareDownloads: function () {
@@ -636,7 +635,7 @@ module.exports = {
     destroyEventsTable: function () {
       this.resetEventData()
       if (this.eventsTable) {
-        this.updateEventsTable()
+        // this.updateEventsTable()
         this.eventsTable.destroy()
         this.eventsTable = null
       }
