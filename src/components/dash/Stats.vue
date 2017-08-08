@@ -102,7 +102,7 @@
     <div class="row">
         <div v-if='mode == "events"'>
             <div v-if="queryData.total > 0">
-                <div class='col-md-4 col-sm-4 col-xs-12'>
+                <div class='col-md-4 col-sm-8 col-xs-12'>
                     <div class='info-box info-box col-md-2'>
                         <span class='info-box-icon bg-green'><i class='fa fa-server'></i></span>
                         <div class='info-box-content'>
@@ -132,6 +132,11 @@
                             <!-- ./ v-else -->
                         </div>
                         <!-- /.info-box-content -->
+                    </div>
+                    <div>
+                      <button class="btn btn-default" v-on:click="loadEvents">
+                                    Export CSV
+                      </button>
                     </div>
                     <!-- /.info-box -->
                 </div>
@@ -548,8 +553,8 @@ module.exports = {
       }
     },
     checkLoadingLimits: function (amount) {
-      var lowerLimit = 100
-      var upperLimit = 800
+      var lowerLimit = 10000
+      var upperLimit = 1000000
 
       if (amount < lowerLimit) {
         this.loadEvents()
@@ -635,7 +640,7 @@ module.exports = {
     destroyEventsTable: function () {
       this.resetEventData()
       if (this.eventsTable) {
-        // this.updateEventsTable()
+        this.updateEventsTable()
         this.eventsTable.destroy()
         this.eventsTable = null
       }
