@@ -471,14 +471,14 @@ module.exports = {
       if (mode === 'tickets') {
         return ['sent-at_after', 'sent-at_before']
       } else {
-        return ['time-observation_after', 'time-observation_before']
+        return ['time-source_after', 'time-source_before']
       }
     },
     getTimeResParamLabels: function (mode) {
       if (mode === 'tickets') {
         return ['Sent after', 'Sent before']
       } else {
-        return ['Observed after', 'Observed before']
+        return ['Time source after', 'Time source before']
       }
     },
     loadEvents: function () {
@@ -553,8 +553,8 @@ module.exports = {
       }
     },
     checkLoadingLimits: function (amount) {
-      var lowerLimit = 10000
-      var upperLimit = 1000000
+      var lowerLimit = 100
+      var upperLimit = 800
 
       if (amount < lowerLimit) {
         this.loadEvents()
@@ -640,7 +640,7 @@ module.exports = {
     destroyEventsTable: function () {
       this.resetEventData()
       if (this.eventsTable) {
-        this.updateEventsTable()
+        // this.updateEventsTable()
         this.eventsTable.destroy()
         this.eventsTable = null
       }
