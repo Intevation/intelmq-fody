@@ -43,7 +43,6 @@ module.exports = {
       var url = '/api/tickets/stats?' +
           'sent-at_after=' + today +
           '&sent-at_before=' + tomorrow
-
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {

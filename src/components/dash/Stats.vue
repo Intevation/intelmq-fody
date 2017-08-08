@@ -62,7 +62,7 @@
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
                             <div class="col-sm-7">
-                                <input v-model="sq.value" type="text" class="form-control">
+                                <input v-model.trim="sq.value" type="text" v-on:keyup.enter='loadStats' class="form-control" autofocus>
                             </div>
                             <span class="input-group-btn">
                                 <button class="btn btn-default" v-on:click="removeFilter(index)">
@@ -102,8 +102,8 @@
     <div class="row">
         <div v-if='mode == "events"'>
             <div v-if="queryData.total > 0">
-                <div class='col-md-4 col-sm-4 col-xs-12'>
-                    <div class='info-box info-box col-md-2'>
+                <div class='col-md-5 col-sm-8 col-xs-12'>
+                    <div class='info-box info-box col-md-3'>
                         <span class='info-box-icon bg-green'><i class='fa fa-server'></i></span>
                         <div class='info-box-content'>
                             <span class='info-box-text'>Events Total for this Query</span>
@@ -121,6 +121,7 @@
                                     Load Events?
                                 </button>
                             </div>
+                            
                             <!-- ./ v-if -->
                             <!--
                             <div v-else>
@@ -136,6 +137,11 @@
                     <!-- /.info-box -->
                 </div>
                 <!-- ./col -->
+              <div>
+                  <button class="btn btn-success" v-on:click="exportTableData">
+                      Export CSV
+                  </button>
+              </div>
             </div>
             <!-- ./ v-if -->
         </div>
@@ -331,9 +337,6 @@ module.exports = {
   },
   methods: {
     removeFilter: function (cond) {
-      console.log('remove filter')
-      console.log(cond)
-      console.log(this.query.subs[cond].cond)
       this.query.subs[cond].cond = ''
     },
     onResize: function () {
@@ -469,20 +472,19 @@ module.exports = {
       if (mode === 'tickets') {
         return ['sent-at_after', 'sent-at_before']
       } else {
-        return ['time-observation_after', 'time-observation_before']
+        return ['time-source_after', 'time-source_before']
       }
     },
     getTimeResParamLabels: function (mode) {
       if (mode === 'tickets') {
         return ['Sent after', 'Sent before']
       } else {
-        return ['Observed after', 'Observed before']
+        return ['Time source after', 'Time source before']
       }
     },
     loadEvents: function () {
       var url = this.baseQueryURL + '/search?' +
         this.lastQueryURL
-
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {
@@ -552,14 +554,78 @@ module.exports = {
       }
     },
     checkLoadingLimits: function (amount) {
-      if (amount < 1000) {
+      var lowerLimit = 1000
+      var upperLimit = 100000
+
+      if (amount < lowerLimit) {
         this.loadEvents()
         return 'auto'
-      } else if (amount > 1000000) {
-        return 'stop'
-      } else if (amount < 10000) {
+      } else if ((amount >= lowerLimit) && (amount < upperLimit)) {
         return 'ask'
+      } else {
+        return 'stop'
       }
+    },
+    exportTableData: function () {
+      // ensure beeing json
+      var currentEventData = typeof this.eventData !== 'object' ? JSON.parse(this.eventData) : this.eventData
+
+      var csvData = ''
+      var row = ''
+
+      // extract field names using 1st element
+      for (var field in currentEventData[0]) {
+        // concat comma seperated
+        row += field + ','
+      }
+
+      // delete last comma
+      row = row.slice(0, -1)
+      // add line break
+      csvData += row + '\r\n'
+
+      // extract rows
+      for (var i = 0; i < currentEventData.length; i++) {
+        row = ''
+        // extract and convert columns
+        for (var index in currentEventData[i]) {
+          if ((index === 'raw') && (currentEventData[i][index] !== null)) {
+            // decode base64 value and replace all double quotes with double double quotes
+            row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
+          } else if ((index === 'extra') && (currentEventData[i][index] !== null)) {
+            // stringify json
+            row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
+          } else {
+            // simply add value
+            row += '"' + currentEventData[i][index] + '",'
+          }
+        }
+
+        // remove last comma
+        row.slice(0, row.length - 1)
+
+        // line break after row
+        csvData += row + '\r\n'
+      }
+
+      if ((csvData === '') || (csvData === null)) {
+        alert('Invalid data')
+        return
+      }
+
+      var fileName = 'export'
+      var uri = 'data:text/csv;charset=utf-8,' + escape(csvData)
+      var link = document.createElement('a')
+      link.href = uri
+
+      // hide it
+      link.style = 'visibility:hidden'
+      link.download = fileName + '.csv'
+
+      // append and remove anchor tag
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     },
     prepareDownloads: function () {
       var svg = document.getElementById('chart1')
@@ -636,7 +702,7 @@ module.exports = {
     destroyEventsTable: function () {
       this.resetEventData()
       if (this.eventsTable) {
-        this.updateEventsTable()
+        // this.updateEventsTable()
         this.eventsTable.destroy()
         this.eventsTable = null
       }
@@ -685,6 +751,9 @@ module.exports = {
             if (column === 'raw') {
               v = document.createElement('span')
               v.textContent = atob(myEvent[column])
+            } else if (column === 'extra') {
+              v = document.createElement('span')
+              v.textContent = JSON.stringify(myEvent[column])
             } else {
               v = document.createElement('span')
               v.textContent = myEvent[column]
