@@ -554,8 +554,8 @@ module.exports = {
       }
     },
     checkLoadingLimits: function (amount) {
-      var lowerLimit = 10000
-      var upperLimit = 80000
+      var lowerLimit = 1000
+      var upperLimit = 100000
 
       if (amount < lowerLimit) {
         this.loadEvents()
@@ -590,8 +590,13 @@ module.exports = {
         // extract and convert columns
         for (var index in currentEventData[i]) {
           if ((index === 'raw') && (currentEventData[i][index] !== null)) {
+            // decode base64 value and replace all double quotes with double double quotes
             row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
+          } else if ((index === 'extra') && (currentEventData[i][index] !== null)) {
+            // stringify json
+            row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
           } else {
+            // simply add value
             row += '"' + currentEventData[i][index] + '",'
           }
         }
@@ -746,6 +751,9 @@ module.exports = {
             if (column === 'raw') {
               v = document.createElement('span')
               v.textContent = atob(myEvent[column])
+            } else if (column === 'extra') {
+              v = document.createElement('span')
+              v.textContent = JSON.stringify(myEvent[column])
             } else {
               v = document.createElement('span')
               v.textContent = myEvent[column]
