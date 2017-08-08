@@ -102,8 +102,8 @@
     <div class="row">
         <div v-if='mode == "events"'>
             <div v-if="queryData.total > 0">
-                <div class='col-md-4 col-sm-8 col-xs-12'>
-                    <div class='info-box info-box col-md-2'>
+                <div class='col-md-5 col-sm-8 col-xs-12'>
+                    <div class='info-box info-box col-md-3'>
                         <span class='info-box-icon bg-green'><i class='fa fa-server'></i></span>
                         <div class='info-box-content'>
                             <span class='info-box-text'>Events Total for this Query</span>
@@ -121,6 +121,7 @@
                                     Load Events?
                                 </button>
                             </div>
+                            
                             <!-- ./ v-if -->
                             <!--
                             <div v-else>
@@ -133,14 +134,14 @@
                         </div>
                         <!-- /.info-box-content -->
                     </div>
-                    <div>
-                      <button class="btn btn-default" v-on:click="loadEvents">
-                                    Export CSV
-                      </button>
-                    </div>
                     <!-- /.info-box -->
                 </div>
                 <!-- ./col -->
+              <div>
+                  <button class="btn btn-success" v-on:click="exportTableData">
+                      Export CSV
+                  </button>
+              </div>
             </div>
             <!-- ./ v-if -->
         </div>
@@ -553,8 +554,8 @@ module.exports = {
       }
     },
     checkLoadingLimits: function (amount) {
-      var lowerLimit = 100
-      var upperLimit = 800
+      var lowerLimit = 10000
+      var upperLimit = 80000
 
       if (amount < lowerLimit) {
         this.loadEvents()
@@ -564,6 +565,62 @@ module.exports = {
       } else {
         return 'stop'
       }
+    },
+    exportTableData: function () {
+      // ensure beeing json
+      var currentEventData = typeof this.eventData !== 'object' ? JSON.parse(this.eventData) : this.eventData
+
+      var csvData = ''
+      var row = ''
+
+      // extract field names using 1st element
+      for (var field in currentEventData[0]) {
+        // concat comma seperated
+        row += field + ','
+      }
+
+      // delete last comma
+      row = row.slice(0, -1)
+      // add line break
+      csvData += row + '\r\n'
+
+      // extract rows
+      for (var i = 0; i < currentEventData.length; i++) {
+        row = ''
+        // extract and convert columns
+        for (var index in currentEventData[i]) {
+          if ((index === 'raw') && (currentEventData[i][index] !== null)) {
+            row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
+          } else {
+            row += '"' + currentEventData[i][index] + '",'
+          }
+        }
+
+        // remove last comma
+        row.slice(0, row.length - 1)
+
+        // line break after row
+        csvData += row + '\r\n'
+      }
+
+      if ((csvData === '') || (csvData === null)) {
+        alert('Invalid data')
+        return
+      }
+
+      var fileName = 'export'
+      var uri = 'data:text/csv;charset=utf-8,' + escape(csvData)
+      var link = document.createElement('a')
+      link.href = uri
+
+      // hide it
+      link.style = 'visibility:hidden'
+      link.download = fileName + '.csv'
+
+      // append and remove anchor tag
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     },
     prepareDownloads: function () {
       var svg = document.getElementById('chart1')
