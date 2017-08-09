@@ -92,9 +92,14 @@
                             <option>month</option>
                         </select>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <button class="btn btn-primary" v-on:click="loadStats">
                             Load data
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button v-bind:class="[doViewStatsSVG ? 'btn btn-success' : 'btn btn-danger']" v-on:click="viewStatsSVG">
+                            {{statsButtonText}}
                         </button>
                     </div>
                 </div>
@@ -200,7 +205,7 @@
     </div>
     <!-- ./row -->
     <!-- Area where Charts are shown -->
-    <div class="box">
+    <div v-show="doViewStatsSVG" class="box">
         <div class="box-header with-border">
             <h3 class="box-title">{{ modeHeader }}</h3>
             <div class="box-body">
@@ -282,6 +287,8 @@ module.exports = {
       modeHeader: '',
       mode: '',
       checkLoadingLimitStatus: 'ask',
+      doViewStatsSVG: true,
+      statsButtonText: 'View Stats',
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
@@ -328,6 +335,7 @@ module.exports = {
     this.setMode('events')
     this.initialize()
     this.onResize()  // initialize size and chart on first mount
+    this.doViewStatsSVG = false
   },
   beforeDestroy: function () {
     window.removeEventListener('resize', this.onResize)
@@ -558,6 +566,14 @@ module.exports = {
 
       if (this.mode === 'events') {
         this.destroyEventsTable()
+      }
+    },
+    viewStatsSVG: function () {
+      this.doViewStatsSVG = !this.doViewStatsSVG
+      if (this.doViewStatsSVG) {
+        this.statsButtonText = 'Hide Stats'
+      } else {
+        this.statsButtonText = 'View Stats'
       }
     },
     checkLoadingLimits: function (amount) {
