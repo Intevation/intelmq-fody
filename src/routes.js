@@ -4,7 +4,7 @@ import NotFoundView from './components/404.vue'
 // Import Views - Dash
 import DashboardView from './components/dash/Dashboard.vue'
 import TicketsView from './components/dash/Tickets.vue'
-// import ContactsView from './components/dash/Contacts.vue'
+import ContactsView from './components/dash/Contacts.vue'
 import StatsView from './components/dash/Stats.vue'
 
 // Routes
@@ -28,11 +28,11 @@ const routes = [
         name: 'Tickets',
         meta: { description: 'Show sent reports' }
       }, {
- //       path: 'contacts',
- //       component: ContactsView,
- //       name: 'Contacts',
- //       meta: { description: 'Maintain contact database' }
- //    }, {
+        path: 'contacts',
+        component: ContactsView,
+        name: 'Contacts',
+        meta: { description: 'Maintain contact database' }
+      }, {
         path: 'stats',
         component: StatsView,
         name: 'Statistics',
