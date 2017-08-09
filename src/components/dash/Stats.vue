@@ -592,6 +592,24 @@ module.exports = {
 
       return nullColumns
     },
+    getDateString: function () {
+      var today = new Date()
+
+      var dd = today.getDate()
+      var mm = today.getMonth() + 1
+      var yyyy = today.getFullYear()
+      var hour = today.getHours()
+      var min = today.getMinutes()
+
+      if (dd < 10) {
+        dd = '0' + dd
+      }
+      if (mm < 10) {
+        mm = '0' + mm
+      }
+
+      return yyyy + mm + dd + hour + min
+    },
     exportTableData: function () {
       // ensure beeing json
       var currentEventData = typeof this.eventData !== 'object' ? JSON.parse(this.eventData) : this.eventData
@@ -620,15 +638,20 @@ module.exports = {
         // extract and convert columns
         for (var index in currentEventData[i]) {
           if (nullColumns.indexOf(index) === -1) {
-            if ((index === 'raw') && (currentEventData[i][index] !== null)) {
-              // decode base64 value and replace all double quotes with double double quotes
-              row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
-            } else if ((index === 'extra') && (currentEventData[i][index] !== null)) {
-              // stringify json
-              row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
+            if (currentEventData[i][index] !== null) {
+              if (index === 'raw') {
+                // decode base64 value and escape " with ""
+                row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
+              } else if (index === 'extra') {
+                // stringify json and escape " with ""
+                row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
+              } else {
+                // simply add value
+                row += '"' + currentEventData[i][index] + '",'
+              }
             } else {
-              // simply add value
-              row += '"' + currentEventData[i][index] + '",'
+              // " to escape
+              row += ','
             }
           }
         }
@@ -645,7 +668,8 @@ module.exports = {
         return
       }
 
-      var fileName = 'export'
+      var fileName = 'export_'
+      fileName += this.getDateString()
       var uri = 'data:text/csv;charset=utf-8,' + escape(csvData)
       var link = document.createElement('a')
       link.href = uri
