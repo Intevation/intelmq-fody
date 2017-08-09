@@ -121,7 +121,7 @@
         <ul v-if="!editable" class="list-group">
           <li v-for="asn of org.asns" class="list-group-item">
             <i class="fa fa-hdd-o rme"></i>
-            ASN{{ asn.asn }}
+            AS{{ asn.asn }}
             <org-annotations
               v-if="'annotations' in asn && asn.annotations.length > 0"
               v-model="asn.annotations" v-bind:status="status"
@@ -132,7 +132,7 @@
           <div v-for="(asn, index) in org.asns" class="list-group-item">
             <div class="form-group">
               <label class="col-sm-4 control-label">
-                <i class="fa fa-hdd-o rme"></i>ASN</label>
+                <i class="fa fa-hdd-o rme"></i>AS</label>
                 <div class="col-sm-8">
                   <input v-model="org.asns[index].asn"
                     type="number" class="form-control"></input>

@@ -4,6 +4,7 @@
  * Stats: Makes csv export files directly parsable for libreoffice by adding
    an ISO 8601 column.
  * Stats: (minor) Adds minutes to the hourly x-axis-label to be more common.
+ * Contacts: (minor) Changes display of ASNs from "ASN1234" to "AS1234".
 
 
 ## 0.5.0 to 0.5.1
