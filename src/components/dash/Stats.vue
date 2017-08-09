@@ -110,17 +110,17 @@
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="checkLoadingLimits(queryData.total) === 'auto'">
+                             <div v-if="checkLoadingLimitStatus === 'auto'">
                                 <span class='info-box-text'>Events loaded automatically</span>
                             </div>
-                            <div v-else-if="checkLoadingLimits(queryData.total) === 'stop'">
+                            <div v-else-if="checkLoadingLimitStatus === 'stop'">
                                 <span class='info-box-text'>too much Events</span>
                             </div>
-                            <div v-else-if="checkLoadingLimits(queryData.total) === 'ask'">
+                            <div v-else-if="checkLoadingLimitStatus === 'ask'">
                                 <button class="btn btn-default" v-on:click="loadEvents">
                                     Load Events?
                                 </button>
-                            </div>
+                            </div> 
                             
                             <!-- ./ v-if -->
                             <!--
@@ -139,7 +139,7 @@
                 <!-- ./col -->
               <div>
                   <button class="btn btn-success" v-on:click="exportTableData">
-                      Export CSV
+                      Export Table to CSV
                   </button>
               </div>
             </div>
@@ -277,6 +277,7 @@ module.exports = {
       lastQueryURL: '',
       modeHeader: '',
       mode: '',
+      checkLoadingLimitStatus: 'ask',
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
@@ -530,6 +531,8 @@ module.exports = {
           // json parsed correctly
           if (value) {
             // parse the date_trunc strings into Date objects
+            this.resetEventsTable()
+            this.checkLoadingLimits(value.total)
             this.queryData = {
               total: value.total,
               timeres: value.timeres,
@@ -559,11 +562,11 @@ module.exports = {
 
       if (amount < lowerLimit) {
         this.loadEvents()
-        return 'auto'
+        this.checkLoadingLimitStatus = 'auto'
       } else if ((amount >= lowerLimit) && (amount < upperLimit)) {
-        return 'ask'
+        this.checkLoadingLimitStatus = 'ask'
       } else {
-        return 'stop'
+        this.checkLoadingLimitStatus = 'stop'
       }
     },
     exportTableData: function () {
@@ -651,9 +654,7 @@ module.exports = {
     initEventsTable: function () {
       var that = this
 
-      if (this.eventsTable != null) {
-        return
-      }
+      this.resetEventsTable()
       this.eventsTable = $('#events').DataTable({
         'data': [],
         'columns': [
@@ -681,7 +682,7 @@ module.exports = {
           { 'title': 'rtir_report' },
           { 'title': 'rtir_investigation_id' }
         ],
-        'order': [[2, 'asc']]
+        'order': [[0, 'desc'], [5, 'asc']]
       })
 
       $('#events tbody').on('click', 'td.details-control', function () {
@@ -702,13 +703,15 @@ module.exports = {
     destroyEventsTable: function () {
       this.resetEventData()
       if (this.eventsTable) {
-        // this.updateEventsTable()
+        this.updateEventsTable()
         this.eventsTable.destroy()
         this.eventsTable = null
       }
     },
     resetEventsTable: function () {
-      this.eventsTable.clear()
+      if (this.eventsTable !== null) {
+        this.eventsTable.clear()
+      }
     },
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
