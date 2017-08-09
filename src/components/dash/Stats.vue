@@ -110,17 +110,17 @@
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="checkLoadingLimits(queryData.total) === 'auto'">
+                             <div v-if="checkLoadingLimitStatus === 'auto'">
                                 <span class='info-box-text'>Events loaded automatically</span>
                             </div>
-                            <div v-else-if="checkLoadingLimits(queryData.total) === 'stop'">
+                            <div v-else-if="checkLoadingLimitStatus === 'stop'">
                                 <span class='info-box-text'>too much Events</span>
                             </div>
-                            <div v-else-if="checkLoadingLimits(queryData.total) === 'ask'">
+                            <div v-else-if="checkLoadingLimitStatus === 'ask'">
                                 <button class="btn btn-default" v-on:click="loadEvents">
                                     Load Events?
                                 </button>
-                            </div>
+                            </div> 
                             
                             <!-- ./ v-if -->
                             <!--
@@ -139,7 +139,7 @@
                 <!-- ./col -->
               <div>
                   <button class="btn btn-success" v-on:click="exportTableData">
-                      Export CSV
+                      Export Table to CSV
                   </button>
               </div>
             </div>
@@ -277,6 +277,7 @@ module.exports = {
       lastQueryURL: '',
       modeHeader: '',
       mode: '',
+      checkLoadingLimitStatus: 'ask',
       allowedSubs: {},  // allowed subqueries as returned from the backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
@@ -530,6 +531,8 @@ module.exports = {
           // json parsed correctly
           if (value) {
             // parse the date_trunc strings into Date objects
+            this.resetEventsTable()
+            this.checkLoadingLimits(value.total)
             this.queryData = {
               total: value.total,
               timeres: value.timeres,
@@ -559,24 +562,69 @@ module.exports = {
 
       if (amount < lowerLimit) {
         this.loadEvents()
-        return 'auto'
+        this.checkLoadingLimitStatus = 'auto'
       } else if ((amount >= lowerLimit) && (amount < upperLimit)) {
-        return 'ask'
+        this.checkLoadingLimitStatus = 'ask'
       } else {
-        return 'stop'
+        this.checkLoadingLimitStatus = 'stop'
       }
+    },
+    getListOfEmptyColumns: function (currentEventData) {
+      if ((currentEventData === null) || (currentEventData.length < 1)) {
+        return
+      }
+
+      var columnIsNull
+      var nullColumns = []
+
+      for (var index in currentEventData[0]) {
+        columnIsNull = true
+        for (var i = 0; i < currentEventData.length; i++) {
+          if (currentEventData[i][index] !== null) {
+            columnIsNull = false
+            break
+          }
+        }
+        if (columnIsNull === true) {
+          nullColumns.push(index)
+        }
+      }
+
+      return nullColumns
+    },
+    getDateString: function () {
+      var today = new Date()
+
+      var dd = today.getDate()
+      var mm = today.getMonth() + 1
+      var yyyy = today.getFullYear()
+      var hour = today.getHours()
+      var min = today.getMinutes()
+
+      if (dd < 10) {
+        dd = '0' + dd
+      }
+      if (mm < 10) {
+        mm = '0' + mm
+      }
+
+      return yyyy + mm + dd + hour + min
     },
     exportTableData: function () {
       // ensure beeing json
       var currentEventData = typeof this.eventData !== 'object' ? JSON.parse(this.eventData) : this.eventData
+
+      var nullColumns = this.getListOfEmptyColumns(currentEventData)
 
       var csvData = ''
       var row = ''
 
       // extract field names using 1st element
       for (var field in currentEventData[0]) {
-        // concat comma seperated
-        row += field + ','
+        if (nullColumns.indexOf(field) === -1) {
+          // concat comma seperated
+          row += field + ','
+        }
       }
 
       // delete last comma
@@ -589,15 +637,22 @@ module.exports = {
         row = ''
         // extract and convert columns
         for (var index in currentEventData[i]) {
-          if ((index === 'raw') && (currentEventData[i][index] !== null)) {
-            // decode base64 value and replace all double quotes with double double quotes
-            row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
-          } else if ((index === 'extra') && (currentEventData[i][index] !== null)) {
-            // stringify json
-            row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
-          } else {
-            // simply add value
-            row += '"' + currentEventData[i][index] + '",'
+          if (nullColumns.indexOf(index) === -1) {
+            if (currentEventData[i][index] !== null) {
+              if (index === 'raw') {
+                // decode base64 value and escape " with ""
+                row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
+              } else if (index === 'extra') {
+                // stringify json and escape " with ""
+                row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
+              } else {
+                // simply add value
+                row += '"' + currentEventData[i][index] + '",'
+              }
+            } else {
+              // " to escape
+              row += ','
+            }
           }
         }
 
@@ -613,7 +668,8 @@ module.exports = {
         return
       }
 
-      var fileName = 'export'
+      var fileName = 'export_'
+      fileName += this.getDateString()
       var uri = 'data:text/csv;charset=utf-8,' + escape(csvData)
       var link = document.createElement('a')
       link.href = uri
@@ -651,9 +707,7 @@ module.exports = {
     initEventsTable: function () {
       var that = this
 
-      if (this.eventsTable != null) {
-        return
-      }
+      this.resetEventsTable()
       this.eventsTable = $('#events').DataTable({
         'data': [],
         'columns': [
@@ -681,7 +735,7 @@ module.exports = {
           { 'title': 'rtir_report' },
           { 'title': 'rtir_investigation_id' }
         ],
-        'order': [[2, 'asc']]
+        'order': [[0, 'desc'], [5, 'asc']]
       })
 
       $('#events tbody').on('click', 'td.details-control', function () {
@@ -702,13 +756,15 @@ module.exports = {
     destroyEventsTable: function () {
       this.resetEventData()
       if (this.eventsTable) {
-        // this.updateEventsTable()
+        this.updateEventsTable()
         this.eventsTable.destroy()
         this.eventsTable = null
       }
     },
     resetEventsTable: function () {
-      this.eventsTable.clear()
+      if (this.eventsTable !== null) {
+        this.eventsTable.clear()
+      }
     },
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
