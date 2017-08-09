@@ -1,7 +1,7 @@
 **Fody** is an interface for 
 [intelmq-mailgen](https://github.com/Intevation/intelmq-mailgen) setups.
 
-![Screenshot](https://cloud.githubusercontent.com/assets/8190008/25341302/ae5ae6f0-2908-11e7-8e05-7f87945a568f.png)
+![Screenshot](https://user-images.githubusercontent.com/8190008/29128843-466b377c-7d25-11e7-88dc-cb0a9bfe0d98.png)
 
 ### Features
  * Shows event details for a report that has been send out.
