@@ -569,17 +569,44 @@ module.exports = {
         this.checkLoadingLimitStatus = 'stop'
       }
     },
+    getListOfEmptyColumns: function (currentEventData) {
+      if ((currentEventData === null) || (currentEventData.length < 1)) {
+        return
+      }
+
+      var columnIsNull
+      var nullColumns = []
+
+      for (var index in currentEventData[0]) {
+        columnIsNull = true
+        for (var i = 0; i < currentEventData.length; i++) {
+          if (currentEventData[i][index] !== null) {
+            columnIsNull = false
+            break
+          }
+        }
+        if (columnIsNull === true) {
+          nullColumns.push(index)
+        }
+      }
+
+      return nullColumns
+    },
     exportTableData: function () {
       // ensure beeing json
       var currentEventData = typeof this.eventData !== 'object' ? JSON.parse(this.eventData) : this.eventData
+
+      var nullColumns = this.getListOfEmptyColumns(currentEventData)
 
       var csvData = ''
       var row = ''
 
       // extract field names using 1st element
       for (var field in currentEventData[0]) {
-        // concat comma seperated
-        row += field + ','
+        if (nullColumns.indexOf(field) === -1) {
+          // concat comma seperated
+          row += field + ','
+        }
       }
 
       // delete last comma
@@ -592,15 +619,17 @@ module.exports = {
         row = ''
         // extract and convert columns
         for (var index in currentEventData[i]) {
-          if ((index === 'raw') && (currentEventData[i][index] !== null)) {
-            // decode base64 value and replace all double quotes with double double quotes
-            row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
-          } else if ((index === 'extra') && (currentEventData[i][index] !== null)) {
-            // stringify json
-            row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
-          } else {
-            // simply add value
-            row += '"' + currentEventData[i][index] + '",'
+          if (nullColumns.indexOf(index) === -1) {
+            if ((index === 'raw') && (currentEventData[i][index] !== null)) {
+              // decode base64 value and replace all double quotes with double double quotes
+              row += '"' + atob(currentEventData[i][index]).replace(/"/g, '""') + '",'
+            } else if ((index === 'extra') && (currentEventData[i][index] !== null)) {
+              // stringify json
+              row += '"' + JSON.stringify(currentEventData[i][index]).replace(/"/g, '""') + '",'
+            } else {
+              // simply add value
+              row += '"' + currentEventData[i][index] + '",'
+            }
           }
         }
 
