@@ -1,7 +1,7 @@
 <template>
   <section class="content">
     <div class="row">
-      <div class='col-md-4 col-sm-4 col-xs-12'>
+      <div class='col-md-4 col-sm-4 col-xs-12' hidden>
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Switch Statistics Mode</h3>
@@ -19,15 +19,19 @@
             </div>
         </div>
         <!-- /.box -->
-      </div>
+       </div>  
       <!-- /.col -->
-      <div class='col-md-4 col-sm-4 col-xs-12'>
-        <IBoxTicketsToday />
-       </div>
+
+      <!-- <div class='col-md-4 col-sm-4 col-xs-12'> -->
+        <!-- <IBoxTicketsToday /> -->
+       <!-- </div> -->
+
       <!-- /.col -->
-      <div class='col-md-4 col-sm-4 col-xs-12'>
-        <IBoxEventsToday />
-      </div>
+
+      <!-- <div class='col-md-4 col-sm-4 col-xs-12'> -->
+        <!-- <IBoxEventsToday /> -->
+      <!-- </div> -->
+      
       <!-- /.col -->
     </div>
     <!-- ./box -->
@@ -247,15 +251,15 @@ import $ from 'jquery'
 import VueFlatpickr from 'vue-flatpickr'
 import 'vue-flatpickr/theme/airbnb.css'
 
-import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
-import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
+// import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
+// import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
 
 module.exports = {
   name: 'Stats',
   components: {
-    'Flatpickr': VueFlatpickr,
-    IBoxTicketsToday,
-    IBoxEventsToday
+    'Flatpickr': VueFlatpickr
+    // IBoxTicketsToday,
+    // IBoxEventsToday
   },
   data: function () {
     var beforeDate = new Date()

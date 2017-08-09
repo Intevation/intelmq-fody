@@ -20,7 +20,7 @@
      </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar">
+    <aside class="main-sidebar" hidden>
 
       <!-- sidebar: style can be found in sidebar.less -->
       <section class="sidebar">
@@ -53,7 +53,7 @@
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div style="margin-left: 0px" class="content-wrapper">
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
@@ -88,7 +88,6 @@
 
 <script>
 require('hideseek')
-
 module.exports = {
   name: 'Dash',
   data: function () {
