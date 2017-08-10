@@ -632,28 +632,56 @@ module.exports = {
       currentRow.classList.add('row')
 
       for (var column of Object.keys(myEvent).sort()) {
-        if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
+        if (['raw', 'source.ip', 'source.port', 'classification.type',
+          'time.observation', 'extra'].indexOf(column) === -1
+          ) {
           if (counter > 0 && counter % 6 === 0) {
             div.appendChild(currentRow)
             currentRow = document.createElement('div')
             currentRow.classList.add('row')
           }
-          var el = document.createElement('div')
-          var c = document.createElement('strong')
-          var v = document.createElement('span')
 
-          el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
-          c.textContent = column + ': '
-          el.appendChild(c)
-          v.textContent = myEvent[column]
-          el.appendChild(v)
-          currentRow.appendChild(el)
+          currentRow.appendChild(
+            this.formatEventDetailRowElement(
+              ['col-md-4', 'col-sm-6', 'col-xs-12'],
+                column, myEvent[column]
+              )
+          )
           counter++
         }
       }
       div.appendChild(currentRow)
 
+      // place field `extra` in a row of its own
+      if (myEvent.hasOwnProperty('extra')) {
+        currentRow = document.createElement('div')
+        currentRow.classList.add('row')
+        currentRow.appendChild(
+          this.formatEventDetailRowElement(
+            ['col-md-12', 'col-sm-12', 'col-xs-12'],
+              'extra', JSON.stringify(myEvent['extra'])
+            )
+        )
+        div.appendChild(currentRow)
+      }
+
       return div
+    },
+    formatEventDetailRowElement: function (additionalClassList, name, text) {
+      var el = document.createElement('div')
+      var c = document.createElement('strong')
+      var v = document.createElement('span')
+
+      el.classList.add('child-row-el')
+      for (var i of additionalClassList) {
+        el.classList.add(i)
+      }
+      c.textContent = name + ': '
+      el.appendChild(c)
+      v.textContent = text
+      el.appendChild(v)
+
+      return el
     }
   }
 }

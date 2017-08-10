@@ -2,10 +2,15 @@
 
 (TODO)
  * Stats: Makes csv export files directly parsable for libreoffice by adding
-   an ISO 8601 column.
- * Tickets: Improves the events detail view by displaying the `extra` attribute.
+     an ISO 8601 column.
+ * Tickets, Stats: Improves the events detail view by displaying
+     the `extra` attribute.
  * Stats: (minor) Adds minutes to the hourly x-axis-label to be more common.
  * Contacts: (minor) Changes display of ASNs from "ASN1234" to "AS1234".
+
+### Upgrade
+ * technical:
+   Recommends fody-backend v>=0.5.3 for Stats event details to fully work.
 
 
 ## 0.5.0 to 0.5.1
