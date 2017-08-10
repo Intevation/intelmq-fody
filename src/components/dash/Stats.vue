@@ -607,7 +607,7 @@ module.exports = {
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
       var e, r
-      console.log(this.eventData)
+
       this.resetEventsTable()
       this.eventsTable.search('')
       for (var i = 0; i < this.eventData.length; i++) {
