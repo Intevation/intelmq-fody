@@ -132,7 +132,7 @@
           <div v-for="(asn, index) in org.asns" class="list-group-item">
             <div class="form-group">
               <label class="col-sm-4 control-label">
-                <i class="fa fa-hdd-o rme"></i>AS</label>
+                <i class="fa fa-hdd-o rme"></i>ASN</label>
                 <div class="col-sm-8">
                   <input v-model="org.asns[index].asn"
                     type="number" class="form-control"></input>
