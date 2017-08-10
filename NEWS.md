@@ -1,6 +1,5 @@
-## 0.5.1 to 0.5.2 (unreleased)
+## 0.5.1 to 0.5.2
 
-(TODO)
  * Stats: Makes csv export files directly parsable for libreoffice by adding
      an ISO 8601 column.
  * Tickets, Stats: Improves the events detail view by displaying
