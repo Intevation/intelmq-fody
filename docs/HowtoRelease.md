@@ -5,6 +5,7 @@ Use a version that conforms to semantic versioning 2.0.
 Change it in the files:
 `package.json`
 `src/components/App.vue`
+`NEWS.md`
 
 and commit.
 
