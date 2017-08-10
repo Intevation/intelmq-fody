@@ -3,6 +3,7 @@
 (TODO)
  * Stats: Makes csv export files directly parsable for libreoffice by adding
    an ISO 8601 column.
+ * Tickets: Improves the events detail view by displaying the `extra` attribute.
  * Stats: (minor) Adds minutes to the hourly x-axis-label to be more common.
  * Contacts: (minor) Changes display of ASNs from "ASN1234" to "AS1234".
 
