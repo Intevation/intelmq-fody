@@ -1,3 +1,15 @@
+intelmq-fody (0.5.2) unstable; urgency=medium
+
+    * Stats: Makes csv export files directly parsable for libreoffice by
+      adding an ISO 8601 column.
+    * Tickets, Stats: Improves the events detail view by displaying the
+      `extra` attribute.
+    * Stats: (minor) Adds minutes to the hourly x-axis-label to be more
+      common.
+    * Contacts: (minor) Changes display of ASNs from "ASN1234" to "AS1234".
+
+ -- Gernot Schulz <gernot@intevation.de>  Wed, 16 Aug 2017 11:06:21 +0200
+
 intelmq-fody (0.5.1) unstable; urgency=medium
 
   * Contacts: Fixes tag search to repeat the search after a commit.
