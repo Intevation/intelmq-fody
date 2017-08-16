@@ -1,3 +1,21 @@
+intelmq-fody (0.5.1) unstable; urgency=medium
+
+  * Contacts: Fixes tag search to repeat the search after a commit.
+  * Contacts: (minor) Display comment in brackets (except for the
+    organisation) to be more consistent.
+
+ -- Gernot Schulz <gernot@intevation.de>  Fri, 16 Jun 2017 13:48:02 +0200
+
+intelmq-fody (0.5.0) unstable; urgency=medium
+
+  * Contacts: Adds search field for tags.
+  * Contacts: Improves editing of annotation.tags, by offering the choice
+    of commonly used tags loaded from the backend.
+  * Adds a logo for fody.
+  * Needs intelmq-fody-backend >=0.5.1
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 06 Jun 2017 12:19:41 +0200
+
 intelmq-fody (0.4.3) unstable; urgency=low
 
   * Various fixes and improvements.
