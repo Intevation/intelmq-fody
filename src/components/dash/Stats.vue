@@ -105,7 +105,7 @@
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="queryData.total <= 10000">
+                            <div v-if="queryData.total <= 20000">
                                 <button class="btn btn-default" v-on:click="loadEvents">
                                     Load Events
                                 </button>

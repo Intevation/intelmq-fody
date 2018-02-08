@@ -167,8 +167,8 @@ module.exports = {
             this.eventIDs = value
             this.events = []
             // directly load events, if we only have a few
-            if (this.eventIDs.length < 10000) {
-              console.log('less than 10000 events, triggering loading directly')
+            if (this.eventIDs.length < 20000) {
+              console.log('less than 20000 events, triggering loading directly')
               this.loadDetails()
             }
           } else {
