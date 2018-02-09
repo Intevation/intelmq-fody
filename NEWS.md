@@ -1,5 +1,4 @@
-## 0.5.2 to 0.5.3 (unreleased)
-(TODO)
+## 0.5.2 to 0.6.0
 
  * Tickets, Stats: Raises display limit from <10,000 to <20,000 events.
    So tickets with more events can be displayed at the cost of more time
