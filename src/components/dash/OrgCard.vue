@@ -134,8 +134,8 @@
               <label class="col-sm-4 control-label">
                 <i class="fa fa-hdd-o rme"></i>ASN</label>
                 <div class="col-sm-8">
-                  <input v-model="org.asns[index].asn"
-                    type="number" class="form-control"></input>
+                  <input-unsigned-int v-model="org.asns[index].asn"
+                    class="form-control"></input-unsigned-int>
               </div>
             </div>
             <org-annotations v-if="'annotations' in asn"
@@ -188,8 +188,8 @@
           <div v-for="(value, key) in otherAttributes" class="form-group">
             <label class="col-sm-4 control-label">{{ key }}</label>
             <div class="col-sm-8">
-              <input v-if="key === 'sector_id'" type="number"
-                v-model="org[key]" class="form-control"></input>
+              <input-unsigned-int v-if="key === 'sector_id'"
+                v-model="org[key]" class="form-control"></input-unsigned-int>
               <input v-if="key !== 'sector_id'" type="text"
                 v-model="org[key]" class="form-control"></input>
             </div>
@@ -217,6 +217,7 @@
 </template>
 
 <script>
+import inputUnsignedInt from './InputUnsignedInt.vue'
 import orgAnnotations from './OrgAnnotations.vue'
 import orgFqdns from './OrgFqdns.vue'
 import orgNationalCerts from './OrgNationalCerts.vue'
@@ -266,7 +267,7 @@ module.exports = {
     }
   },
   components: {
-    orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
+    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
   },
   computed: {
     otherAttributes: function () {

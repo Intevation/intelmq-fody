@@ -7,11 +7,11 @@
             <h5>Lookup ASN</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
-              <input type="text" class="form-control"
+              <input-unsigned-int class="form-control"
                 v-model.lazy.trim:title="searchASN"
                 v-on:change="lookupASN"
                 placeholder="49234"
-              >
+              />
               <span class="input-group-btn">
                 <button class="btn btn-default" v-on:click="lookupASN">
                   <i class="fa fa-search"></i>
@@ -211,6 +211,7 @@
 <script>
 // import $ from 'jquery'
 
+import inputUnsignedInt from './InputUnsignedInt.vue'
 import OrgCard from './OrgCard.vue'
 
 module.exports = {
@@ -239,7 +240,7 @@ module.exports = {
     }
   },
   components: {
-    OrgCard
+    inputUnsignedInt, OrgCard
   },
   computed: {
     ASNInputClass: function () {
