@@ -185,7 +185,8 @@
           </div>
         </div>
         <div v-else class="well form-horizontal">
-          <div v-for="(value, key) in otherAttributes" class="form-group">
+          <div v-for="key in Object.keys(otherAttributes).sort()"
+               class="form-group">
             <label class="col-sm-4 control-label">{{ key }}</label>
             <div class="col-sm-8">
               <input-unsigned-int v-if="key === 'sector_id'"

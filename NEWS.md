@@ -7,6 +7,8 @@
  * Contacts: Improves entering an ASN or the sector-id, by disallowing
    incremental changes to avoid accidental change by a mouse wheel event
    and more rigidly checking for a natural number.
+ * Contacts: Sorts the list of otherAttributes by their keys when editing,
+   which makes the order consistent with both display only and editing.
 
 
 ## 0.5.1 to 0.5.2
