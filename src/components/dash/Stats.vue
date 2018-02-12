@@ -105,19 +105,15 @@
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="queryData.total <= 20000">
+                            <div v-if="queryData.total <= 50000">
                                 <button class="btn btn-default" v-on:click="loadEvents">
-                                    Load Events
+                                    Show details in table
                                 </button>
                             </div>
                             <!-- ./ v-if -->
-                            <!--
                             <div v-else>
-                                <button class="btn btn-disabled">
-                                    Load Events
-                                </button>
+                              (More than 50k events. Use more filters to enable table.)
                             </div>
-                            -->
                             <!-- ./ v-else -->
                         </div>
                         <!-- /.info-box-content -->

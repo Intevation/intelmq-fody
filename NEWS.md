@@ -1,8 +1,9 @@
 ## 0.5.2 to 0.6.0
 
- * Tickets, Stats: Raises display limit from <10,000 to <20,000 events.
-   So tickets with more events can be displayed at the cost of more time
-   for loading the data.
+ * Tickets, Stats: Raises display limit from <10,000 to <=50,000 events.
+   So tickets with a higher number of events can be displayed
+   at the cost of more time for loading the data. A message is shown if
+   events will not be shown because of the limit.
  * Contacts: Improves entering an ASN or the sector-id, by disallowing
    incremental changes to avoid accidental change by a mouse wheel event
    and more rigidly checking for a natural number.
