@@ -29,8 +29,15 @@
               <span class="help-block" v-if="eventIDs.length === 1">
                 Found one event.
               </span>
-              <span class="help-block"  v-if="eventIDs.length > 1">
+              <span class="help-block"
+                v-if="eventIDs.length > 1 && eventIDs.length <= loadingLimit">
                 Found {{ eventIDs.length }} events.
+              </span>
+              <span class="help-block"
+                v-if="eventIDs.length > loadingLimit">
+                Found {{ eventIDs.length }} events.
+                (Not showing details of &gt;{{ loadingLimit }} events
+                for performance reasons.)
               </span>
             </div>
           </div> <!-- .box-body -->
@@ -140,6 +147,7 @@ module.exports = {
   data: function () {
     return {
       queryURL: '/api/checkticket/',  // base url for AJAJ service
+      loadingLimit: 50000,  // max number of events which details will be shown
       ticketID: '',  // ticket to be examined, not searched yet
       searchedForID: null, // this ticket has been searched for
       eventIDs: [],  // list of cosrresponding ids for the ticket
@@ -166,9 +174,8 @@ module.exports = {
           if (value) {
             this.eventIDs = value
             this.events = []
-            // directly load events, if we only have a few
-            if (this.eventIDs.length < 20000) {
-              console.log('less than 20000 events, triggering loading directly')
+            // protect against trying to load too many events
+            if (this.eventIDs.length <= this.loadingLimit) {
               this.loadDetails()
             }
           } else {
