@@ -1,3 +1,16 @@
+intelmq-fody (0.6.0) unstable; urgency=medium
+
+  * Tickets, Stats: Raises display limit from <10,000 to <20,000 events.
+    So tickets with more events can be displayed at the cost of more time
+    for loading the data.
+  * Contacts: Improves entering an ASN or the sector-id, by disallowing
+    incremental changes to avoid accidental change by a mouse wheel event
+    and more rigidly checking for a natural number.
+  * Contacts: Sorts the list of otherAttributes by their keys when editing,
+    which makes the order consistent with both display only and editing.
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 13 Feb 2018 12:21:16 +0100
+
 intelmq-fody (0.5.2) unstable; urgency=medium
 
     * Stats: Makes csv export files directly parsable for libreoffice by
