@@ -1,6 +1,9 @@
 ## 0.6.0 to 0.6.1 (unreleased)
 (TODO)
 
+ * Contacts: (minor) Improves input of integers to avoid showing a superfluous
+   dot.
+
 
 ## 0.5.2 to 0.6.0
 
