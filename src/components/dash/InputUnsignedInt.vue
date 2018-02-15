@@ -35,6 +35,8 @@ module.exports = {
       this.previousValue = sanitizedValue
 
       // see vue guide section: # Form Input Components using Custom Events
+      // we only update if we have to, because each update will make the
+      // cursor jump to the end of the input field
       if (String(sanitizedValue) !== value) {
         this.$refs.input.value = sanitizedValue
       }
