@@ -1,3 +1,11 @@
+## 0.6.1 to 0.6.2 (unreleased)
+(TODO)
+
+ * Contacts: (minor) Improves input of integers to avoid the cursor jumping
+   to the end if a digit is entered in the middle of a number for browsers
+   that check the type correctly (e.g. Chromium).
+
+
 ## 0.6.0 to 0.6.1
 
  * Contacts: (minor) Improves input of integers to avoid showing a superfluous
