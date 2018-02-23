@@ -1,9 +1,15 @@
 ## 0.6.1 to 0.6.2 (unreleased)
 (TODO)
 
+ * Tickets: Chances behaviour to always show up to 10,000 events. If there are
+   more the ones with the lowest `events_id` will be shown.
  * Contacts: (minor) Improves input of integers to avoid the cursor jumping
    to the end if a digit is entered in the middle of a number for browsers
    that check the type correctly (e.g. Chromium).
+
+### Upgrade
+ * technical:
+   Depends on fody-backend v>=0.6.1.
 
 
 ## 0.6.0 to 0.6.1

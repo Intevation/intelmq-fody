@@ -36,7 +36,7 @@
               <span class="help-block"
                 v-if="eventIDs.length > loadingLimit">
                 Found {{ eventIDs.length }} events.
-                (Not showing details of &gt;{{ loadingLimit }} events
+                (Only showing details of {{ loadingLimit }} events
                 for performance reasons.)
               </span>
             </div>
@@ -147,7 +147,7 @@ module.exports = {
   data: function () {
     return {
       queryURL: '/api/checkticket/',  // base url for AJAJ service
-      loadingLimit: 50000,  // max number of events which details will be shown
+      loadingLimit: 10000,  // max number of events which details will be shown
       ticketID: '',  // ticket to be examined, not searched yet
       searchedForID: null, // this ticket has been searched for
       eventIDs: [],  // list of cosrresponding ids for the ticket
@@ -174,10 +174,7 @@ module.exports = {
           if (value) {
             this.eventIDs = value
             this.events = []
-            // protect against trying to load too many events
-            if (this.eventIDs.length <= this.loadingLimit) {
-              this.loadDetails()
-            }
+            this.loadDetails()
           } else {
             this.eventIDs = []
             this.events = []
@@ -320,8 +317,10 @@ module.exports = {
       this.eventsTable.draw()
     },
     loadDetails: function () {
-      var url = this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID
-      // URL could also be '/api/tickets/search?ticketnumber=' + this.ticketID
+      var url = (this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID +
+                 '&limit=' + this.loadingLimit)
+      // the following endpoint may give similiar results (without limit)
+      // url = '/api/tickets/search?ticketnumber=' + this.ticketID
       this.$http.get(url).then((response) => {
         // success
         response.json().then((value) => {
