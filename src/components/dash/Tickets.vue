@@ -85,16 +85,25 @@
           <span class='info-box-icon bg-green'><i class='fa fa-user'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>Recipient</span>
-            <span class='info-box-text'>
-                <div>
-                    <p>
-                    Sent to: <strong>{{ recipient.recipient_address }}</strong>
-                    </p>
-                    As {{ (recipient.notification_format  || 'unknown format') }} format at
-                    {{ ( recipient.sent_at || 'unknown time') }} by {{ ( recipient.medium || 'unknown medium') }}.
-                </div>
-            </span>
+            <table class='info-box-table'>
+              <tr> <th>To:</th>
+                <td><strong>{{ recipient.recipient_address }}</strong></td>
+              </tr>
+              <tr> <th>Medium:</th>
+                   <td>{{ (recipient.medium || 'unknown' ) }}
+                     ({{ ( formatDateString(recipient.sent_at) ||
+                           'unknown') }})
+                   </td>
+              </tr>
+              <tr> <th>Format:</th>
+                   <td>{{ (recipient.notification_format || 'unknown' )
+                     }}/{{ (recipient.event_data_format || 'unknown' ) }}
+                   </td>
+              </tr>
+              <tr> <th>Template:</th>
+                   <td>{{ (recipient.template_name || 'unknown' ) }}</td>
+              </tr>
+            </table>
           </div>
         </div>
         </router-link>
@@ -348,6 +357,13 @@ module.exports = {
     useLastTicket: function () {
       this.ticketID = this.lastTicketNumber
       this.lookupIDs()
+    },
+    formatDateString: function (str) {
+      // we use Date's parsing as we are with ES5
+      var isostr = (new Date(str)).toISOString()
+      // we want 'YYYY-MM-DD HH:mm:ss UTC'
+      // assume that we always get the 24 character result from toISOString()
+      return isostr.substring(0, 10) + ' ' + isostr.substring(11, 19) + ' UTC'
     }
   },  // methods
   mounted: function () {
@@ -415,6 +431,10 @@ td.details-control::after {
 
 tr.shown td.details-control::after {
   content: "\f147";
+}
+
+table.info-box-table td {
+  text-align: right;
 }
 
 div.child-row-el {
