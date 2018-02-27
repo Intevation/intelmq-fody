@@ -1,11 +1,14 @@
 ## 0.6.1 to 0.6.2 (unreleased)
 (TODO)
 
- * Tickets: Chances behaviour to always show up to 10,000 events. If there are
-   more the ones with the lowest `events_id` will be shown.
+ * Tickets: Improves displaying details about a send out ticket. It shows
+   more information in a small table now, including the `template_format`.
+ * Tickets: Changes behaviour to always show up to 10,000 events. If there are
+   more events, the ones with the lowest `events_id` will be shown.
  * Contacts: (minor) Improves input of integers to avoid the cursor jumping
    to the end if a digit is entered in the middle of a number for browsers
    that check the type correctly (e.g. Chromium).
+ * Stats: (minor) Adds hints how to use the `_icontains` query conditions.
 
 ### Upgrade
  * technical:
