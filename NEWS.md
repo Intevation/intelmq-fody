@@ -1,5 +1,4 @@
-## 0.6.1 to 0.6.2 (unreleased)
-(TODO)
+## 0.6.1 to 0.6.2
 
  * Tickets: Improves displaying details about a send out ticket. It shows
    more information in a small table now, including the `template_format`.
