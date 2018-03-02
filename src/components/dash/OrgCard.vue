@@ -39,6 +39,9 @@
               <div class="col-sm-11 col-xs-11">
                 {{ contact.firstname }} {{ contact.lastname }}
                 &lt;{{ contact.email }}&gt;
+                <small><toggle-button v-model="enabled" :width=36 :height=14
+                   :labels="{checked: 'on', unchecked: 'off'}"
+                   :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/></small>
                 <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
               </div>
               <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
@@ -246,6 +249,7 @@ module.exports = {
   },
   data: function () {
     return {
+      enabled: true,
       // for knownOrgKeys, the display is handled explicitely
       knownOrgKeys: {
         'asns': 0,

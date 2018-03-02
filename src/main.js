@@ -9,6 +9,10 @@ import 'npm-font-source-sans-pro/source-sans-pro.css'
 import routes from './routes'
 import store from './store'
 
+import ToggleButton from 'vue-js-toggle-button'
+Vue.use(ToggleButton)
+
+
 // Import Helpers for filters
 import { domain, count, prettyDate, pluralize } from './filters'
 
