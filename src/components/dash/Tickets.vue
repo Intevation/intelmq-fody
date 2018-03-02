@@ -89,10 +89,8 @@
               <tr> <th>To:</th>
                 <td><strong>{{ recipient.recipient_address }}</strong></td>
               </tr>
-              <tr> <th>Medium:</th>
-                   <td>{{ (recipient.medium || 'unknown' ) }}
-                     ({{ ( formatDateString(recipient.sent_at) ||
-                           'unknown') }})
+              <tr> <th>Date:</th>
+                <td> {{ ( formatDateString(recipient.sent_at) || 'unknown') }}
                    </td>
               </tr>
               <tr> <th>Format:</th>
@@ -100,8 +98,8 @@
                      }}/{{ (recipient.event_data_format || 'unknown' ) }}
                    </td>
               </tr>
-              <tr> <th>Template:</th>
-                   <td>{{ (recipient.template_name || 'unknown' ) }}</td>
+              <tr> <th>Medium:</th>
+                <td>{{ (recipient.medium || 'unknown' ) }}</td>
               </tr>
             </table>
           </div>
@@ -431,6 +429,10 @@ td.details-control::after {
 
 tr.shown td.details-control::after {
   content: "\f147";
+}
+
+table.info-box-table {
+  margin: 0 auto;
 }
 
 table.info-box-table td {
