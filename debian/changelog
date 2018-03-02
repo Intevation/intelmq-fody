@@ -1,3 +1,10 @@
+intelmq-fody (0.6.3) unstable; urgency=medium
+
+  * Tickets: Improves details view of send out email: Removes display of
+    `template_name`; centers table.
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 02 Mar 2018 15:53:13 +0100
+
 intelmq-fody (0.6.2) unstable; urgency=medium
 
   * Tickets: Improves displaying details about a send out ticket. It shows
