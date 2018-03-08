@@ -436,7 +436,8 @@ table.info-box-table {
 }
 
 table.info-box-table td {
-  text-align: right;
+  padding-left: 5px;
+  text-align: left;
 }
 
 div.child-row-el {
