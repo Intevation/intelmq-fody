@@ -1,3 +1,14 @@
+## 0.6.3 to 0.6.4
+
+* Tickets: (minor) Improves details view of send out email: aligns values left.
+
+
+## 0.6.2 to 0.6.3
+
+* Tickets: Improves details view of send out email: Removes display of
+  `template_name`; centers table.
+
+
 ## 0.6.1 to 0.6.2
 
  * Tickets: Improves displaying details about a send out ticket. It shows
