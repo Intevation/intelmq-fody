@@ -12,7 +12,6 @@ import store from './store'
 import ToggleButton from 'vue-js-toggle-button'
 Vue.use(ToggleButton)
 
-
 // Import Helpers for filters
 import { domain, count, prettyDate, pluralize } from './filters'
 
