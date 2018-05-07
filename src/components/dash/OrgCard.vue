@@ -34,16 +34,10 @@
         <ul v-if="!editable" class="list-group">
           <li v-for="contact of org.contacts" class="list-group-item">
             <div class="row">
-              <div class="col-sm-1 col-xs-1"
-                ><i class="fa fa-envelope-o"></i></div>
-              <div class="col-sm-11 col-xs-11">
-                {{ contact.firstname }} {{ contact.lastname }}
-                &lt;{{ contact.email }}&gt;
-                <small><toggle-button v-model="enabled" :width=36 :height=14
-                   :labels="{checked: 'on', unchecked: 'off'}"
-                   :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/></small>
-                <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
-              </div>
+              <contact-email :firstname="contact.firstname"
+                             :lastname="contact.lastname"
+                             :email="contact.email"
+                             :comment="contact.comment"/>
               <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
                 ><i class="fa fa-phone"></i></div>
               <div v-if="contact.tel !== ''" class="col-sm-11 col-xs-11"
@@ -226,6 +220,7 @@ import orgAnnotations from './OrgAnnotations.vue'
 import orgFqdns from './OrgFqdns.vue'
 import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
+import contactEmail from './ContactEmail.vue'
 
 module.exports = {
   name: 'org-card',
@@ -249,7 +244,6 @@ module.exports = {
   },
   data: function () {
     return {
-      enabled: true,
       // for knownOrgKeys, the display is handled explicitely
       knownOrgKeys: {
         'asns': 0,
@@ -272,7 +266,7 @@ module.exports = {
     }
   },
   components: {
-    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
+    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork, contactEmail
   },
   computed: {
     otherAttributes: function () {
