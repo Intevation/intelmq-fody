@@ -37,7 +37,9 @@
     <!-- ./box -->
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Prepare Query</h3>
+          <h3 class="box-title">Prepare Query
+            <small>(Hint: Use <tt>%</tt> as pre- or post-wildcard
+              with <tt>_icontains</tt>.)</small></h3>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
@@ -127,18 +129,14 @@
                             </div>
                             <div v-else-if="checkLoadingLimitStatus === 'ask'">
                                 <button class="btn btn-default" v-on:click="loadEvents">
-                                    Load Events?
+                                    Show details in table
                                 </button>
                             </div> 
                             
                             <!-- ./ v-if -->
-                            <!--
                             <div v-else>
-                                <button class="btn btn-disabled">
-                                    Load Events
-                                </button>
+                              (More than 50k events. Use more filters to enable table.)
                             </div>
-                            -->
                             <!-- ./ v-else -->
                         </div>
                         <!-- /.info-box-content -->
@@ -789,6 +787,7 @@ module.exports = {
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
       var e, r
+
       this.resetEventsTable()
       this.eventsTable.search('')
       for (var i = 0; i < this.eventData.length; i++) {
@@ -805,6 +804,7 @@ module.exports = {
       var myEvent = this.eventData[d[0]]
       var div, currentRow
       var counter = 0
+      var cellContent
 
       div = document.createElement('div')
       div.classList.add('well')
@@ -821,32 +821,54 @@ module.exports = {
               currentRow = document.createElement('div')
               currentRow.classList.add('row')
             }
-            var el = document.createElement('div')
-            var c = document.createElement('strong')
-            var v
             if (column === 'raw') {
-              v = document.createElement('span')
-              v.textContent = atob(myEvent[column])
-            } else if (column === 'extra') {
-              v = document.createElement('span')
-              v.textContent = JSON.stringify(myEvent[column])
+              cellContent = atob(myEvent[column])
             } else {
-              v = document.createElement('span')
-              v.textContent = myEvent[column]
+              cellContent = myEvent[column]
             }
 
-            el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
-            c.textContent = column + ': '
-            el.appendChild(c)
-            el.appendChild(v)
-            currentRow.appendChild(el)
+            currentRow.appendChild(
+              this.formatEventDetailRowElement(
+                ['col-md-4', 'col-sm-6', 'col-xs-12'],
+                  column, cellContent
+                )
+            )
             counter++
           }
         }
       }
       div.appendChild(currentRow)
 
+      // place field `extra` in a row of its own
+      if (myEvent.hasOwnProperty('extra')) {
+        currentRow = document.createElement('div')
+        currentRow.classList.add('row')
+        currentRow.appendChild(
+          this.formatEventDetailRowElement(
+            ['col-md-12', 'col-sm-12', 'col-xs-12'],
+              'extra', JSON.stringify(myEvent['extra'])
+            )
+        )
+        div.appendChild(currentRow)
+      }
+
       return div
+    },
+    formatEventDetailRowElement: function (additionalClassList, name, text) {
+      var el = document.createElement('div')
+      var c = document.createElement('strong')
+      var v = document.createElement('span')
+
+      el.classList.add('child-row-el')
+      for (var i of additionalClassList) {
+        el.classList.add(i)
+      }
+      c.textContent = name + ': '
+      el.appendChild(c)
+      v.textContent = text
+      el.appendChild(v)
+
+      return el
     }
   }
 }

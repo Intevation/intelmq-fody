@@ -1,9 +1,61 @@
-## 0.5.1 to 0.5.2 (unreleased)
+## 0.6.3 to 0.6.4
 
-(TODO)
+* Tickets: (minor) Improves details view of send out email: aligns values left.
+
+
+## 0.6.2 to 0.6.3
+
+* Tickets: Improves details view of send out email: Removes display of
+  `template_name`; centers table.
+
+
+## 0.6.1 to 0.6.2
+
+ * Tickets: Improves displaying details about a send out ticket. It shows
+   more information in a small table now, including the `template_format`.
+ * Tickets: Changes behaviour to always show up to 10,000 events. If there are
+   more events, the ones with the lowest `events_id` will be shown.
+ * Contacts: (minor) Improves input of integers to avoid the cursor jumping
+   to the end if a digit is entered in the middle of a number for browsers
+   that check the type correctly (e.g. Chromium).
+ * Stats: (minor) Adds hints how to use the `_icontains` query conditions.
+
+### Upgrade
+ * technical:
+   Depends on fody-backend v>=0.6.1.
+
+
+## 0.6.0 to 0.6.1
+
+ * Contacts: (minor) Improves input of integers to avoid showing a superfluous
+   dot.
+
+
+## 0.5.2 to 0.6.0
+
+ * Tickets, Stats: Raises display limit from <10,000 to <=50,000 events.
+   So tickets with a higher number of events can be displayed
+   at the cost of more time for loading the data. A message is shown if
+   events will not be shown because of the limit.
+ * Contacts: Improves entering an ASN or the sector-id, by disallowing
+   incremental changes to avoid accidental change by a mouse wheel event
+   and more rigidly checking for a natural number.
+ * Contacts: Sorts the list of otherAttributes by their keys when editing,
+   which makes the order consistent with both display only and editing.
+
+
+## 0.5.1 to 0.5.2
+
  * Stats: Makes csv export files directly parsable for libreoffice by adding
-   an ISO 8601 column.
+     an ISO 8601 column.
+ * Tickets, Stats: Improves the events detail view by displaying
+     the `extra` attribute.
  * Stats: (minor) Adds minutes to the hourly x-axis-label to be more common.
+ * Contacts: (minor) Changes display of ASNs from "ASN1234" to "AS1234".
+
+### Upgrade
+ * technical:
+   Recommends fody-backend v>=0.5.3 for Stats event details to fully work.
 
 
 ## 0.5.0 to 0.5.1
