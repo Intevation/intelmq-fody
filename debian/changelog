@@ -1,3 +1,108 @@
+intelmq-fody (0.6.3) unstable; urgency=medium
+
+  * Tickets: Improves details view of send out email: Removes display of
+    `template_name`; centers table.
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 02 Mar 2018 15:53:13 +0100
+
+intelmq-fody (0.6.2) unstable; urgency=medium
+
+  * Tickets: Improves displaying details about a send out ticket. It shows
+    more information in a small table now, including the `template_format`.
+  * Tickets: Changes behaviour to always show up to 10,000 events. If there are
+    more events, the ones with the lowest `events_id` will be shown.
+  * Contacts: (minor) Improves input of integers to avoid the cursor jumping
+    to the end if a digit is entered in the middle of a number for browsers
+    that check the type correctly (e.g. Chromium).
+  * Stats: (minor) Adds hints how to use the `_icontains` query conditions.
+  * Upgrade note: Now depends on fody-backend >= 0.6.1.
+
+ -- Sascha Wilde <wilde@intevation.de>  Wed, 28 Feb 2018 17:43:21 +0100
+
+intelmq-fody (0.6.1) unstable; urgency=medium
+
+  * Contacts: (minor) Improves input of integers to avoid showing
+    a superfluous dot.
+  * Tickets, Stats: Raises display limit to <=50,000 events.
+    A message is shown if events will not be shown because of the limit.
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 13 Feb 2018 18:07:01 +0100
+
+intelmq-fody (0.6.0) unstable; urgency=medium
+
+  * Tickets, Stats: Raises display limit from <10,000 to <20,000 events.
+    So tickets with more events can be displayed at the cost of more time
+    for loading the data.
+  * Contacts: Improves entering an ASN or the sector-id, by disallowing
+    incremental changes to avoid accidental change by a mouse wheel event
+    and more rigidly checking for a natural number.
+  * Contacts: Sorts the list of otherAttributes by their keys when editing,
+    which makes the order consistent with both display only and editing.
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 13 Feb 2018 12:21:16 +0100
+
+intelmq-fody (0.5.2) unstable; urgency=medium
+
+    * Stats: Makes csv export files directly parsable for libreoffice by
+      adding an ISO 8601 column.
+    * Tickets, Stats: Improves the events detail view by displaying the
+      `extra` attribute.
+    * Stats: (minor) Adds minutes to the hourly x-axis-label to be more
+      common.
+    * Contacts: (minor) Changes display of ASNs from "ASN1234" to "AS1234".
+
+ -- Gernot Schulz <gernot@intevation.de>  Wed, 16 Aug 2017 11:06:21 +0200
+
+intelmq-fody (0.5.1) unstable; urgency=medium
+
+  * Contacts: Fixes tag search to repeat the search after a commit.
+  * Contacts: (minor) Display comment in brackets (except for the
+    organisation) to be more consistent.
+
+ -- Gernot Schulz <gernot@intevation.de>  Fri, 16 Jun 2017 13:48:02 +0200
+
+intelmq-fody (0.5.0) unstable; urgency=medium
+
+  * Contacts: Adds search field for tags.
+  * Contacts: Improves editing of annotation.tags, by offering the choice
+    of commonly used tags loaded from the backend.
+  * Adds a logo for fody.
+  * Needs intelmq-fody-backend >=0.5.1
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 06 Jun 2017 12:19:41 +0200
+
+intelmq-fody (0.4.3) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 02 May 2017 17:11:43 +0200
+
+intelmq-fody (0.4.2) unstable; urgency=medium
+
+  * Improves annotation handling and display:
+    Inhibitions can now be edited and display nicer.
+    Annotations can be added to ASNs.
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 21 Apr 2017 17:48:37 +0200
+
+intelmq-fody (0.4.2~rc1) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Gernot Schulz <gernot@intevation.de>  Mon, 10 Apr 2017 15:20:30 +0200
+
+intelmq-fody (0.4.1~rc1) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Sascha Wilde <wilde@intevation.de>  Fri, 07 Apr 2017 17:15:29 +0200
+
+intelmq-fody (0.4.0~rc2) unstable; urgency=low
+
+  * Various fixes and improvements.
+
+ -- Sascha Wilde <wilde@intevation.de>  Thu, 06 Apr 2017 16:53:49 +0200
+
 intelmq-fody (0.4.0~rc1) unstable; urgency=low
 
   * Added statistics.

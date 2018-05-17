@@ -121,7 +121,7 @@
         <ul v-if="!editable" class="list-group">
           <li v-for="asn of org.asns" class="list-group-item">
             <i class="fa fa-hdd-o rme"></i>
-            ASN{{ asn.asn }}
+            AS{{ asn.asn }}
             <org-annotations
               v-if="'annotations' in asn && asn.annotations.length > 0"
               v-model="asn.annotations" v-bind:status="status"
@@ -134,11 +134,11 @@
               <label class="col-sm-4 control-label">
                 <i class="fa fa-hdd-o rme"></i>ASN</label>
                 <div class="col-sm-8">
-                  <input v-model="org.asns[index].asn"
-                    type="number" class="form-control"></input>
+                  <input-unsigned-int v-model="org.asns[index].asn"
+                    class="form-control"></input-unsigned-int>
               </div>
             </div>
-            <org-annotations v-if="asn.annotations.length > 0"
+            <org-annotations v-if="'annotations' in asn"
               v-model="asn.annotations" v-bind:status="status"
               v-bind:annotation-hints="annotationHints"/>
             <button v-on:click="org.asns.splice(index,1)"
@@ -185,11 +185,12 @@
           </div>
         </div>
         <div v-else class="well form-horizontal">
-          <div v-for="(value, key) in otherAttributes" class="form-group">
+          <div v-for="key in Object.keys(otherAttributes).sort()"
+               class="form-group">
             <label class="col-sm-4 control-label">{{ key }}</label>
             <div class="col-sm-8">
-              <input v-if="key === 'sector_id'" type="number"
-                v-model="org[key]" class="form-control"></input>
+              <input-unsigned-int v-if="key === 'sector_id'"
+                v-model="org[key]" class="form-control"></input-unsigned-int>
               <input v-if="key !== 'sector_id'" type="text"
                 v-model="org[key]" class="form-control"></input>
             </div>
@@ -217,6 +218,7 @@
 </template>
 
 <script>
+import inputUnsignedInt from './InputUnsignedInt.vue'
 import orgAnnotations from './OrgAnnotations.vue'
 import orgFqdns from './OrgFqdns.vue'
 import orgNationalCerts from './OrgNationalCerts.vue'
@@ -266,7 +268,7 @@ module.exports = {
     }
   },
   components: {
-    orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
+    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
   },
   computed: {
     otherAttributes: function () {

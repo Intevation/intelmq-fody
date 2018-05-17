@@ -33,7 +33,9 @@
     <!-- ./box -->
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Prepare Query</h3>
+          <h3 class="box-title">Prepare Query
+            <small>(Hint: Use <tt>%</tt> as pre- or post-wildcard
+              with <tt>_icontains</tt>.)</small></h3>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
@@ -105,19 +107,15 @@
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="queryData.total <= 10000">
+                            <div v-if="queryData.total <= 50000">
                                 <button class="btn btn-default" v-on:click="loadEvents">
-                                    Load Events
+                                    Show details in table
                                 </button>
                             </div>
                             <!-- ./ v-if -->
-                            <!--
                             <div v-else>
-                                <button class="btn btn-disabled">
-                                    Load Events
-                                </button>
+                              (More than 50k events. Use more filters to enable table.)
                             </div>
-                            -->
                             <!-- ./ v-else -->
                         </div>
                         <!-- /.info-box-content -->
@@ -350,14 +348,23 @@ module.exports = {
     },
     ticksX: function () {
       // how many ticks shall we display?
-      return Math.floor(this.padded.width / 110)
+      if (this.queryData.timeres === 'hour') {
+        return Math.floor(this.padded.width / 145)
+      } else {
+        return Math.floor(this.padded.width / 110)
+      }
     },
     formatXTick: function () {
-      if (this.queryData.timeres === 'day') {
-        return d => d.toISOString().slice(0, 10)
+      // Needed for x-axis label and CSV export (see usage below).
+      // Using UTC for simplicity (there is no simple javascript function
+      // to get a timezone-shifted ISO 8601 style string and there is no
+      // easy way to find out in which time zone the browser would want it
+      // displayed in).
+      if (this.queryData.timeres === 'hour') {
+        return d => d.toISOString().slice(0, 10) + ' ' +
+                    d.toISOString().slice(11, 16)
       } else {
-        return d => d.toISOString().slice(0, 10) + '.' +
-                    d.toISOString().slice(11, 13)
+        return d => d.toISOString().slice(0, 10)
       }
     },
     update: function () {
@@ -533,7 +540,17 @@ module.exports = {
       var svgXML = (new XMLSerializer()).serializeToString(svg)
       this.svgXML = svgXML
 
-      this.dataCSV = d3.csvFormat(this.queryData.results)
+      // we use d3.csvFormatRows() instead of d3.csvFormat() to be
+      // able to explicitely transform the values into an ISO 8601 format
+      // that libreoffice can read as a date (tested with libreoffice 5.2.7).
+      // We still give the original Date object coerced as string in an
+      // additional column for showing the timezone.
+      var dateToUTC = this.formatXTick()
+      this.dataCSV = d3.csvFormatRows([[
+        'count', 'date_trunc_utc', 'date_trunc'
+      ]].concat(this.queryData.results.map(d => {
+        return [d.count, dateToUTC(d.date_trunc), d.date_trunc]
+      })))
     },
     initEventsTable: function () {
       var that = this
@@ -588,7 +605,7 @@ module.exports = {
     updateEventsTable: function () {
       // loads the events into the datatable and triggers a redraw
       var e, r
-      console.log(this.eventData)
+
       this.resetEventsTable()
       this.eventsTable.search('')
       for (var i = 0; i < this.eventData.length; i++) {
@@ -613,28 +630,56 @@ module.exports = {
       currentRow.classList.add('row')
 
       for (var column of Object.keys(myEvent).sort()) {
-        if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
+        if (['raw', 'source.ip', 'source.port', 'classification.type',
+          'time.observation', 'extra'].indexOf(column) === -1
+          ) {
           if (counter > 0 && counter % 6 === 0) {
             div.appendChild(currentRow)
             currentRow = document.createElement('div')
             currentRow.classList.add('row')
           }
-          var el = document.createElement('div')
-          var c = document.createElement('strong')
-          var v = document.createElement('span')
 
-          el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
-          c.textContent = column + ': '
-          el.appendChild(c)
-          v.textContent = myEvent[column]
-          el.appendChild(v)
-          currentRow.appendChild(el)
+          currentRow.appendChild(
+            this.formatEventDetailRowElement(
+              ['col-md-4', 'col-sm-6', 'col-xs-12'],
+                column, myEvent[column]
+              )
+          )
           counter++
         }
       }
       div.appendChild(currentRow)
 
+      // place field `extra` in a row of its own
+      if (myEvent.hasOwnProperty('extra')) {
+        currentRow = document.createElement('div')
+        currentRow.classList.add('row')
+        currentRow.appendChild(
+          this.formatEventDetailRowElement(
+            ['col-md-12', 'col-sm-12', 'col-xs-12'],
+              'extra', JSON.stringify(myEvent['extra'])
+            )
+        )
+        div.appendChild(currentRow)
+      }
+
       return div
+    },
+    formatEventDetailRowElement: function (additionalClassList, name, text) {
+      var el = document.createElement('div')
+      var c = document.createElement('strong')
+      var v = document.createElement('span')
+
+      el.classList.add('child-row-el')
+      for (var i of additionalClassList) {
+        el.classList.add(i)
+      }
+      c.textContent = name + ': '
+      el.appendChild(c)
+      v.textContent = text
+      el.appendChild(v)
+
+      return el
     }
   }
 }

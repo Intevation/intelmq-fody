@@ -1,15 +1,18 @@
 **Fody** is an interface for 
 [intelmq-mailgen](https://github.com/Intevation/intelmq-mailgen) setups.
 
+![Screenshot](https://user-images.githubusercontent.com/8190008/29128927-8ce8bac6-7d25-11e7-9994-ec0a46cd521d.png)
+
 ### Features
  * Shows event details for a report that has been send out.
- * Inspect the [IntelMQ certbund-contact](https://github.com/Intevation/intelmq/tree/certbund-contact/intelmq/bots/experts/certbund_contact) database.
+ * Inspect and edit [IntelMQ certbund-contact](https://github.com/Intevation/intelmq/tree/certbund-contact/intelmq/bots/experts/certbund_contact) database.
+ * Overview charts that can be exported as SVG or CSV.
 
-![Screenshot](https://cloud.githubusercontent.com/assets/8190008/20760225/b2c83b80-b71f-11e6-98a0-f141f23b28c6.png)
+[Screenshots v0.5.2](https://github.com/Intevation/intelmq-fody/issues/60)
 
-![Screenshot-small-device](https://cloud.githubusercontent.com/assets/8190008/20760245/c2aa5678-b71f-11e6-920e-548d2e275c8e.png)
+[Screenshots v0.4.2](https://github.com/Intevation/intelmq-fody/issues/49)
 
-![Screenshot-Contacts](https://cloud.githubusercontent.com/assets/8190008/22743973/271a7d76-ee1c-11e6-882e-bbc629e97ace.png)
+
 
 Installation
 ------------
@@ -37,13 +40,8 @@ yarn run build
 
 
 
-For data to be retrieved, you need to serve the
-[checkticket](https://github.com/Intevation/intelmq-mailgen/tree/master/extras/checkticket-spa)
-and
-[contactdb](https://github.com/Intevation/intelmq-mailgen/tree/master/extras/contactdb_api)
-apis via http for your Intelmq setup.
-As long as [#30](https://github.com/Intevation/intelmq-fody/issues/30) is
-unsolved the apis needs to be server single-threaded.
+For data to be retrieved, you need to have http(s) access to the
+[intelmq-fody-backend](https://github.com/Intevation/intelmq-fody-backend).
 
 See the [setup example for Ubuntu](docs/SetupExampleUbuntu.md) for a complete example.
 
@@ -54,14 +52,14 @@ Check the [NEWS](NEWS.md) when upgrading from a previous version.
 
 Some [design considerations](docs/DesignConsiderations.md) are documented.
 
-The layout frame has originally be derived from the [CoPilot](https://github.com/misterGF/CoPilot) template.
+The layout frame has originally been derived from the [CoPilot](https://github.com/misterGF/CoPilot) template.
 
 License
 -------
 Fody is Free Software under the licenses of CoPilot,
 the included components and
 GNU Affero GPL v>=3 (for the files originating here).
-Please see a particular source files for details.
+Please see particular source files for details.
 
 During the build process a number of Free Software tools and components
 are used, parts of them are included in the production build.
@@ -77,3 +75,11 @@ and licensed under [MIT](http://opensource.org/licenses/MIT).
 
 CoPilot is based on the [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 template.
+
+Credits
+-------
+Exclusive usage rights: German Federal Office for Information Security (BSI).
+
+Software-Engineering by Intevation.
+
+Logo by Marcel "Howly" Newman

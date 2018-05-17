@@ -1,9 +1,8 @@
-Here is an example recipe to setup fody on Ubuntu 14.04LTS.
+Here are some example recipes to setup fody on Ubuntu 14.04LTS.
 
-We are going to do the example with
-the prototype checkticket.py backend based on hug.
+### Building a production-ready version of fody
 
-### Development: install nodejs and yarn
+### install nodejs and yarn
 This setup step is **only necessary for building fody from sources**:
 
 ```sh
@@ -42,9 +41,6 @@ yarn --version
 # testoutput 0.19.1
 ```
 
-### production build fody
-
-Do a production build of fody (as indicated in the main fody documentation), which ends up in `dist`.
 
 #### Only for fody (versions <= 0.1.2) :
 
@@ -58,23 +54,17 @@ make sure that we are asking our own webserver before running the build:
 +      queryURL: '/',  // base url for AJAJ service
 ```
 
-### separate user
-
-We want an installation that is quite separated from the rest of the system:
-
-```shell
-#as root
-adduser --disabled-password fody
-```
-Note: The user must have the right to read the mailgen configuration.
-
-Copy the build `dist` directory over and rename it to `www`:
-```shell
-mv dist www
-```
+Do a production build of fody (as indicated in the main fody documentation), which ends up in `dist`.
 
 
-#### installing hug
+### install server-side backend
+
+Follow the instructions of the
+[backend](https://github.com/Intevation/intelmq-fody-backend)
+and make sure the production version of fody you want will be served.
+
+
+#### Using a virtual environment for hug
 First follow the official way for
 [installing Python Modules](https://docs.python.org/3/installing/index.html),
 e.g.
@@ -103,86 +93,5 @@ pip --version
 pip install --upgrade hug
 ```
 
-### install server-side apis
-
-```shell
-#as fody
-git clone --depth 1 https://github.com/Intevation/intelmq-mailgen.git
-mkdir wsgi
-cd wsgi
-ln -s ../intelmq-mailgen/extras/checkticket-spa/checkticket.py .
-```
-
-(Modify checkticket.py that it will serve `/home/fody/www/index.html`.)
-
-```shell
-#as fody in venv-hug
-pushd ~/intelmq-mailgen/extras/contactdb_api
-pip install .
-```
 
 
-### Using Apache2
-We reuse the apache2 installation which already has
-some access control from the intelmq-manager setup.
-
-```shell
-#as root
-apt-get install libapache2-mod-wsgi-py3
-```
-
-The configuration of apache happens in
-```shell
-pushd /etc/apache2
-```
-
-
- * modify `ports.conf` make sure there is a `Listen` option for your port, e.g.
-   ```Listen: 8000```.
- * move the `Directory` configuration of `sites-enabled/intelmq.conf` into
-   the `Virtual` section of `000-default.conf`.
-
-Add a new configuration starting from the existing, 
-e.g. create ```site-available/001-fody.conf```:
-
-```apache
-WSGIPythonPath /home/fody/venv-hug/lib/python3.4/site-packages
-
-<VirtualHost *:8000>
-        ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html
-
-        Alias /static/ /home/fody/www/static/
-
-        <Directory /home/fody/www>
-            Options FollowSymLinks
-            AuthType Basic
-            AuthName IntelMQ
-            AuthBasicProvider file
-            AuthUserFile "/etc/intelmq-manager.htusers"
-            Require valid-user
-        </Directory>
-
-        WSGIDaemonProcess fody python-path=/home/fody/venv-hug/lib/python3.4/site-packages threads=1 maximum-requests=10000
-        WSGIScriptAlias / /home/fody/wsgi/checkticket.py
-        WSGICallableObject __hug_wsgi__
-
-        <Directory /home/fody/wsgi>
-            Options FollowSymLinks
-            AuthType Basic
-            AuthName IntelMQ
-            AuthBasicProvider file
-            AuthUserFile "/etc/intelmq-manager.htusers"
-            Require valid-user
-        </Directory>
-
-        ErrorLog ${APACHE_LOG_DIR}/fody-error.log
-        CustomLog ${APACHE_LOG_DIR}/fody-access.log combined
-</VirtualHost>
-```
-
-and then enable the side and trigger it with apache:
-```sh
-a2ensite 001-fody
-service apache2 reload
-```

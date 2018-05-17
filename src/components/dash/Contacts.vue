@@ -7,11 +7,11 @@
             <h5>Lookup ASN</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
-              <input type="text" class="form-control"
+              <input-unsigned-int class="form-control"
                 v-model.lazy.trim:title="searchASN"
                 v-on:change="lookupASN"
                 placeholder="49234"
-              >
+              />
               <span class="input-group-btn">
                 <button class="btn btn-default" v-on:click="lookupASN">
                   <i class="fa fa-search"></i>
@@ -19,6 +19,37 @@
               </span>
             </div>
             <span v-if="searchASN !== ''">
+              <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                Found {{ autoOrgIDs.length }} auto-imported and
+                      {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class='box' v-bind:class='CFNInputClass'>
+          <div class="box-body">
+            <h5>Search IP/CIDR/FQDN/CC</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
+              <input type="text" class="form-control"
+                v-model.lazy.trim:title="searchCFN"
+                v-on:change="lookupCFN"
+                placeholder="2001:638:81e::/48"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupCFN">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchCFN !== ''">
               <span class="help-block"
                   v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
                 Not found.
@@ -94,7 +125,42 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
-    </div>
+      <div class="col-md-4 col-sm-6">
+        <div class='box' v-bind:class='TagInputClass'>
+          <div class="box-body">
+            <h5>Search Tag</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-tag"></i></span>
+              <input class="form-control"
+                v-model.lazy.trim:title="searchTag"
+                v-on:change="lookupTag"
+                placeholder="whitelist-opendns"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default" v-on:click="lookupTag">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchTag !== ''">
+              <!-- only manual orgs may have annotations -->
+              <span class="help-block"
+                  v-if="manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="manualOrgIDs.length > 0">
+                Found {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
+      <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
+        Shown entries limited to {{ loadLimit }} per auto or manual.
+        Try a more specific search.
+      </div>
+    </div> <!-- .row -->
     <div class="row">
       <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
@@ -145,6 +211,7 @@
 <script>
 // import $ from 'jquery'
 
+import inputUnsignedInt from './InputUnsignedInt.vue'
 import OrgCard from './OrgCard.vue'
 
 module.exports = {
@@ -152,13 +219,17 @@ module.exports = {
   data: function () {
     return {
       baseQueryURL: '/api/contactdb',  // base url for AJAJ service
-      searchASN: '',  // asn we are searching for
+      searchASN: '',  // asn we want to look up
       searchEmail: '',  // email we are searching for
-      searchName: '',  // org name we want to look up
+      searchName: '',  // org name we are searching for
+      searchCFN: '', // contents of multi search field for cidr, fqdn and nc
+      searchTag: '', // annotation.tag substring we are searching for
       manualOrgIDs: [],  // list of ids of manual orgs we currently show
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
+      loadLimit: 100, // max number of manual- and autoorgs to load
+      limited: false,  // if we are only loading some of the search results
       annotationHints: {},  // from the server to help editing annotations
       // state of the entries in pendingOrgs, three values
       //   'delete' for removing the manual entry with org.id
@@ -169,7 +240,7 @@ module.exports = {
     }
   },
   components: {
-    OrgCard
+    inputUnsignedInt, OrgCard
   },
   computed: {
     ASNInputClass: function () {
@@ -196,6 +267,25 @@ module.exports = {
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
       }
     },
+    CFNInputClass: function () {
+      return {
+        'has-error': (this.searchCFN !== '' &&
+                      this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
+        'has-success': (this.searchCFN !== '' &&
+                        this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
+      }
+    },
+    TagInputClass: function () {
+      // only manual orgs may have annotations
+      return {
+        'has-error': (this.searchTag !== '' &&
+                      (this.manualOrgIDs.length === 0 ||
+                      this.autoOrgIDs.length > 0)),
+        'has-success': (this.searchTag !== '' &&
+                        this.manualOrgIDs.length > 0 &&
+                        this.autoOrgIDs.length === 0)
+      }
+    },
     ActionDisabled: function () {
       return {
         'disabled': (this.pendingOrgs.length === 0)
@@ -204,19 +294,37 @@ module.exports = {
   },
   watch: {
     manualOrgIDs: function (newManualOrgIDs) {
-      // deleting all objects and reloading them. (A more clever approach
-      // is unnecessary, because we expect only to load a few
-      this.manualOrgs = Array(newManualOrgIDs.length).fill(null)
-      for (var index in newManualOrgIDs) {
-        this.lookupOrg(this.manualOrgs, 'manual', this.manualOrgIDs, index)
+      var numberToLoad
+
+      if (newManualOrgIDs.length > this.loadLimit) {
+        numberToLoad = this.loadLimit
+        this.limited = true
+      } else {
+        numberToLoad = newManualOrgIDs.length
+        this.limited = false
+      }
+      // deleting all objects and reloading them, as even the existing ones
+      // could have changed
+      this.manualOrgs = Array(numberToLoad).fill(null)
+      for (var i = 0; i < numberToLoad; i++) {
+        this.lookupOrg(this.manualOrgs, 'manual', this.manualOrgIDs, i)
       }
     },
     autoOrgIDs: function (newAutoOrgIDs) {
-      // deleting all objects and reloading them. (A more clever approach
-      // is unnecessary, because we expect only to load a few
-      this.autoOrgs = Array(newAutoOrgIDs.length).fill(null)
-      for (var index in newAutoOrgIDs) {
-        this.lookupOrg(this.autoOrgs, 'auto', this.autoOrgIDs, index)
+      var numberToLoad
+
+      if (newAutoOrgIDs.length > this.loadLimit) {
+        numberToLoad = this.loadLimit
+        this.limited = true
+      } else {
+        numberToLoad = newAutoOrgIDs.length
+        this.limited = false
+      }
+      // deleting all objects and reloading them, as even the existing ones
+      // could have changed
+      this.autoOrgs = Array(numberToLoad).fill(null)
+      for (var i = 0; i < numberToLoad; i++) {
+        this.lookupOrg(this.autoOrgs, 'auto', this.autoOrgIDs, i)
       }
     }
   },
@@ -250,6 +358,8 @@ module.exports = {
 
       this.searchEmail = ''
       this.searchName = ''
+      this.searchCFN = ''
+      this.searchTag = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -260,6 +370,8 @@ module.exports = {
 
       this.searchASN = ''
       this.searchName = ''
+      this.searchCFN = ''
+      this.searchTag = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
 
       // Modify the URL, this enables bookmarking of this search.
@@ -270,10 +382,40 @@ module.exports = {
 
       this.searchASN = ''
       this.searchEmail = ''
+      this.searchCFN = ''
+      this.searchTag = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
+    },
+    lookupCFN: function () {
+      // FUTURE: we may need some debounce or throttle function here
+
+      this.searchASN = ''
+      this.searchEmail = ''
+      this.searchName = ''
+      this.searchTag = ''
+      if (this.searchCFN.length === 2) {
+        this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
+      } else if (/\.[^0-9:.]+$|^[^0-9:.]+$|\.xn--[^.]*$/.test(this.searchCFN)) {
+        this.getOrgIDs('/searchfqdn?domain=' + this.searchCFN)
+      } else {
+        this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
+      }
+
+      // Modify the URL, this enables bookmarking of this search.
+      this.$router.replace({query: {cfn: this.searchCFN}})
+    },
+    lookupTag: function () {
+      // (general comments of other lookup*() functions apply.)
+      this.searchASN = ''
+      this.searchEmail = ''
+      this.searchName = ''
+      this.searchCFN = ''
+
+      this.getOrgIDs('/annotation/search?tag=' + this.searchTag)
+      this.$router.replace({query: {tag: this.searchTag}})
     },
     refreshCurrentSearch: function () {
       // simple version to just repeat the search we'd done before
@@ -287,6 +429,14 @@ module.exports = {
       }
       if (this.searchName !== '') {
         this.lookupName()
+        return
+      }
+      if (this.searchCFN !== '') {
+        this.lookupCFN()
+        return
+      }
+      if (this.searchTag !== '') {
+        this.lookupTag()
         return
       }
     },
@@ -488,8 +638,8 @@ module.exports = {
     }
   },
   created: function () {
-    // If the page was called with ?email= parameter
-    // Start searching for the given parameter immediately
+    // If the page was called with parameters
+    // Start searching for the first machting parameter immediately
     // and display the tickets
     if (this.$route.query.email) {
       this.searchEmail = this.$route.query.email
@@ -500,6 +650,9 @@ module.exports = {
     } else if (this.$route.query.name) {
       this.searchName = this.$route.query.name
       this.lookupName()
+    } else if (this.$route.query.cfn) {
+      this.searchCFN = this.$route.query.cfn
+      this.lookupCFN()
     }
 
     // Start getting the annotationHints

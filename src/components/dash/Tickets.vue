@@ -29,8 +29,15 @@
               <span class="help-block" v-if="eventIDs.length === 1">
                 Found one event.
               </span>
-              <span class="help-block"  v-if="eventIDs.length > 1">
+              <span class="help-block"
+                v-if="eventIDs.length > 1 && eventIDs.length <= loadingLimit">
                 Found {{ eventIDs.length }} events.
+              </span>
+              <span class="help-block"
+                v-if="eventIDs.length > loadingLimit">
+                Found {{ eventIDs.length }} events.
+                (Only showing details of {{ loadingLimit }} events
+                for performance reasons.)
               </span>
             </div>
           </div> <!-- .box-body -->
@@ -78,16 +85,23 @@
           <span class='info-box-icon bg-green'><i class='fa fa-user'></i></span>
 
           <div class='info-box-content'>
-            <span class='info-box-text'>Recipient</span>
-            <span class='info-box-text'>
-                <div>
-                    <p>
-                    Sent to: <strong>{{ recipient.recipient_address }}</strong>
-                    </p>
-                    As {{ (recipient.notification_format  || 'unknown format') }} format at
-                    {{ ( recipient.sent_at || 'unknown time') }} by {{ ( recipient.medium || 'unknown medium') }}.
-                </div>
-            </span>
+            <table class='info-box-table'>
+              <tr> <th>To:</th>
+                <td><strong>{{ recipient.recipient_address }}</strong></td>
+              </tr>
+              <tr> <th>Date:</th>
+                <td> {{ ( formatDateString(recipient.sent_at) || 'unknown') }}
+                   </td>
+              </tr>
+              <tr> <th>Format:</th>
+                   <td>{{ (recipient.notification_format || 'unknown' )
+                     }}/{{ (recipient.event_data_format || 'unknown' ) }}
+                   </td>
+              </tr>
+              <tr> <th>Medium:</th>
+                <td>{{ (recipient.medium || 'unknown' ) }}</td>
+              </tr>
+            </table>
           </div>
         </div>
         </router-link>
@@ -140,6 +154,7 @@ module.exports = {
   data: function () {
     return {
       queryURL: '/api/checkticket/',  // base url for AJAJ service
+      loadingLimit: 10000,  // max number of events which details will be shown
       ticketID: '',  // ticket to be examined, not searched yet
       searchedForID: null, // this ticket has been searched for
       eventIDs: [],  // list of cosrresponding ids for the ticket
@@ -166,11 +181,7 @@ module.exports = {
           if (value) {
             this.eventIDs = value
             this.events = []
-            // directly load events, if we only have a few
-            if (this.eventIDs.length < 10000) {
-              console.log('less than 10000 events, triggering loading directly')
-              this.loadDetails()
-            }
+            this.loadDetails()
           } else {
             this.eventIDs = []
             this.events = []
@@ -211,28 +222,54 @@ module.exports = {
       currentRow.classList.add('row')
 
       for (var column of Object.keys(myEvent).sort()) {
-        if (['raw', 'source.ip', 'source.port', 'classification.type', 'time.observation'].indexOf(column) === -1) {
+        if (['raw', 'source.ip', 'source.port', 'classification.type',
+          'time.observation', 'extra'].indexOf(column) === -1
+          ) {
           if (counter > 0 && counter % 6 === 0) {
             div.appendChild(currentRow)
             currentRow = document.createElement('div')
             currentRow.classList.add('row')
           }
-          var el = document.createElement('div')
-          var c = document.createElement('strong')
-          var v = document.createElement('span')
 
-          el.classList.add('child-row-el', 'col-md-4', 'col-sm-6', 'col-xs-12')
-          c.textContent = column + ': '
-          el.appendChild(c)
-          v.textContent = myEvent[column]
-          el.appendChild(v)
-          currentRow.appendChild(el)
+          currentRow.appendChild(
+            this.formatEventDetailRowElement(
+              ['col-md-4', 'col-sm-6', 'col-xs-12'],
+                column, myEvent[column]
+              )
+          )
           counter++
         }
       }
       div.appendChild(currentRow)
-
+      // place field `extra` in a row of its own
+      if (myEvent.hasOwnProperty('extra')) {
+        currentRow = document.createElement('div')
+        currentRow.classList.add('row')
+        currentRow.appendChild(
+          this.formatEventDetailRowElement(
+            ['col-md-12', 'col-sm-12', 'col-xs-12'],
+              'extra', JSON.stringify(myEvent['extra'])
+            )
+        )
+        div.appendChild(currentRow)
+      }
       return div
+    },
+    formatEventDetailRowElement: function (additionalClassList, name, text) {
+      var el = document.createElement('div')
+      var c = document.createElement('strong')
+      var v = document.createElement('span')
+
+      el.classList.add('child-row-el')
+      for (var i of additionalClassList) {
+        el.classList.add(i)
+      }
+      c.textContent = name + ': '
+      el.appendChild(c)
+      v.textContent = text
+      el.appendChild(v)
+
+      return el
     },
     initEventsTable: function () {
       var that = this
@@ -287,8 +324,10 @@ module.exports = {
       this.eventsTable.draw()
     },
     loadDetails: function () {
-      var url = this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID
-      // URL could also be '/api/tickets/search?ticketnumber=' + this.ticketID
+      var url = (this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID +
+                 '&limit=' + this.loadingLimit)
+      // the following endpoint may give similiar results (without limit)
+      // url = '/api/tickets/search?ticketnumber=' + this.ticketID
       this.$http.get(url).then((response) => {
         // success
         response.json().then((value) => {
@@ -316,6 +355,13 @@ module.exports = {
     useLastTicket: function () {
       this.ticketID = this.lastTicketNumber
       this.lookupIDs()
+    },
+    formatDateString: function (str) {
+      // we use Date's parsing as we are with ES5
+      var isostr = (new Date(str)).toISOString()
+      // we want 'YYYY-MM-DD HH:mm:ss UTC'
+      // assume that we always get the 24 character result from toISOString()
+      return isostr.substring(0, 10) + ' ' + isostr.substring(11, 19) + ' UTC'
     }
   },  // methods
   mounted: function () {
@@ -383,6 +429,15 @@ td.details-control::after {
 
 tr.shown td.details-control::after {
   content: "\f147";
+}
+
+table.info-box-table {
+  margin: 0 auto;
+}
+
+table.info-box-table td {
+  padding-left: 5px;
+  text-align: left;
 }
 
 div.child-row-el {

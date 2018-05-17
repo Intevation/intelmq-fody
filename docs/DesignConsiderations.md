@@ -7,7 +7,7 @@ In March 2017 we did a major change of the contactdb schema
 
 The question is how to expose the possible uses of the database schema
 to users via fody's front
-and [backend](https://github.com/Intevation/intelmq-fody-api).
+and [backend](https://github.com/Intevation/intelmq-fody-backend).
 
 A big challenge is how to deal with entries in `network`, `fqdn`
 and `autonomous_system_annotation`
