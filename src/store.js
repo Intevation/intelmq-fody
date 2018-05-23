@@ -13,7 +13,12 @@ const state = {
     messages: [],
     notifications: [],
     tasks: []
-  }
+  },
+  // Map email addresses to their status. The status is a string. It can
+  // be either the empty string or 'disabled'. An empty string means the
+  // email address is enabled. Email addresses not in emailStatusMap are
+  // also considered to be enabled.
+  emailStatusMap: {}
 }
 
 const mutations = {
@@ -28,6 +33,10 @@ const mutations = {
   },
   SET_TOKEN (state, token) {
     state.token = token
+  },
+  SET_EMAIL_STATUS (state, payload) {
+    Vue.set(state.emailStatusMap, payload.email,
+            payload.value ? '' : 'disabled')
   }
 }
 

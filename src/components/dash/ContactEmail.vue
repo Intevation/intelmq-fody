@@ -5,7 +5,9 @@
   <div class="col-sm-11 col-xs-11">
     {{ firstname }} {{ lastname }} &lt;{{ email }}&gt;
     <small>
-      <toggle-button v-model="enabled" :width=36 :height=14
+      <toggle-button :value="mailEnabled" :sync="true"
+                     :width=36 :height=14
+                     v-on:change="setEmailStatus"
                      :labels="{checked: 'on', unchecked: 'off'}"
                      :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
     </small>
@@ -23,9 +25,15 @@ module.exports = {
     'email': String,
     'comment': String
   },
-  data: function () {
-    return {
-      enabled: true
+  computed: {
+    mailEnabled: function () {
+      return this.$store.state.emailStatusMap[this.email] !== 'disabled'
+    }
+  },
+  methods: {
+    setEmailStatus: function (event) {
+      this.$store.commit('SET_EMAIL_STATUS',
+                         {email: this.email, value: event.value})
     }
   }
 }
