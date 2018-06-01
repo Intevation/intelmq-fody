@@ -27,13 +27,14 @@ module.exports = {
   },
   computed: {
     mailEnabled: function () {
+      this.$store.dispatch('FETCH_EMAIL_STATUS', this.email)
       return this.$store.state.emailStatusMap[this.email] !== 'disabled'
     }
   },
   methods: {
     setEmailStatus: function (event) {
-      this.$store.commit('SET_EMAIL_STATUS',
-                         {email: this.email, value: event.value})
+      this.$store.dispatch('SET_EMAIL_STATUS',
+                           {email: this.email, value: event.value})
     }
   }
 }

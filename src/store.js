@@ -40,7 +40,38 @@ const mutations = {
   }
 }
 
+function emailURL (email) {
+  return '/api/contactdb/email/' + email
+}
+
+const actions = {
+  SET_EMAIL_STATUS (context, payload) {
+    Vue.http.put(emailURL(payload.email), {enabled: payload.value})
+      .then(response => {
+        context.commit('SET_EMAIL_STATUS',
+                       {email: payload.email, value: payload.value})
+      }, response => {
+        console.log('Setting email status failed. email = ' + payload.email +
+                    ', status code = ' + response.status +
+                    ' (' + response.statusText + ').')
+      })
+  },
+  FETCH_EMAIL_STATUS (context, email) {
+    Vue.http.get(emailURL(email)).then(response => {
+      response.json().then((value) => {
+        context.commit('SET_EMAIL_STATUS',
+                       {email: email, value: value.enabled})
+      })
+    }, response => {
+      console.log('Fetching email status failed. email = ' + email +
+                  ', status code = ' + response.status +
+                  ' (' + response.statusText + ').')
+    })
+  }
+}
+
 export default new Vuex.Store({
   state,
-  mutations
+  mutations,
+  actions
 })
