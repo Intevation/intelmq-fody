@@ -27,7 +27,7 @@ module.exports = {
   },
   computed: {
     mailEnabled: function () {
-      this.$store.dispatch('FETCH_EMAIL_STATUS', this.email)
+      this.$store.dispatch('GET_EMAIL_STATUS', this.email)
       return this.$store.state.emailStatusMap[this.email] !== 'disabled'
     }
   },
