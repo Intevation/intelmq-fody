@@ -39,12 +39,3 @@ module.exports = {
   }
 }
 </script>
-
-<style>
-i.rme {
-  margin-right: 0.25em
-}
-i.lme {
-  margin-left: 0.35em
-}
-</style>
