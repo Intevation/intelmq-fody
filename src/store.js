@@ -84,13 +84,11 @@ const actions = {
   GET_EMAIL_STATUS (context, email) {
     if (!(email in state.emailStatusMap)) {
       // we need to fetch it the first time
-      // assume we are enabled and start request
-      console.log('not in store, go get it: ' + email)
+      // assume email address is enabled and start request to get real value
       context.commit('SET_EMAIL_STATUS', {'email': email, 'value': ''})
       context.dispatch('FETCH_EMAIL_STATUS', email)
     } else if (Date.now() - state.emailStatusMap[email].lastFetched >
                60 * 1000) {
-      console.log('too old, get it again: ' + email)
       // re-fetch after some time
       // keep old value, but indicate start of request by setting lastFetched
       context.commit('SET_EMAIL_STATUS',
@@ -98,7 +96,6 @@ const actions = {
           'value': state.emailStatusMap[email].status})
       context.dispatch('FETCH_EMAIL_STATUS', email)
     }
-    console.log('young enough: ' + email)
     // otherwise do nothing
   }
 }

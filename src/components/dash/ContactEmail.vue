@@ -25,10 +25,17 @@ module.exports = {
     'email': String,
     'comment': String
   },
+  created: function () {
+    this.$store.dispatch('GET_EMAIL_STATUS', this.email)
+  },
+  watch: {
+    email: function (val) {
+      this.$store.dispatch('GET_EMAIL_STATUS', val)
+    }
+  },
   computed: {
     mailEnabled: function () {
-      this.$store.dispatch('GET_EMAIL_STATUS', this.email)
-      return this.$store.state.emailStatusMap[this.email] !== 'disabled'
+      return this.$store.state.emailStatusMap[this.email].status !== 'disabled'
     }
   },
   methods: {
