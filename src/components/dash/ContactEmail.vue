@@ -105,7 +105,7 @@ module.exports = {
     },
     getStatusForModifiedEmail: debounce(function (email) {
       this.$store.dispatch('GET_EMAIL_STATUS', email)
-    }, 500)
+    }, 800)
   }
 }
 </script>
