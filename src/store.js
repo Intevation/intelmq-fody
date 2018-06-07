@@ -88,7 +88,7 @@ const actions = {
       context.commit('SET_EMAIL_STATUS', {'email': email, 'value': ''})
       context.dispatch('FETCH_EMAIL_STATUS', email)
     } else if (Date.now() - state.emailStatusMap[email].lastFetched >
-               60 * 1000) {
+               30 * 1000) {
       // re-fetch after some time
       // keep old value, but indicate start of request by setting lastFetched
       context.commit('SET_EMAIL_STATUS',

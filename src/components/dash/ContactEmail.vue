@@ -18,9 +18,18 @@
   <div class="form-group">
     <label class="col-sm-1 control-label">
       <i class="fa fa-envelope-o"></i></label>
-      <div class="col-sm-10">
-        <input v-model="value.email"
-          type="email" class="form-control"></input>
+    <div class="col-sm-9 com-xs-9">
+      <input v-model="value.email"
+        type="email" class="form-control"></input>
+    </div>
+    <div class="col-sm-2 col-xs-2" style="padding-left:3px; padding-right:3px">
+      <small>
+        <toggle-button :value="mailEnabled" :sync="true"
+                       :width=36 :height=14
+                       v-on:change="setEmailStatus"
+                       :labels="{checked: 'on', unchecked: 'off'}"
+                       :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
+      </small>
     </div>
   </div>
   <div class="form-group">
@@ -54,6 +63,8 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
+
 module.exports = {
   name: 'contact-email',
   props: {
@@ -61,6 +72,8 @@ module.exports = {
     'status': String
   },
   created: function () {
+    // this has to be done early and for all email addresses
+    // so we cannot use a function that is debounced
     this.$store.dispatch('GET_EMAIL_STATUS', this.email)
   },
   computed: {
@@ -68,7 +81,12 @@ module.exports = {
       return this.value.email
     },
     mailEnabled: function () {
-      return this.$store.state.emailStatusMap[this.email].status !== 'disabled'
+      if (this.email in this.$store.state.emailStatusMap) {
+        return (this.$store.state.emailStatusMap[this.email].status !==
+                'disabled')
+      } else {
+        return true
+      }
     },
     editable: function () {
       return (this.status === 'create' || this.status === 'update')
@@ -76,14 +94,18 @@ module.exports = {
   },
   watch: {
     email: function (val) {
-      this.$store.dispatch('GET_EMAIL_STATUS', val)
+      // this.$store.dispatch('GET_EMAIL_STATUS', this.email)
+      this.getStatusForModifiedEmail(val)
     }
   },
   methods: {
     setEmailStatus: function (event) {
       this.$store.dispatch('SET_EMAIL_STATUS',
                            {email: this.email, value: event.value})
-    }
+    },
+    getStatusForModifiedEmail: debounce(function (email) {
+      this.$store.dispatch('GET_EMAIL_STATUS', email)
+    }, 500)
   }
 }
 </script>

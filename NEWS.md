@@ -1,7 +1,8 @@
 ## 0.6.4 to 0.6.5 (unreleased)
 **todo**
 
-* Contacts: Adds substring search for disabled email addresses.
+* Contacts: Adds disabling and enabling of email addresses, including
+  an accompanying search for disabled addresses.
 * Contacts: (minor) Fixes bookmarking for tags.
 
 ### Upgrade
