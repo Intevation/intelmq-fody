@@ -498,6 +498,10 @@ module.exports = {
         this.lookupTag()
         return
       }
+      if (this.searchDisabledEmail !== '') {
+        this.lookupDisabledEmail()
+        return
+      }
     },
     lookupOrg: function (orgList, type, ids, index) {
       var url = this.baseQueryURL + '/org/' + type + '/' + ids[index]
