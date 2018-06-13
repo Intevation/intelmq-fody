@@ -1,5 +1,4 @@
-## 0.6.4 to 0.6.5 (unreleased)
-**todo**
+## 0.6.4 to 0.6.5
 
 * Contacts: Adds disabling and enabling of email addresses, including
   an accompanying search for disabled addresses.
