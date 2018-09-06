@@ -1,6 +1,6 @@
 {
   "name": "fody",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "A web appliction for intelmq-cb-mailgen setups.",
   "author": "Bernhard E. Reiter <bernhard@intevation.de>",
   "repository": "https://github.com/Intevation/intelmq-fody",
@@ -20,10 +20,12 @@
     "datatables.net-bs": "^1.10.11",
     "font-awesome": "^4.5.7",
     "hideseek": "^0.7.0",
+    "lodash.debounce": "^4.0.8",
     "moment": "^2.12.0",
     "npm-font-source-sans-pro": "^1.0.2",
     "vue": "^2.0.3",
     "vue-flatpickr": "^2.2.9",
+    "vue-js-toggle-button": "^1.2.2",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.0.1",
     "vuex": "^2.0.0"
