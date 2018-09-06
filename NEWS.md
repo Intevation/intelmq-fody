@@ -1,3 +1,14 @@
+## 0.6.4 to 0.6.5
+
+* Contacts: Adds disabling and enabling of email addresses, including
+  an accompanying search for disabled addresses.
+* Contacts: (minor) Fixes bookmarking for tags.
+
+### Upgrade
+  * technical:
+    Depends on fody-backend v>=0.6.2.
+
+
 ## 0.6.3 to 0.6.4
 
 * Tickets: (minor) Improves details view of send out email: aligns values left.

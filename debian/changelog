@@ -1,3 +1,13 @@
+intelmq-fody (0.6.5) unstable; urgency=medium
+
+  * Tickets: (minor) Improves details view of send out email: aligns
+    values left.
+  * Contacts: Adds disabling and enabling of email addresses, including
+    an accompanying search for disabled addresses.
+  * Contacts: (minor) Fixes bookmarking for tags.
+
+ -- Sascha Wilde <wilde@intevation.de>  Wed, 13 Jun 2018 18:49:29 +0200
+
 intelmq-fody (0.6.3) unstable; urgency=medium
 
   * Tickets: Improves details view of send out email: Removes display of

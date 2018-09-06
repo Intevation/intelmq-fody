@@ -156,6 +156,38 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
+      <div class="col-md-3 col-sm-4">
+        <div class='box' v-bind:class='DisabledEmailInputClass'>
+          <div class="box-body">
+            <h5>Search disabled Email ('@'=all)</h5>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+              <input class="form-control"
+                v-model.lazy.trim:title="searchDisabledEmail"
+                v-on:change="lookupDisabledEmail"
+                placeholder="@"
+              >
+              <span class="input-group-btn">
+                <button class="btn btn-default"
+                    v-on:click="lookupDisabledEmail">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+            <span v-if="searchDisabledEmail !== ''">
+              <span class="help-block"
+                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+                Not found.
+              </span>
+              <span class="help-block"
+                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                Found {{ autoOrgIDs.length }} auto-imported and
+                      {{ manualOrgIDs.length }} manual organisations.
+              </span>
+            </span>
+          </div> <!-- .box-body -->
+        </div> <!-- .box -->
+      </div>
       <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
         Shown entries limited to {{ loadLimit }} per auto or manual.
         Try a more specific search.
@@ -221,6 +253,7 @@ module.exports = {
       baseQueryURL: '/api/contactdb',  // base url for AJAJ service
       searchASN: '',  // asn we want to look up
       searchEmail: '',  // email we are searching for
+      searchDisabledEmail: '',  // disabled email substr we are searching for
       searchName: '',  // org name we are searching for
       searchCFN: '', // contents of multi search field for cidr, fqdn and nc
       searchTag: '', // annotation.tag substring we are searching for
@@ -256,6 +289,14 @@ module.exports = {
         'has-error': (this.searchEmail !== '' &&
                       this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
         'has-success': (this.searchEmail !== '' &&
+                        this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
+      }
+    },
+    DisabledEmailInputClass: function () {
+      return {
+        'has-error': (this.searchDisabledEmail !== '' &&
+                      this.manualOrgIDs.length + this.autoOrgIDs.length === 0),
+        'has-success': (this.searchDisabledEmail !== '' &&
                         this.manualOrgIDs.length + this.autoOrgIDs.length > 0)
       }
     },
@@ -357,43 +398,60 @@ module.exports = {
       // this.autoOrgIDs = [23, 456]
 
       this.searchEmail = ''
+      this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
 
       // Modify the URL, this enables bookmarking of this search.
-      this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
+      this.$router.replace({query: {asn: this.searchASN}})
     },
     lookupEmail: function () {
       // FUTURE: we may need some debounce or throttle function here
 
       this.searchASN = ''
+      this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
 
       // Modify the URL, this enables bookmarking of this search.
-      this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
+      this.$router.replace({query: {email: this.searchEmail}})
+    },
+    lookupDisabledEmail: function () {
+      // FUTURE: we may need some debounce or throttle function here
+
+      this.searchASN = ''
+      this.searchEmail = ''
+      this.searchName = ''
+      this.searchCFN = ''
+      this.searchTag = ''
+      this.getOrgIDs('/searchdisabledcontact?email=' + this.searchDisabledEmail)
+
+      // Modify the URL, this enables bookmarking of this search.
+      this.$router.replace({query: {disabledemail: this.searchDisabledEmail}})
     },
     lookupName: function () {
       // FUTURE: we may need some debounce or throttle function here
 
       this.searchASN = ''
       this.searchEmail = ''
+      this.searchDisabledEmail = ''
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
 
       // Modify the URL, this enables bookmarking of this search.
-      this.$router.replace({query: {email: this.searchEmail, asn: this.searchASN, name: this.searchName}})
+      this.$router.replace({query: {name: this.searchName}})
     },
     lookupCFN: function () {
       // FUTURE: we may need some debounce or throttle function here
 
       this.searchASN = ''
       this.searchEmail = ''
+      this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchTag = ''
       if (this.searchCFN.length === 2) {
@@ -411,6 +469,7 @@ module.exports = {
       // (general comments of other lookup*() functions apply.)
       this.searchASN = ''
       this.searchEmail = ''
+      this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchCFN = ''
 
@@ -437,6 +496,10 @@ module.exports = {
       }
       if (this.searchTag !== '') {
         this.lookupTag()
+        return
+      }
+      if (this.searchDisabledEmail !== '') {
+        this.lookupDisabledEmail()
         return
       }
     },
@@ -641,7 +704,10 @@ module.exports = {
     // If the page was called with parameters
     // Start searching for the first machting parameter immediately
     // and display the tickets
-    if (this.$route.query.email) {
+    if (this.$route.query.disabledemail) {
+      this.searchDisabledEmail = this.$route.query.disabledemail
+      this.lookupDisabledEmail()
+    } else if (this.$route.query.email) {
       this.searchEmail = this.$route.query.email
       this.lookupEmail()
     } else if (this.$route.query.asn) {
@@ -653,6 +719,9 @@ module.exports = {
     } else if (this.$route.query.cfn) {
       this.searchCFN = this.$route.query.cfn
       this.lookupCFN()
+    } else if (this.$route.query.tag) {
+      this.searchTag = this.$route.query.tag
+      this.lookupTag()
     }
 
     // Start getting the annotationHints

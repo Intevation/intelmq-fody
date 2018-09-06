@@ -32,15 +32,10 @@
 
         <!-- contact details section -->
         <ul v-if="!editable" class="list-group">
-          <li v-for="contact of org.contacts" class="list-group-item">
+          <li v-for="(contact, index) of org.contacts" class="list-group-item">
             <div class="row">
-              <div class="col-sm-1 col-xs-1"
-                ><i class="fa fa-envelope-o"></i></div>
-              <div class="col-sm-11 col-xs-11">
-                {{ contact.firstname }} {{ contact.lastname }}
-                &lt;{{ contact.email }}&gt;
-                <em v-if="contact.comment !== ''">({{ contact.comment }})</em>
-              </div>
+              <contact-email v-model="org.contacts[index]"
+                             v-bind:status="status"/>
               <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
                 ><i class="fa fa-phone"></i></div>
               <div v-if="contact.tel !== ''" class="col-sm-11 col-xs-11"
@@ -54,41 +49,8 @@
         </ul>
         <div v-if="editable" class="list-group form-horizontal">
           <div v-for="(contact, index) in org.contacts" class="list-group-item">
-            <div class="form-group">
-              <label class="col-sm-1 control-label">
-                <i class="fa fa-envelope-o"></i></label>
-                <div class="col-sm-10">
-                  <input v-model="org.contacts[index].email"
-                    type="email" class="form-control"></input>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-4 control-label">
-                Firstname
-              </label>
-                <div class="col-sm-8">
-                  <input v-model="org.contacts[index].firstname"
-                    type="text" class="form-control"></input>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-4 control-label">
-                Lastname
-              </label>
-                <div class="col-sm-8">
-                  <input v-model="org.contacts[index].lastname"
-                    type="text" class="form-control"></input>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-4 control-label">
-                <em>Comment</em>
-              </label>
-                <div class="col-sm-8">
-                  <input v-model="org.contacts[index].comment"
-                    type="text" class="form-control"></input>
-              </div>
-            </div>
+            <contact-email v-model="org.contacts[index]"
+                           v-bind:status="status"/>
             <div class="form-group">
               <label class="col-sm-1 control-label">
                 <i class="fa fa-phone"></i></label>
@@ -223,6 +185,7 @@ import orgAnnotations from './OrgAnnotations.vue'
 import orgFqdns from './OrgFqdns.vue'
 import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
+import contactEmail from './ContactEmail.vue'
 
 module.exports = {
   name: 'org-card',
@@ -268,7 +231,7 @@ module.exports = {
     }
   },
   components: {
-    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork
+    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork, contactEmail
   },
   computed: {
     otherAttributes: function () {
