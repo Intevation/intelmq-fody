@@ -55,17 +55,25 @@
                     <div v-for="(sq, index) of query.subs">
                         <div class="form-group row">
                             <div class="col-sm-4 col-form-label">
-                                <select v-model="sq.cond" class="form-control">
+                                <select v-model="sq.cond" class="form-control" v-on:change='subquery_selected' :id="'subquery-select-'+index">
                                     <option value=""></option>
-                                    <option v-for="k in Object.keys(allowedSubs).sort()">
-                                        {{ k }}
+                                    <option v-for="k in Object.keys(allowedSubs).sort()" v-bind:value="k">
+                                        {{ allowedSubs[k].label }}
                                     </option>
                                 </select>
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
-                            <div class="col-sm-8">
-                                <input v-model="sq.value" type="text" class="form-control">
+                            <div class="col-sm-7">
+                                <input v-model="sq.value" type="text" class="form-control" v-on:keyup.enter='loadStats' autofocus :id="'subquery-input-'+index">
                             </div>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" v-on:click="removeFilter(index)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                                <button class="btn btn-default" :id="'subquery-help-'+index">
+                                    <i class="fa">?</i>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -680,6 +688,33 @@ module.exports = {
       el.appendChild(v)
 
       return el
+    },
+    subquery_selected: function (event) {
+      var id = event.target.id.split('-')[2]
+      var input = document.getElementById('subquery-input-' + id)
+      var previous = input.getAttribute('previous')
+
+      var description = this.allowedSubs[event.target.value]['description']
+      if (typeof description !== 'undefined') {
+        document.getElementById('subquery-help-' + id).title = description
+      }
+
+      var defaultValue = this.allowedSubs[event.target.value]['default']
+      if (previous && this.allowedSubs[previous]['default'] === this.query.subs[id].value) {
+        /* current value is the previous default value -> delete it */
+        this.query.subs[id].value = ''
+      }
+      if (typeof defaultValue !== 'undefined' && this.query.subs[id].value === '') {
+        this.query.subs[id].value = defaultValue
+      }
+      var placeholder = this.allowedSubs[event.target.value]['placeholder']
+      if (typeof placeholder !== 'undefined') {
+        input.placeholder = placeholder
+      } else {
+        input.placeholder = ''
+      }
+
+      input.setAttribute('previous', event.target.value)
     }
   }
 }

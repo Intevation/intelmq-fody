@@ -1,3 +1,7 @@
+## 0.6.5 to unreleased
+
+* Stats: Placeholders, default values and help messages are used per subqueries.
+
 ## 0.6.4 to 0.6.5
 
 * Contacts: Adds disabling and enabling of email addresses, including
