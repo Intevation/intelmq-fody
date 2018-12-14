@@ -35,7 +35,7 @@
         <div class="box-header with-border">
           <h3 class="box-title">Prepare Query
             <small>(Hint: Use <tt>%</tt> as pre- or post-wildcard
-              with <tt>_icontains</tt>.)</small></h3>
+              with <em>contains</em>.)</small></h3>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">

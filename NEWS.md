@@ -1,6 +1,8 @@
 ## 0.6.5 to 0.6.6 (unreleased)
 **todo**
 
+ * Stats: Change display of subqueries to show the description.
+
 
 ## 0.6.4 to 0.6.5
 
