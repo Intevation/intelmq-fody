@@ -35,7 +35,7 @@
         <div class="box-header with-border">
           <h3 class="box-title">Prepare Query
             <small>(Hint: Use <tt>%</tt> as pre- or post-wildcard
-              with <tt>_icontains</tt>.)</small></h3>
+              with <em>contains</em>.)</small></h3>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
@@ -57,8 +57,8 @@
                             <div class="col-sm-4 col-form-label">
                                 <select v-model="sq.cond" class="form-control">
                                     <option value=""></option>
-                                    <option v-for="k in Object.keys(allowedSubs).sort()">
-                                        {{ k }}
+                                    <option v-for="key in Object.keys(allowedSubs).sort()" v-bind:value="key">
+                                        {{ allowedSubs[key].label }}
                                     </option>
                                 </select>
                             </div>
