@@ -79,7 +79,7 @@
             <a href="https://github.com/Intevation/intelmq-fody">IntelMQ-Fody Source Code</a>
         </span>
         <div class="pull-right hidden-xs">
-            <strong>Version: {{ this.$parent.version }}</strong>
+            <strong>Version: {{ version }}</strong>
         </div>
     </footer>
   </div>
@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import { version } from '../../package.json'
 require('hideseek')
 
 module.exports = {
@@ -115,6 +116,9 @@ module.exports = {
     },
     callAPI: function () {
       return this.$parent.callAPI
+    },
+    version: function () {
+      return version
     }
   },
   methods: {
