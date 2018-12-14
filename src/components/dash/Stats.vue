@@ -57,8 +57,8 @@
                             <div class="col-sm-4 col-form-label">
                                 <select v-model="sq.cond" class="form-control">
                                     <option value=""></option>
-                                    <option v-for="k in Object.keys(allowedSubs).sort()">
-                                        {{ k }}
+                                    <option v-for="key in Object.keys(allowedSubs).sort()" v-bind:value="key">
+                                        {{ allowedSubs[key].label }}
                                     </option>
                                 </select>
                             </div>
