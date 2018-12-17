@@ -57,8 +57,9 @@
                             <div class="col-sm-4 col-form-label">
                                 <select v-model="sq.cond" class="form-control">
                                     <option value=""></option>
-                                    <option v-for="key in Object.keys(allowedSubs).sort()" v-bind:value="key">
-                                        {{ allowedSubs[key].label }}
+                                    <option v-for="item in allowedSubs"
+                                            v-bind:value="item[0]">
+                                        {{ item[1].label }}
                                     </option>
                                 </select>
                             </div>
@@ -257,7 +258,7 @@ module.exports = {
       lastQueryURL: '',
       modeHeader: '',
       mode: '',
-      allowedSubs: {},  // allowed subqueries as returned from the backend
+      allowedSubs: [],  // allowed subqueries as [key, value] array from backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
       queryData: {}, // Data used for statistics
@@ -410,7 +411,10 @@ module.exports = {
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
-            this.allowedSubs = value
+            // sort by label into an array to have the right display order
+            this.allowedSubs = Object.entries(value).sort(
+              (a, b) => a[1].label.localeCompare(b[1].label, 'en')
+            )
           }
         })
       })
