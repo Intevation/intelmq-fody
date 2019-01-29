@@ -12,6 +12,13 @@
                      :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
     </small>
     <em v-if="value.comment !== ''">({{ value.comment }})</em>
+    <div v-for="(tags, category) in annotationHints.email_tags" :key="category">
+      <tag-selection v-bind:category="category"
+                     v-bind:tags="tags"
+                     v-bind:selected="chosenTags.tags[category]"
+                     v-on:input="setEmailTag"
+/>
+    </div>
   </div>
 </div>
 <div v-else>
@@ -64,12 +71,22 @@
 
 <script>
 import debounce from 'lodash.debounce'
+import tagSelection from './TagSelection.vue'
 
 module.exports = {
   name: 'contact-email',
   props: {
     'value': Object,
-    'status': String
+    'status': String,
+    'annotationHints': {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
+  components: {
+    tagSelection
   },
   created: function () {
     // this has to be done early and for all email addresses
@@ -90,6 +107,13 @@ module.exports = {
     },
     editable: function () {
       return (this.status === 'create' || this.status === 'update')
+    },
+    chosenTags: function () {
+      if (this.email in this.$store.state.emailStatusMap) {
+        return this.$store.state.emailStatusMap[this.email]
+      } else {
+        return {tags: {}}
+      }
     }
   },
   watch: {
@@ -105,7 +129,11 @@ module.exports = {
     },
     getStatusForModifiedEmail: debounce(function (email) {
       this.$store.dispatch('GET_EMAIL_STATUS', email)
-    }, 800)
+    }, 800),
+    setEmailTag: function (event) {
+      this.$store.dispatch('SET_EMAIL_TAG',
+                           {email: this.email, category: event.category, tag: event.tag})
+    }
   }
 }
 </script>

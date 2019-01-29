@@ -15,13 +15,35 @@ const state = {
     tasks: []
   },
   // Map email addresses to
-  //  { status: String, lastFetched: Date }
+  //  { status: String, tags: Object, lastFetched: Date }
   // Status can be either the empty string or 'disabled'.
   // An empty string means the email address is enabled.
   // Email addresses not in emailStatusMap are also considered to be enabled.
+  //
   // lastFetched is a Date object that holds the last time this email address
   // was asked to be queried
+  //
+  // tags contains the tags associated with the email address. Each tag
+  // has a category and a tag in that category. There may be only one
+  // tag per category. Therefore the categories are represented as the
+  // attributes of objects and the associated value, a string, is the
+  // tag.
   emailStatusMap: {}
+}
+
+function updateEmailStatus (email, callback) {
+  var status
+  if (email in state.emailStatusMap) {
+    status = state.emailStatusMap[email]
+  } else {
+    status = {
+      'status': '',
+      'lastFetched': Date.now(),
+      'tags': {}
+    }
+  }
+  callback(status)
+  Vue.set(state.emailStatusMap, email, status)
 }
 
 const mutations = {
@@ -38,10 +60,24 @@ const mutations = {
     state.token = token
   },
   SET_EMAIL_STATUS (state, payload) {
-    Vue.set(state.emailStatusMap, payload.email,
-      { 'status': (payload.value ? '' : 'disabled'),
-        'lastFetched': Date.now()
-      })
+    updateEmailStatus(payload.email, status => {
+      status.status = payload.value ? '' : 'disabled'
+      status.lastFetched = Date.now()
+    })
+  },
+  SET_EMAIL_TAG (state, payload) {
+    updateEmailStatus(payload.email, status => {
+      if (payload.tag) {
+        Vue.set(status.tags, payload.category, payload.tag)
+      } else {
+        Vue.delete(status.tags, payload.category)
+      }
+    })
+  },
+  SET_EMAIL_TAGS (state, payload) {
+    updateEmailStatus(payload.email, status => {
+      status.tags = payload.tags
+    })
   }
 }
 
@@ -72,8 +108,8 @@ const actions = {
   FETCH_EMAIL_STATUS (context, email) {
     Vue.http.get(emailURL(email)).then(response => {
       response.json().then((value) => {
-        context.commit('SET_EMAIL_STATUS',
-                       {email: email, value: value.enabled})
+        context.commit('SET_EMAIL_STATUS', {email: email, value: value.enabled})
+        context.commit('SET_EMAIL_TAGS', {email: email, tags: value.tags})
       })
     }, response => {
       console.log('Fetching email status failed. email = ' + email +
@@ -97,6 +133,22 @@ const actions = {
       context.dispatch('FETCH_EMAIL_STATUS', email)
     }
     // otherwise do nothing
+  },
+  SET_EMAIL_TAG (context, payload) {
+    var lastTag = state.emailStatusMap[payload.email].tags[payload.category]
+    context.commit('SET_EMAIL_TAG', payload)
+
+    // Then try committing the change to the server
+    Vue.http.put(emailURL(payload.email),
+                 {tags: state.emailStatusMap[payload.email].tags})
+      .catch(response => {
+        console.log('Setting email tags failed. email = ' + payload.email +
+                    ', status code = ' + response.status +
+                    ' (' + response.statusText + ').')
+        // go back to last value on failure
+        context.commit('SET_EMAIL_TAG',
+                       {'email': payload.email, 'category': payload.category, 'tag': lastTag})
+      })
   }
 }
 

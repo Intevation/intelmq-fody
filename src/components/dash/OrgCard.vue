@@ -35,7 +35,8 @@
           <li v-for="(contact, index) of org.contacts" class="list-group-item">
             <div class="row">
               <contact-email v-model="org.contacts[index]"
-                             v-bind:status="status"/>
+                             v-bind:status="status"
+                             v-bind:annotationHints="annotationHints"/>
               <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
                 ><i class="fa fa-phone"></i></div>
               <div v-if="contact.tel !== ''" class="col-sm-11 col-xs-11"
