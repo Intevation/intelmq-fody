@@ -5,7 +5,8 @@
             v-on:input="setSelected"
             class="form-control btn-info">
       <option value="">----</option>
-      <option v-for="tag in tags">{{ tag }}</option>
+      <option v-for="(description, tag) in tags"
+              v-bind:value="tag">{{ description }}</option>
     </select>
   </div>
 </template>
@@ -15,7 +16,7 @@ module.exports = {
   name: 'tag-selection',
   props: {
     'category': String,
-    'tags': Array,
+    'tags': Object,
     'selected': String
   },
   methods: {
