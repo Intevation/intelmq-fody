@@ -55,7 +55,7 @@
                     <div v-for="(sq, index) of query.subs">
                         <div class="form-group row">
                             <div class="col-sm-4 col-form-label">
-                                <select v-model="sq.cond" class="form-control">
+                                <select v-model="sq.cond" class="form-control" v-on:change='subquery_selected' :id="'subquery-select-'+index">
                                     <option value=""></option>
                                     <option v-for="item in allowedSubs"
                                             v-bind:value="item[0]">
@@ -65,7 +65,7 @@
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
                             <div class="col-sm-8">
-                                <input v-model="sq.value" type="text" class="form-control">
+                                <input v-model="sq.value" type="text" class="form-control" v-on:keyup.enter='loadStats' :id="'subquery-input-'+index">
                             </div>
                         </div>
                     </div>
@@ -684,6 +684,41 @@ module.exports = {
       el.appendChild(v)
 
       return el
+    },
+    subquery_selected: function (event) {
+      var id = event.target.id.split('-')[2]
+      var input = document.getElementById('subquery-input-' + id)
+      var previous = input.getAttribute('previous')
+
+      for (var i = 0; i < this.allowedSubs.length; i++) {
+        if (this.allowedSubs[i][0] === event.target.value) {
+          var allowedSubsIndex = i
+        }
+        if (this.allowedSubs[i][0] === previous) {
+          var allowedSubsPreviousIndex = i
+        }
+      }
+      var description = this.allowedSubs[allowedSubsIndex][1].description
+      if (typeof description !== 'undefined') {
+        document.getElementById('subquery-input-' + id).title = description
+      }
+
+      var defaultValue = this.allowedSubs[allowedSubsIndex][1].default
+      if (previous && this.allowedSubs[allowedSubsPreviousIndex][1].default === this.query.subs[id].value) {
+        /* current value is the previous default value -> delete it */
+        this.query.subs[id].value = ''
+      }
+      if (typeof defaultValue !== 'undefined' && this.query.subs[id].value === '') {
+        this.query.subs[id].value = defaultValue
+      }
+      var placeholder = this.allowedSubs[allowedSubsIndex][1].placeholder
+      if (typeof placeholder !== 'undefined') {
+        input.placeholder = placeholder
+      } else {
+        input.placeholder = ''
+      }
+
+      input.setAttribute('previous', event.target.value)
     }
   }
 }

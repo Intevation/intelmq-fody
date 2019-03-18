@@ -2,6 +2,7 @@
 **todo**
 
  * Stats: Change display of subqueries to show the description.
+ * Stats: Placeholders, default values and help messages are used per subqueries.
 
 
 ## 0.6.4 to 0.6.5
