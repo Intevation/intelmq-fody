@@ -35,7 +35,7 @@
         <div class="box-header with-border">
           <h3 class="box-title">Prepare Query
             <small>(Hint: Use <tt>%</tt> as pre- or post-wildcard
-              with <tt>_icontains</tt>.)</small></h3>
+              with <em>contains</em>.)</small></h3>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
@@ -57,8 +57,9 @@
                             <div class="col-sm-4 col-form-label">
                                 <select v-model="sq.cond" class="form-control" v-on:change='subquery_selected' :id="'subquery-select-'+index">
                                     <option value=""></option>
-                                    <option v-for="k in Object.keys(allowedSubs).sort()" v-bind:value="k">
-                                        {{ allowedSubs[k].label }}
+                                    <option v-for="item in allowedSubs"
+                                            v-bind:value="item[0]">
+                                        {{ item[1].label }}
                                     </option>
                                 </select>
                             </div>
@@ -67,9 +68,6 @@
                                 <input v-model="sq.value" type="text" class="form-control" v-on:keyup.enter='loadStats' autofocus :id="'subquery-input-'+index">
                             </div>
                             <span class="input-group-btn">
-                                <button class="btn btn-default" v-on:click="removeFilter(index)">
-                                    <i class="fa fa-times"></i>
-                                </button>
                                 <button class="btn btn-default" :id="'subquery-help-'+index">
                                     <i class="fa">?</i>
                                 </button>
@@ -265,7 +263,7 @@ module.exports = {
       lastQueryURL: '',
       modeHeader: '',
       mode: '',
-      allowedSubs: {},  // allowed subqueries as returned from the backend
+      allowedSubs: [],  // allowed subqueries as [key, value] array from backend
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
       queryData: {}, // Data used for statistics
@@ -418,7 +416,10 @@ module.exports = {
         response.json().then((value) => {
           // json parsed correctly
           if (value) {
-            this.allowedSubs = value
+            // sort by label into an array to have the right display order
+            this.allowedSubs = Object.entries(value).sort(
+              (a, b) => a[1].label.localeCompare(b[1].label, 'en')
+            )
           }
         })
       })
