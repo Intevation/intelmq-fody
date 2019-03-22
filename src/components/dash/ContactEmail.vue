@@ -12,9 +12,11 @@
                      :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
     </small>
     <em v-if="value.comment !== ''">({{ value.comment }})</em>
-    <div v-for="(tags, category) in annotationHints.email_tags" :key="category">
+    <div v-for="(tag_info, category) in annotationHints.email_tags"
+         :key="category">
       <tag-selection v-bind:category="category"
-                     v-bind:tags="tags"
+                     v-bind:tags="tag_info.tags"
+                     v-bind:defaultTag="tag_info.default_tag"
                      v-bind:selected="chosenTags.tags[category]"
                      v-on:input="setEmailTag"
 />

@@ -4,7 +4,7 @@
     <select v-bind:value="selected"
             v-on:input="setSelected"
             class="form-control btn-info">
-      <option value="">----</option>
+      <option value="">Default ({{tags[defaultTag]}})</option>
       <option v-for="(description, tag) in tags"
               v-bind:value="tag">{{ description }}</option>
     </select>
@@ -17,7 +17,8 @@ module.exports = {
   props: {
     'category': String,
     'tags': Object,
-    'selected': String
+    'selected': String,
+    'defaultTag': String
   },
   methods: {
     setSelected: function (event) {
