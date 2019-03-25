@@ -5,8 +5,8 @@
             v-on:input="setSelected"
             class="form-control btn-info">
       <option value="">Default ({{tags[defaultTag]}})</option>
-      <option v-for="(description, tag) in tags"
-              v-bind:value="tag">{{ description }}</option>
+      <option v-for="entry in orderedTags"
+              v-bind:value="entry[0]">{{ entry[1] }}</option>
     </select>
   </div>
 </template>
@@ -19,6 +19,13 @@ module.exports = {
     'tags': Object,
     'selected': String,
     'defaultTag': String
+  },
+  computed: {
+    orderedTags: function () {
+      return Object.entries(this.tags).sort(
+        (a, b) => a[1].localeCompare(b[1], 'de')
+      )
+    }
   },
   methods: {
     setSelected: function (event) {
