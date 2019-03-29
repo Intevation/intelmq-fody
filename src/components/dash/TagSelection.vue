@@ -4,7 +4,6 @@
     <select v-bind:value="selected"
             v-on:input="setSelected"
             class="form-control btn-info">
-      <option value="">Default ({{tags[defaultTag]}})</option>
       <option v-for="entry in orderedTags"
               v-bind:value="entry[0]">{{ entry[1] }}</option>
     </select>
@@ -22,9 +21,15 @@ module.exports = {
   },
   computed: {
     orderedTags: function () {
-      return Object.entries(this.tags).sort(
+      var defaultLabel = 'Default'
+      if (this.defaultTag !== '') {
+        defaultLabel += ' ' + this.tags[this.defaultTag]
+      }
+      var sorted = Object.entries(this.tags).sort(
         (a, b) => a[1].localeCompare(b[1], 'de')
       )
+      sorted.unshift(['', defaultLabel])
+      return sorted
     }
   },
   methods: {
