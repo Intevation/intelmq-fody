@@ -23,7 +23,7 @@ module.exports = {
     orderedTags: function () {
       var defaultLabel = 'Default'
       if (this.defaultTag !== '') {
-        defaultLabel += ' ' + this.tags[this.defaultTag]
+        defaultLabel += ' (' + this.tags[this.defaultTag] + ')'
       }
       var sorted = Object.entries(this.tags).sort(
         (a, b) => a[1].localeCompare(b[1], 'de')
