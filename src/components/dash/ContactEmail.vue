@@ -1,26 +1,29 @@
 <template>
 <div v-if="!editable">
-  <div class="col-sm-1 col-xs-1"
-       ><i class="fa fa-envelope-o"></i></div>
-  <div class="col-sm-11 col-xs-11">
-    {{ value.firstname }} {{ value.lastname }} &lt;{{ email }}&gt;
-    <small>
-      <toggle-button :value="mailEnabled" :sync="true"
-                     :width=36 :height=14
-                     v-on:change="setEmailStatus"
-                     :labels="{checked: 'on', unchecked: 'off'}"
-                     :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
-    </small>
-    <em v-if="value.comment !== ''">({{ value.comment }})</em>
-    <div v-for="entry in annotationHints.email_tags"
-         :key="category">
-      <tag-selection v-bind:category="entry[0]"
-                     v-bind:tags="entry[1].tags"
-                     v-bind:defaultTag="entry[1].default_tag"
-                     v-bind:selected="chosenTags.tags[entry[0]]"
-                     v-on:input="setEmailTag"
-/>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-3"
+           ><i class="fa fa-envelope-o"></i></div>
+      <div class="col-xs-9">
+        {{ value.firstname }} {{ value.lastname }} &lt;{{ email }}&gt;
+        <small>
+          <toggle-button :value="mailEnabled" :sync="true"
+                         :width=36 :height=14
+                         v-on:change="setEmailStatus"
+                         :labels="{checked: 'on', unchecked: 'off'}"
+                         :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
+        </small>
+        <em v-if="value.comment !== ''">({{ value.comment }})</em>
+      </div>
     </div>
+  </div>
+  <tag-selection v-for="entry in annotationHints.email_tags"
+                 :key="category"
+                 v-bind:category="entry[0]"
+                 v-bind:tags="entry[1].tags"
+                 v-bind:defaultTag="entry[1].default_tag"
+                 v-bind:selected="chosenTags.tags[entry[0]]"
+                 v-on:input="setEmailTag" />
   </div>
 </div>
 <div v-else>

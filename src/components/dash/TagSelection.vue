@@ -1,13 +1,19 @@
 <template>
-  <div>
-    <label class="control-label">{{category}}</label>
-    <select v-bind:value="selected"
-            v-on:input="setSelected"
-            class="form-control btn-info">
-      <option v-for="entry in orderedTags"
-              v-bind:value="entry[0]">{{ entry[1] }}</option>
-    </select>
+<div class="container-fluid" style="margin-top: 15px;">
+  <div class="row">
+    <div class="col-xs-3">
+      <label class="control-label">{{category}}</label>
+    </div>
+    <div class="col-xs-9">
+      <select v-bind:value="selected"
+              v-on:input="setSelected"
+              class="form-control btn-info">
+        <option v-for="entry in orderedTags"
+                v-bind:value="entry[0]">{{ entry[1] }}</option>
+      </select>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
