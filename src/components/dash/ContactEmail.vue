@@ -2,9 +2,9 @@
 <div v-if="!editable">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-xs-3"
+      <div class="col-xs-3" style="width:20%"
            ><i class="fa fa-envelope-o"></i></div>
-      <div class="col-xs-9">
+      <div class="col-xs-9" style="width:80%">
         {{ value.firstname }} {{ value.lastname }} &lt;{{ email }}&gt;
         <small>
           <toggle-button :value="mailEnabled" :sync="true"

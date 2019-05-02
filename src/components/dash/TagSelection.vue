@@ -1,10 +1,11 @@
 <template>
 <div class="container-fluid" style="margin-top: 15px;">
-  <div class="row">
-    <div class="col-xs-3">
-      <label class="control-label">{{category}}</label>
+  <div class="row" style="display:flex;align-items:center;">
+    <div class="col-xs-3" style="width:20%">
+      <label class="control-label" style="font-weight:normal;margin-bottom:0;"
+             >{{category}}</label>
     </div>
-    <div class="col-xs-9">
+    <div class="col-xs-9" style="width:80%">
       <select v-bind:value="selected"
               v-on:input="setSelected"
               class="form-control btn-info">
