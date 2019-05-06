@@ -44,6 +44,13 @@
       </small>
     </div>
   </div>
+  <tag-selection v-for="entry in annotationHints.email_tags"
+                 :key="category"
+                 v-bind:category="entry[0]"
+                 v-bind:tags="entry[1].tags"
+                 v-bind:defaultTag="entry[1].default_tag"
+                 v-bind:selected="chosenTags.tags[entry[0]]"
+                 v-on:input="setEmailTag" />
   <div class="form-group">
     <label class="col-sm-4 control-label">
       Firstname

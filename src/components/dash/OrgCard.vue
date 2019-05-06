@@ -51,7 +51,8 @@
         <div v-if="editable" class="list-group form-horizontal">
           <div v-for="(contact, index) in org.contacts" class="list-group-item">
             <contact-email v-model="org.contacts[index]"
-                           v-bind:status="status"/>
+                           v-bind:status="status"
+                           v-bind:annotationHints="annotationHints"/>
             <div class="form-group">
               <label class="col-sm-1 control-label">
                 <i class="fa fa-phone"></i></label>
