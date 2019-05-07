@@ -17,13 +17,20 @@
       </div>
     </div>
   </div>
-  <tag-selection v-for="entry in annotationHints.email_tags"
-                 :key="category"
-                 v-bind:category="entry[0]"
-                 v-bind:tags="entry[1].tags"
-                 v-bind:defaultTag="entry[1].default_tag"
-                 v-bind:selected="chosenTags.tags[entry[0]]"
-                 v-on:input="setEmailTag" />
+  <div v-for="entry in annotationHints.email_tags" :key="category"
+       class="container-fluid" style="margin-top: 15px;">
+    <div class="row" style="display:flex;align-items:center;">
+      <div class="col-xs-3" style="width:20%">
+        <label class="control-label" style="font-weight:normal;margin-bottom:0;"
+               >{{entry[0]}}</label>
+      </div>
+      <tag-selection v-bind:category="entry[0]"
+                     v-bind:tags="entry[1].tags"
+                     v-bind:defaultTag="entry[1].default_tag"
+                     v-bind:selected="chosenTags.tags[entry[0]]"
+                     v-on:input="setEmailTag"
+                     class="col-xs-9" style="width:80%" />
+    </div>
   </div>
 </div>
 <div v-else>
@@ -44,14 +51,17 @@
       </small>
     </div>
   </div>
-  <tag-selection v-for="entry in annotationHints.email_tags"
-                 :key="category"
-                 v-bind:category="entry[0]"
-                 v-bind:tags="entry[1].tags"
-                 v-bind:defaultTag="entry[1].default_tag"
-                 v-bind:selected="chosenTags.tags[entry[0]]"
-                 v-on:input="setEmailTag" />
-  <div class="form-group">
+  <div v-for="entry in annotationHints.email_tags" :key="category"
+       class="form-group">
+    <label class="col-sm-4 control-label">{{entry[0]}}</label>
+    <tag-selection v-bind:category="entry[0]"
+                   v-bind:tags="entry[1].tags"
+                   v-bind:defaultTag="entry[1].default_tag"
+                   v-bind:selected="chosenTags.tags[entry[0]]"
+                   v-on:input="setEmailTag"
+                   class="col-sm-8" />
+  </div>
+    <div class="form-group">
     <label class="col-sm-4 control-label">
       Firstname
     </label>
