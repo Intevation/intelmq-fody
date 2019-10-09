@@ -1,6 +1,12 @@
 ## 0.6.6 to 0.6.7 (unreleased)
 **todo**
 
+ * Contacts: Tag search box will also display number of found `auto` entries.
+
+### Upgrade
+ * technical:
+   Recommends fody-backend v>=0.6.4
+
 
 ## 0.6.5 to 0.6.6
 
