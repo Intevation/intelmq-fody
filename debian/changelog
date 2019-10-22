@@ -1,3 +1,10 @@
+intelmq-fody (0.6.7) unstable; urgency=medium
+
+  * Contacts: Tag search box will also display number of found `auto`
+    entries.
+
+ -- Sascha Wilde <wilde@intevation.de>  Tue, 22 Oct 2019 18:45:51 +0200
+
 intelmq-fody (0.6.6) unstable; urgency=medium
 
   * Stats: Change display of subqueries to show the description.
