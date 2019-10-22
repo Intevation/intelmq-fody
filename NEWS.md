@@ -1,5 +1,4 @@
-## 0.6.6 to 0.6.7 (unreleased)
-**todo**
+## 0.6.6 to 0.6.7
 
  * Contacts: Tag search box will also display number of found `auto` entries.
 
