@@ -4,7 +4,10 @@ Use a version that conforms to semantic versioning 2.0.
 
 Change it in the files:
 `package.json`
+
+Add new entry to:
 `NEWS.md`
+`debian/changelog`
 
 and commit.
 
