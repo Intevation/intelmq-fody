@@ -130,7 +130,9 @@ module.exports = {
       window.$('li.pageLink').removeClass('active')
 
       // Add it to the item that was clicked
-      event.toElement.parentElement.className = 'pageLink active'
+      if (event.target && event.target.parentElement) {
+        event.target.parentElement.className = 'pageLink active'
+      }
     }
   },
   mounted: function () {
