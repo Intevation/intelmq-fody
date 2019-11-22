@@ -143,14 +143,14 @@
               </span>
             </div>
             <span v-if="searchTag !== ''">
-              <!-- only manual orgs may have annotations -->
               <span class="help-block"
-                  v-if="manualOrgIDs.length === 0">
+                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
                 Not found.
               </span>
               <span class="help-block"
-                    v-if="manualOrgIDs.length > 0">
-                Found {{ manualOrgIDs.length }} manual organisations.
+                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+                Found {{ autoOrgIDs.length }} auto-imported and
+                      {{ manualOrgIDs.length }} manual organisations.
               </span>
             </span>
           </div> <!-- .box-body -->

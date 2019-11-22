@@ -1,23 +1,39 @@
-## 0.6.4 to 0.6.5
+## 0.6.6 to 0.6.7
 
-* Contacts: Adds disabling and enabling of email addresses, including
-  an accompanying search for disabled addresses.
-* Contacts: (minor) Fixes bookmarking for tags.
+ * Contacts: Tag search box will also display number of found `auto` entries.
 
 ### Upgrade
-  * technical:
-    Depends on fody-backend v>=0.6.2.
+ * technical:
+   Recommends fody-backend v>=0.6.4
+
+
+## 0.6.5 to 0.6.6
+
+ * Stats: Change display of subqueries to show the description.
+ * Contacts: Add handling of email tags.
+
+
+## 0.6.4 to 0.6.5
+
+ * Contacts: Adds disabling and enabling of email addresses, including
+   an accompanying search for disabled addresses.
+ * Contacts: (minor) Fixes bookmarking for tags.
+
+### Upgrade
+ * technical:
+   Depends on fody-backend v>=0.6.2.
 
 
 ## 0.6.3 to 0.6.4
 
-* Tickets: (minor) Improves details view of send out email: aligns values left.
+ * Tickets: (minor) Improves details view of send out email:
+   aligns values left.
 
 
 ## 0.6.2 to 0.6.3
 
-* Tickets: Improves details view of send out email: Removes display of
-  `template_name`; centers table.
+ * Tickets: Improves details view of send out email: Removes display of
+   `template_name`; centers table.
 
 
 ## 0.6.1 to 0.6.2

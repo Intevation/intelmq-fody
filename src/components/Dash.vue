@@ -79,7 +79,7 @@
             <a href="https://github.com/Intevation/intelmq-fody">IntelMQ-Fody Source Code</a>
         </span>
         <div class="pull-right hidden-xs">
-            <strong>Version: {{ this.$parent.version }}</strong>
+            <strong>Version: {{ version }}</strong>
         </div>
     </footer>
   </div>
@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import { version } from '../../package.json'
 require('hideseek')
 module.exports = {
   name: 'Dash',
@@ -114,6 +115,9 @@ module.exports = {
     },
     callAPI: function () {
       return this.$parent.callAPI
+    },
+    version: function () {
+      return version
     }
   },
   methods: {
@@ -125,7 +129,9 @@ module.exports = {
       window.$('li.pageLink').removeClass('active')
 
       // Add it to the item that was clicked
-      event.toElement.parentElement.className = 'pageLink active'
+      if (event.target && event.target.parentElement) {
+        event.target.parentElement.className = 'pageLink active'
+      }
     }
   },
   mounted: function () {

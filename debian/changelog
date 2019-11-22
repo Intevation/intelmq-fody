@@ -1,3 +1,10 @@
+intelmq-fody (0.6.6) unstable; urgency=medium
+
+  * Stats: Change display of subqueries to show the description.
+  * Contacts: Add handling of email tags.
+
+ -- Sascha Wilde <wilde@intevation.de>  Wed, 15 May 2019 16:51:34 +0200
+
 intelmq-fody (0.6.5) unstable; urgency=medium
 
   * Tickets: (minor) Improves details view of send out email: aligns

@@ -1,17 +1,36 @@
 <template>
 <div v-if="!editable">
-  <div class="col-sm-1 col-xs-1"
-       ><i class="fa fa-envelope-o"></i></div>
-  <div class="col-sm-11 col-xs-11">
-    {{ value.firstname }} {{ value.lastname }} &lt;{{ email }}&gt;
-    <small>
-      <toggle-button :value="mailEnabled" :sync="true"
-                     :width=36 :height=14
-                     v-on:change="setEmailStatus"
-                     :labels="{checked: 'on', unchecked: 'off'}"
-                     :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
-    </small>
-    <em v-if="value.comment !== ''">({{ value.comment }})</em>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-3" style="width:20%"
+           ><i class="fa fa-envelope-o"></i></div>
+      <div class="col-xs-9" style="width:80%">
+        {{ value.firstname }} {{ value.lastname }} &lt;{{ email }}&gt;
+        <small>
+          <toggle-button :value="mailEnabled" :sync="true"
+                         :width=36 :height=14
+                         v-on:change="setEmailStatus"
+                         :labels="{checked: 'on', unchecked: 'off'}"
+                         :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
+        </small>
+        <em v-if="value.comment !== ''">({{ value.comment }})</em>
+      </div>
+    </div>
+  </div>
+  <div v-for="entry in annotationHints.email_tags" :key="category"
+       class="container-fluid" style="margin-top: 15px;">
+    <div class="row" style="display:flex;align-items:center;">
+      <div class="col-xs-3" style="width:20%">
+        <label class="control-label" style="font-weight:normal;margin-bottom:0;"
+               >{{entry[0]}}</label>
+      </div>
+      <tag-selection v-bind:category="entry[0]"
+                     v-bind:tags="entry[1].tags"
+                     v-bind:defaultTag="entry[1].default_tag"
+                     v-bind:selected="chosenTags.tags[entry[0]]"
+                     v-on:input="setEmailTag"
+                     class="col-xs-9" style="width:80%" />
+    </div>
   </div>
 </div>
 <div v-else>
@@ -32,7 +51,17 @@
       </small>
     </div>
   </div>
-  <div class="form-group">
+  <div v-for="entry in annotationHints.email_tags" :key="category"
+       class="form-group">
+    <label class="col-sm-4 control-label">{{entry[0]}}</label>
+    <tag-selection v-bind:category="entry[0]"
+                   v-bind:tags="entry[1].tags"
+                   v-bind:defaultTag="entry[1].default_tag"
+                   v-bind:selected="chosenTags.tags[entry[0]]"
+                   v-on:input="setEmailTag"
+                   class="col-sm-8" />
+  </div>
+    <div class="form-group">
     <label class="col-sm-4 control-label">
       Firstname
     </label>
@@ -64,12 +93,22 @@
 
 <script>
 import debounce from 'lodash.debounce'
+import tagSelection from './TagSelection.vue'
 
 module.exports = {
   name: 'contact-email',
   props: {
     'value': Object,
-    'status': String
+    'status': String,
+    'annotationHints': {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
+  components: {
+    tagSelection
   },
   created: function () {
     // this has to be done early and for all email addresses
@@ -90,6 +129,13 @@ module.exports = {
     },
     editable: function () {
       return (this.status === 'create' || this.status === 'update')
+    },
+    chosenTags: function () {
+      if (this.email in this.$store.state.emailStatusMap) {
+        return this.$store.state.emailStatusMap[this.email]
+      } else {
+        return {tags: {}}
+      }
     }
   },
   watch: {
@@ -105,7 +151,11 @@ module.exports = {
     },
     getStatusForModifiedEmail: debounce(function (email) {
       this.$store.dispatch('GET_EMAIL_STATUS', email)
-    }, 800)
+    }, 800),
+    setEmailTag: function (event) {
+      this.$store.dispatch('SET_EMAIL_TAG',
+                           {email: this.email, category: event.category, tag: event.tag})
+    }
   }
 }
 </script>
