@@ -19,7 +19,7 @@
             </div>
         </div>
         <!-- /.box -->
-       </div>  
+      </div>
       <!-- /.col -->
 
       <!-- <div class='col-md-4 col-sm-4 col-xs-12'> -->
@@ -31,7 +31,7 @@
       <!-- <div class='col-md-4 col-sm-4 col-xs-12'> -->
         <!-- <IBoxEventsToday /> -->
       <!-- </div> -->
-      
+
       <!-- /.col -->
     </div>
     <!-- ./box -->
@@ -133,7 +133,6 @@
                                     Show details in table
                                 </button>
                             </div> 
-                            
                             <!-- ./ v-if -->
                             <div v-else>
                               (More than 50k events. Use more filters to enable table.)
