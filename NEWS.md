@@ -2,8 +2,8 @@
 **todo**
 
  * Stats: Improve display of event details in the extended row:
-  * In extended row: display `mailgen_directives` and `mailgen_sent` at
-      in JSON at the bottom, if they exist.
+  * In extended row: If `mailgen_directives` and `mailgen_sent` fields exist,
+    display them in a list-group at the bottom.
   * Enable better line breaks for the JSON output fields like `extra`.
 
 ### Upgrade
