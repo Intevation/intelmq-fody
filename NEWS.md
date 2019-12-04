@@ -1,3 +1,16 @@
+## 0.6.7 to 0.6.8 (unreleased)
+**todo**
+
+ * Stats: Improve display of event details in the extended row:
+  * In extended row: display `mailgen_directives` and `mailgen_sent` at
+      in JSON at the bottom, if they exist.
+  * Enable better line breaks for the JSON output fields like `extra`.
+
+### Upgrade
+ * technical:
+   Recommends fody-backend v>=0.7.0
+
+
 ## 0.6.6 to 0.6.7
 
  * Contacts: Tag search box will also display number of found `auto` entries.

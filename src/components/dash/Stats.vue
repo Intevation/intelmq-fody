@@ -100,8 +100,8 @@
     <div class="row">
         <div v-if='mode == "events"'>
             <div v-if="queryData.total > 0">
-                <div class='col-md-4 col-sm-4 col-xs-12'>
-                    <div class='info-box info-box col-md-2'>
+                <div class='col-md-6 col-sm-8 col-xs-12'>
+                    <div class='info-box info-box'>
                         <span class='info-box-icon bg-green'><i class='fa fa-server'></i></span>
                         <div class='info-box-content'>
                             <span class='info-box-text'>Events Total for this Query</span>
@@ -635,7 +635,8 @@ module.exports = {
 
       for (var column of Object.keys(myEvent).sort()) {
         if (['raw', 'source.ip', 'source.port', 'classification.type',
-          'time.observation', 'extra'].indexOf(column) === -1
+          'time.observation', 'extra', 'mailgen_directives',
+          'mailgen_sent'].indexOf(column) === -1
           ) {
           if (counter > 0 && counter % 6 === 0) {
             div.appendChild(currentRow)
@@ -654,17 +655,12 @@ module.exports = {
       }
       div.appendChild(currentRow)
 
-      // place field `extra` in a row of its own
-      if (myEvent.hasOwnProperty('extra')) {
-        currentRow = document.createElement('div')
-        currentRow.classList.add('row')
-        currentRow.appendChild(
-          this.formatEventDetailRowElement(
-            ['col-md-12', 'col-sm-12', 'col-xs-12'],
-              'extra', JSON.stringify(myEvent['extra'])
-            )
-        )
-        div.appendChild(currentRow)
+      // place some fields in a rows of its own
+      for (const fieldname of ['extra', 'mailgen_directives', 'mailgen_sent']) {
+        if (myEvent.hasOwnProperty(fieldname)) {
+          div.appendChild(this.formatEventDetailRowElementExtra(
+            fieldname, myEvent[fieldname]))
+        }
       }
 
       return div
@@ -684,6 +680,17 @@ module.exports = {
       el.appendChild(v)
 
       return el
+    },
+    formatEventDetailRowElementExtra: function (fieldname, field) {
+      var currentRow = document.createElement('div')
+      currentRow.classList.add('row')
+      currentRow.appendChild(
+        this.formatEventDetailRowElement(
+          ['col-md-12', 'col-sm-12', 'col-xs-12'],
+            fieldname, JSON.stringify(field, null, 1)
+          )
+      )
+      return currentRow
     }
   }
 }
