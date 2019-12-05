@@ -1,5 +1,4 @@
-## 0.6.7 to 0.6.8 (unreleased)
-**todo**
+## 0.6.7 to 0.6.8
 
  * Stats: Improve display of event details in the extended row:
   * In extended row: If `mailgen_directives` and `mailgen_sent` fields exist,

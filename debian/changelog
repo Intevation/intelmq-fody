@@ -1,3 +1,9 @@
+intelmq-fody (0.6.8) stable; urgency=medium
+
+  * New release.
+
+ -- Bernhard E. Reiter <bernhard@intevation.de>  Thu, 05 Dec 2019 09:32:09 +0100
+
 intelmq-fody (0.6.6) unstable; urgency=medium
 
   * Stats: Change display of subqueries to show the description.
