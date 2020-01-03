@@ -599,6 +599,8 @@ module.exports = {
       this.resetEventData()
       if (this.eventsTable) {
         this.updateEventsTable()
+        // remove jquery event handler(s) for the rows, otherwise they remain
+        $('#events tbody').off('click', 'td.details-control')
         this.eventsTable.destroy()
         this.eventsTable = null
       }

@@ -1,6 +1,8 @@
 ## 0.6.8 to 0.6.9-dev (unreleased)
 **todo**
 
+ * Stats: Fix the event details' exented row to open always.
+
 
 ## 0.6.7 to 0.6.8
 
