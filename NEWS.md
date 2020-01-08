@@ -1,7 +1,11 @@
-## 0.6.8 to 0.6.9-dev (unreleased)
-**todo**
+## 0.6.8 to 0.7.0
 
  * Stats: Fix the event details' exented row to open always.
+ * Technical maintenance: Update some javascript library dependencies.
+
+### Upgrade
+ * technical:
+   Upgrade your build environment's nodejs to >= 12.14.1 LTS.
 
 
 ## 0.6.7 to 0.6.8

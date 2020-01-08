@@ -1,3 +1,10 @@
+intelmq-fody (0.7.0) stable; urgency=medium
+
+  * New release.
+  * Raise Build-Depends: to nodejs (>= 12.14.1) and yarn (>= 1.21.1)
+
+ -- Bernhard E. Reiter <bernhard@intevation.de>  Wed, 08 Jan 2020 13:26:21 +0100
+
 intelmq-fody (0.6.8) stable; urgency=medium
 
   * New release.
