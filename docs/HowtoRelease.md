@@ -6,15 +6,16 @@ Change it in the files:
 `package.json`
 
 Add new entry to:
-`NEWS.md`
-`debian/changelog`
+ * `NEWS.md`
+ * `debian/changelog`,
+ e.g. by `dch --newversion 0.6.8  --check-dirname-level 0 --distribution stable`
 
 and commit.
 
 ### tag version number
 example for v0.4.3:
 ```sh
-git tag v0.4.3
+git tag -s v0.4.3
 git push origin v0.4.3
 ```
 
