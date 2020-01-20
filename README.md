@@ -1,5 +1,5 @@
 **Fody** is an interface for 
-[intelmq-mailgen](https://github.com/Intevation/intelmq-mailgen) setups.
+[IntelMQ-CB-Mailgen](https://github.com/Intevation/intelmq-mailgen-release) setups.
 
 ![Screenshot](https://user-images.githubusercontent.com/8190008/29128927-8ce8bac6-7d25-11e7-9994-ec0a46cd521d.png)
 

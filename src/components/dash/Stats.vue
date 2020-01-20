@@ -778,6 +778,8 @@ module.exports = {
       this.resetEventData()
       if (this.eventsTable) {
         this.updateEventsTable()
+        // remove jquery event handler(s) for the rows, otherwise they remain
+        $('#events tbody').off('click', 'td.details-control')
         this.eventsTable.destroy()
         this.eventsTable = null
       }
@@ -805,12 +807,16 @@ module.exports = {
     },
     formatEventDetailRow: function (d) {
       var myEvent = this.eventData[d[0]]
-      var div, currentRow
+      var container, div, currentRow
       var counter = 0
       var cellContent
 
-      div = document.createElement('div')
-      div.classList.add('well')
+      container = document.createElement('ul')
+      container.classList.add('list-group')
+
+      // format the columns from the table `events` first
+      div = document.createElement('li')
+      div.classList.add('list-group-item')
 
       currentRow = document.createElement('div')
       currentRow.classList.add('row')
@@ -842,19 +848,45 @@ module.exports = {
       }
       div.appendChild(currentRow)
 
-      // place field `extra` in a row of its own
       if (myEvent.hasOwnProperty('extra')) {
-        currentRow = document.createElement('div')
-        currentRow.classList.add('row')
-        currentRow.appendChild(
-          this.formatEventDetailRowElement(
-            ['col-md-12', 'col-sm-12', 'col-xs-12'],
-              'extra', JSON.stringify(myEvent['extra'])
-            )
-        )
-        div.appendChild(currentRow)
+        div.appendChild(this.formatEventDetailRowElementExtra(
+          'extra', myEvent['extra']))
+      }
+      container.appendChild(div)
+
+      //
+      if (myEvent.hasOwnProperty('mailgen_directives')) {
+        container.appendChild(
+          this.formatEventDetailAsWell('mailgen_directives', myEvent))
       }
 
+      //
+      if (myEvent.hasOwnProperty('mailgen_sent')) {
+        container.appendChild(
+        this.formatEventDetailAsWell('mailgen_sent', myEvent))
+      }
+      //
+
+      return container
+    },
+    formatEventDetailAsWell: function (fieldname, myEvent) {
+      var div = document.createElement('li')
+      div.classList.add('list-group-item')
+
+      var currentRow = document.createElement('div')
+      currentRow.classList.add('row')
+
+      var myObject = myEvent[fieldname]
+      for (var column of Object.keys(myObject).sort()) {
+        currentRow.appendChild(
+          this.formatEventDetailRowElement(
+            ['col-md-4', 'col-sm-6', 'col-xs-12'],
+              column, JSON.stringify(myObject[column], null, 1)
+          )
+        )
+      }
+
+      div.appendChild(currentRow)
       return div
     },
     formatEventDetailRowElement: function (additionalClassList, name, text) {
@@ -872,6 +904,17 @@ module.exports = {
       el.appendChild(v)
 
       return el
+    },
+    formatEventDetailRowElementExtra: function (fieldname, field) {
+      var currentRow = document.createElement('div')
+      currentRow.classList.add('row')
+      currentRow.appendChild(
+        this.formatEventDetailRowElement(
+          ['col-md-12', 'col-sm-12', 'col-xs-12'],
+            fieldname, JSON.stringify(field, null, 1)
+          )
+      )
+      return currentRow
     }
   }
 }
@@ -927,6 +970,10 @@ tr.shown td.details-control::after {
 
 div.child-row-el {
   text-align: left;
+}
+
+li.list-group-item {
+  background-color: #f5f5f5;
 }
 
 </style>
