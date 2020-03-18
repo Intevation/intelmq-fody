@@ -1,6 +1,9 @@
 ## 0.7.0 to 0.7.1-dev (unreleased)
 **todo**
 
+ * Tickets: Show the recipient group, if there is one
+   in the `aggregate_identifier`.
+
 
 ## 0.6.8 to 0.7.0
 

@@ -1,7 +1,7 @@
 <template>
   <section class="content">
     <div class='row'>
-      <div class='col-md-6 col-sm-6 col-xs-12'>
+      <div class='col-md-4 col-sm-4 col-xs-12'>
         <div class='box'>
           <div class='box-header'>
             <h2>Examine Ticket</h2>
@@ -43,7 +43,7 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div> <!-- .col... -->
-      <div class='col-md-6 col-sm-6 col-xs-12'>
+      <div class='col-md-6 col-sm-8 col-xs-12'>
         <div v-if="searchedForID === null">
         <div class='info-box linked-info-box col-md-2' v-on:click='useLastTicket'>
           <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
@@ -79,7 +79,7 @@
         </div>
         </div>
       </div>
-      <div class='col-md-6 col-sm-6 col-xs-12'  v-if="recipient">
+      <div class='col-md-6 col-sm-8 col-xs-12'  v-if="recipient">
         <router-link :to="{ path: 'contacts', query: { email: recipient.recipient_address }}">
         <div class='info-box linked-info-box col-md-2'>
           <span class='info-box-icon bg-green'><i class='fa fa-user'></i></span>
@@ -88,6 +88,10 @@
             <table class='info-box-table'>
               <tr> <th>To:</th>
                 <td><strong>{{ recipient.recipient_address }}</strong></td>
+              </tr>
+              <tr v-if="recipientGroup">
+                <th>Recipient Group:</th>
+                <td>{{ recipientGroup }}</td>
               </tr>
               <tr> <th>Date:</th>
                 <td> {{ ( formatDateString(recipient.sent_at) || 'unknown') }}
@@ -170,6 +174,16 @@ module.exports = {
         'has-error': this.eventIDs.length === 0,
         'has-success': this.eventIDs.length > 0
       }
+    },
+    recipientGroup: function () {
+      if (this.recipient && 'aggregate_identifier' in this.recipient) {
+        for (const identifier of this.recipient['aggregate_identifier']) {
+          if (identifier[0] === 'recipient_group') {
+            return identifier[1]
+          }
+        }
+      }
+      return null
     }
   },
   methods: {
