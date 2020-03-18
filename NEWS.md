@@ -1,6 +1,6 @@
 ## 0.6.8 to 0.7.0
 
- * Stats: Fix the event details' exented row to open always.
+ * Stats: Fix the event details' extended row to open always.
  * Technical maintenance: Update some javascript library dependencies.
 
 ### Upgrade
