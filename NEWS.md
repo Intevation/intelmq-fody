@@ -1,8 +1,14 @@
 ## 0.7.0 to 0.7.1-dev (unreleased)
 **todo**
 
+ * Stats: Remove hint for use of wildcards in queries as an updated
+   fody-backend will add wildcards now automatically.
  * Tickets: Show the recipient group, if there is one
    in the `aggregate_identifier`.
+
+### Upgrade
+ * technical:
+   Recommends fody-backend v>=0.8.0
 
 
 ## 0.6.8 to 0.7.0

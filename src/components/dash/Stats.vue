@@ -33,9 +33,7 @@
     <!-- ./box -->
     <div class="box">
         <div class="box-header with-border">
-          <h3 class="box-title">Prepare Query
-            <small>(Hint: Use <tt>%</tt> as pre- or post-wildcard
-              with <em>contains</em>.)</small></h3>
+          <h3 class="box-title">Prepare Query</h3>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
