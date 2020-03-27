@@ -1,5 +1,4 @@
-## 0.7.0 to 0.7.1-dev (unreleased)
-**todo**
+## 0.7.0 to 0.8.0
 
  * Stats: Remove hint for use of wildcards in queries as an updated
    fody-backend will add wildcards now automatically.
