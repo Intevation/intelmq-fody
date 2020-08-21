@@ -10,22 +10,10 @@
     name: 'App',
     data: function () {
       return {
-        section: 'Head',
-        callingAPI: false,
-        serverURI: 'http://localhost:8080',
-        caller: this.$http
+        section: 'Head'
       }
     },
     methods: {
-      callAPI: function (method, url, data) {
-        this.callingAPI = true
-        url = url || this.serverURI // if no url is passed then inheret local server URI
-        return this.caller({
-          url: url,
-          method: method,
-          data: data
-        })
-      },
       logout: function () {
         this.$store.dispatch('SET_USER', null)
         this.$store.dispatch('SET_TOKEN', null)

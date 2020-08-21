@@ -4,9 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
-  callingAPI: false,
   searching: '',
-  serverURI: '',
   user: null,
   token: null,
   userInfo: {
@@ -47,9 +45,6 @@ function updateEmailStatus (email, callback) {
 }
 
 const mutations = {
-  TOGGLE_LOADING (state) {
-    state.callingAPI = !state.callingAPI
-  },
   TOGGLE_SEARCHING (state) {
     state.searching = (state.searching === '') ? 'loading' : ''
   },

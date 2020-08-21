@@ -114,9 +114,6 @@ module.exports = {
     state: function () {
       return this.store.state
     },
-    callAPI: function () {
-      return this.$parent.callAPI
-    },
     version: function () {
       return version
     }
