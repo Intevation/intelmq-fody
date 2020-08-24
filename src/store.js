@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 const state = {
   searching: '',
+  backendProblem: null,
   user: null,
   token: null,
   userInfo: {
@@ -73,6 +74,12 @@ const mutations = {
     updateEmailStatus(payload.email, status => {
       status.tags = payload.tags
     })
+  },
+  SET_BACKEND_PROBLEM (state, problemDescription) {
+    state.backendProblem = problemDescription
+  },
+  CLEAR_BACKEND_PROBLEM (state) {
+    state.backendProblem = null
   }
 }
 

@@ -17,6 +17,9 @@
         <a href="javascript:;" class="sidebar-toggle" data-toggle="offcanvas" role="button">
           <span class="sr-only">Toggle navigation</span>
         </a>
+        <div v-if="backendProblem != null" class="backend-problem">
+          {{ backendProblem }}
+        </div>
      </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
@@ -87,6 +90,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { version } from '../../package.json'
 require('hideseek')
 
@@ -96,7 +100,6 @@ module.exports = {
     return {
       section: 'Dash',
       me: '',
-      error: '',
       withMenuSearch: false,
       debugPages: false,
       api: {
@@ -116,7 +119,8 @@ module.exports = {
     },
     version: function () {
       return version
-    }
+    },
+    ...mapState(['backendProblem'])
   },
   methods: {
     changeloading: function () {
@@ -139,6 +143,10 @@ module.exports = {
 </script>
 
 <style>
+.backend-problem {
+  color: #ffa0a0;
+}
+
 .user-panel {
   height: 4em;
 }

@@ -67,6 +67,7 @@ module.exports = {
       }, (response) => {
         // failure
         this.lastTicketNumber = 'error'
+        this.$store.commit('SET_BACKEND_PROBLEM', 'Test Problem')
       })
     }
   }
