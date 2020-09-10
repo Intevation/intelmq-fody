@@ -45,21 +45,9 @@
       </div> <!-- .col... -->
       <div class='col-md-6 col-sm-8 col-xs-12'>
         <div v-if="searchedForID === null">
-        <div class='info-box linked-info-box col-md-2' v-on:click='useLastTicket'>
-          <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
-
-          <div class='info-box-content'>
-            <span class='info-box-text'>Recently sent</span>
-            <span class='info-box-number'>
-                <div v-if="lastTicketNumber != -1">
-                    {{ lastTicketNumber }}
-                </div>
-                <div v-else>
-                    Loading...
-                </div>
-            </span>
+          <div v-on:click='useLastTicket'>
+            <IBoxRecentlySentTicket class='linked-info-box' />
           </div>
-        </div>
         </div>
         <div v-else>
         <div class='info-box col-md-2'>
@@ -153,8 +141,15 @@ import $ from 'jquery'
 require('datatables.net')
 require('datatables.net-bs')
 
+import { mapState } from 'vuex'
+
+import IBoxRecentlySentTicket from '../widgets/IBoxRecentlySentTicket.vue'
+
 module.exports = {
   name: 'Tickets',
+  components: {
+    IBoxRecentlySentTicket
+  },
   data: function () {
     return {
       queryURL: '/api/checkticket/',  // base url for AJAJ service
@@ -163,7 +158,6 @@ module.exports = {
       searchedForID: null, // this ticket has been searched for
       eventIDs: [],  // list of cosrresponding ids for the ticket
       events: [],  // list of events details
-      lastTicketNumber: -1, // (approximately) the most recent server ticket#
       eventsTable: {}, // datatables object
       recipient: null // Information on the Receiver of the ticket
     }
@@ -184,7 +178,8 @@ module.exports = {
         }
       }
       return null
-    }
+    },
+    ...mapState(['lastTicketNumber'])
   },
   methods: {
     lookupIDs: function () {
@@ -354,18 +349,6 @@ module.exports = {
         this.updateEventsTable()
       })
     },
-    getLastTicketNumber: function () {
-      var url = this.queryURL + 'getLastTicketNumber'
-      this.$http.get(url).then((response) => {
-        // success
-        response.json().then((value) => {
-          this.lastTicketNumber = value
-        })
-      }, (response) => {
-        // failure
-        this.events = []
-      })
-    },
     useLastTicket: function () {
       this.ticketID = this.lastTicketNumber
       this.lookupIDs()
@@ -384,7 +367,6 @@ module.exports = {
     })
   },
   created: function () {
-    this.getLastTicketNumber()
     // If the page was called with ?search=
     // Start searching for the given parameter immediately
     // and display the tickets

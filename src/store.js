@@ -6,6 +6,7 @@ Vue.use(Vuex)
 const state = {
   searching: '',
   backendProblem: null,
+  lastTicketNumber: -1,
   user: null,
   token: null,
   userInfo: {
@@ -80,6 +81,9 @@ const mutations = {
   },
   CLEAR_BACKEND_PROBLEM (state) {
     state.backendProblem = null
+  },
+  SET_LASTTICKETNUMBER (state, string) {
+    state.lastTicketNumber = string
   }
 }
 

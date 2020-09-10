@@ -1,5 +1,7 @@
 ## 0.8.0 to 0.8.1 (unreleased)
 **TODO**
+ * Show diagnostic message in the "Recent sent" info box, if the backend
+   request fails.
 
 
 ## 0.7.0 to 0.8.0

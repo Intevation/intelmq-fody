@@ -13,20 +13,7 @@
       <!-- /.col -->
       <div class='col-md-6 col-sm-6 col-xs-12'>
         <router-link :to="{ path: 'tickets', query: { search: lastTicketNumber }}">
-            <div class='info-box col-md-2 linked-info-box'>
-                <span class='info-box-icon bg-aqua'><i class='fa fa-ticket'></i></span>
-                <div class='info-box-content'>
-                    <span class='info-box-text'>Recently sent</span>
-                    <span class='info-box-number'>
-                        <div v-if="lastTicketNumber != -1">
-                            {{ lastTicketNumber }}
-                        </div>
-                        <div v-else>
-                            Loading...
-                        </div>
-                    </span>
-                 </div>
-            </div>
+          <IBoxRecentlySentTicket class='linked-info-box' />
         </router-link>
        </div>
       <!-- /.col -->
@@ -40,37 +27,22 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
 import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
+import IBoxRecentlySentTicket from '../widgets/IBoxRecentlySentTicket.vue'
 
 module.exports = {
   components: {
     IBoxTicketsToday,
-    IBoxEventsToday
+    IBoxEventsToday,
+    IBoxRecentlySentTicket
   },
   data: function () {
     return {
-      lastTicketNumber: -1
     }
   },
-  created: function () {
-    this.getLastTicketNumber()
-  },
-  methods: {
-    getLastTicketNumber: function () {
-      var url = '/api/checkticket/getLastTicketNumber'
-      this.$http.get(url).then((response) => {
-        // success
-        response.json().then((value) => {
-          this.lastTicketNumber = value
-        })
-      }, (response) => {
-        // failure
-        this.lastTicketNumber = 'error'
-        this.$store.commit('SET_BACKEND_PROBLEM', 'Test Problem')
-      })
-    }
-  }
+  computed: mapState(['lastTicketNumber'])
 }
 </script>
 <style>
