@@ -23,7 +23,10 @@
                 </button>
                 </span>
               </div>
-              <span class="help-block" v-if="eventIDs.length === 0">
+              <span class="help-block" v-if="eventsErrorMsg !== ''">
+                {{ eventsErrorMsg }}
+              </span>
+              <span class="help-block" v-else-if="eventIDs.length === 0">
                 Not found.
               </span>
               <span class="help-block" v-if="eventIDs.length === 1">
@@ -156,7 +159,8 @@ module.exports = {
       loadingLimit: 10000,  // max number of events which details will be shown
       ticketID: '',  // ticket to be examined, not searched yet
       searchedForID: null, // this ticket has been searched for
-      eventIDs: [],  // list of cosrresponding ids for the ticket
+      eventIDs: [],  // list of corresponding ids for the ticket
+      eventsErrorMsg: '', // has string if the search AJAJ call failed
       events: [],  // list of events details
       eventsTable: {}, // datatables object
       recipient: null // Information on the Receiver of the ticket
@@ -165,7 +169,8 @@ module.exports = {
   computed: {
     ticketInputClass: function () {
       return {
-        'has-error': this.eventIDs.length === 0,
+        'has-error': this.eventsErrorMsg !== '',
+        'has-warning': this.eventsErrorMsg === '' && this.eventIDs.length === 0,
         'has-success': this.eventIDs.length > 0
       }
     },
@@ -182,9 +187,21 @@ module.exports = {
     ...mapState(['lastTicketNumber'])
   },
   methods: {
+    setErrorMsg: function (response, targetVar) {
+      // construct the error message for a failed $http.get() from response
+      if (response.status === 0) {
+        this[targetVar] = 'Error: Failed to connect properly.'
+      } else {
+        response.text().then((bodyText) => {
+          this[targetVar] = 'Error ' + response.status + ': ' + bodyText
+        })
+      }
+    },
     lookupIDs: function () {
       this.ticketID = this.ticketID.trim()
       var url = this.queryURL + 'getEventIDsForTicket?ticket=' + this.ticketID
+
+      this.eventsErrorMsg = ''
       this.$http.get(url).then((response) => {
         response.json().then((value) => {
           if (value) {
@@ -200,11 +217,14 @@ module.exports = {
           this.loadReceiver(this.ticketID)
         })
       }, (response) => {
+        // failure
         this.eventIDs = []
         this.events = []
         this.updateEventsTable()
         this.recipient = null
         this.searchedForID = null
+
+        this.setErrorMsg(response, 'eventsErrorMsg')
       })
     },
     loadReceiver: function (ticket) {
