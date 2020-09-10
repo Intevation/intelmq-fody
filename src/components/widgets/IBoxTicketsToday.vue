@@ -4,10 +4,10 @@
         <div class='info-box-content'>
             <span class='info-box-text'>Tickets today</span>
             <span class='info-box-number'>
-                <div v-if="tickets >= 0">
+                <div v-if="tickets != -1" v-bind:class="textClass">
                     {{ tickets }}
                 </div>
-                <div v-else>
+                <div v-else class="text-info">
                     Loading...
                 </div>
             </span>
@@ -23,6 +23,12 @@ module.exports = {
   data: function () {
     return {
       tickets: -1
+    }
+  },
+  computed: {
+    textClass: function () {
+      return { 'text-warning': String(this.tickets).startsWith('Error')
+      }
     }
   },
   created: function () {
@@ -44,6 +50,7 @@ module.exports = {
           'sent-at_after=' + today +
           '&sent-at_before=' + tomorrow
 
+      this.tickets = -1 // loading (if this function is called a second time)
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {
@@ -54,7 +61,14 @@ module.exports = {
           }
         })
       }, (response) => {
-        this.tickets = 'error'
+        // failure
+        if (response.status === 0) {
+          this.tickets = 'Error: Failed to connect properly.'
+        } else {
+          response.text().then((bodyText) => {
+            this.tickets = 'Error ' + response.status + ': ' + bodyText
+          })
+        }
       })
     }
   }

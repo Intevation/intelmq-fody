@@ -27,7 +27,7 @@ module.exports = {
   },
   computed: {
     textClass: function () {
-      return { 'text-warning': this.lastTicketNumber.startsWith('Error')
+      return { 'text-warning': String(this.lastTicketNumber).startsWith('Error')
       }
     },
     ...mapState(['lastTicketNumber'])
@@ -38,8 +38,6 @@ module.exports = {
   methods: {
     getLastTicketNumber: function () {
       this.$store.commit('SET_LASTTICKETNUMBER', -1)
-      console.log(this.lastTicketNumber)
-      console.log(this.lastTicketNumber === -1)
       var url = '/api/checkticket/getLastTicketNumber'
       this.$http.get(url).then((response) => {
         // success
