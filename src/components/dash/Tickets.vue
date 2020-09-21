@@ -113,6 +113,10 @@
         <div class="box">
           <div class="box-header">
             <h3 class="box-title">Events</h3>
+            <div v-if="eventsDetailsErrorMsg !== ''"
+                class="alert alert-danger">
+              {{ eventsDetailsErrorMsg }}
+            </div>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
@@ -163,6 +167,7 @@ module.exports = {
       eventIDs: [],  // list of corresponding ids for the ticket
       eventsErrorMsg: '', // has string if the search AJAJ call failed
       events: [],  // list of events details
+      eventsDetailsErrorMsg: '', // has string if loadDetails() failed
       eventsTable: {}, // datatables object
       recipient: null // information on the receiver of the ticket
     }
@@ -356,6 +361,7 @@ module.exports = {
       this.eventsTable.draw()
     },
     loadDetails: function () {
+      this.eventsErrorMsg = ''
       var url = (this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID +
                  '&limit=' + this.loadingLimit)
       // the following endpoint may give similiar results (without limit)
@@ -370,6 +376,7 @@ module.exports = {
         // failure
         this.events = []
         this.updateEventsTable()
+        this.setErrorMsg(response, 'eventsDetailsErrorMsg')
       })
     },
     useLastTicket: function () {
