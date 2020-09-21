@@ -26,18 +26,19 @@
               <span class="help-block" v-if="eventsErrorMsg !== ''">
                 {{ eventsErrorMsg }}
               </span>
-              <span class="help-block" v-else-if="eventIDs.length === 0">
+              <span class="help-block"
+                  v-else-if="eventIDs.length === 0 && ticketID !== ''">
                 Not found.
               </span>
               <span class="help-block" v-if="eventIDs.length === 1">
                 Found one event.
               </span>
               <span class="help-block"
-                v-if="eventIDs.length > 1 && eventIDs.length <= loadingLimit">
+                  v-if="eventIDs.length > 1 && eventIDs.length <= loadingLimit">
                 Found {{ eventIDs.length }} events.
               </span>
               <span class="help-block"
-                v-if="eventIDs.length > loadingLimit">
+                  v-if="eventIDs.length > loadingLimit">
                 Found {{ eventIDs.length }} events.
                 (Only showing details of {{ loadingLimit }} events
                 for performance reasons.)
@@ -163,14 +164,16 @@ module.exports = {
       eventsErrorMsg: '', // has string if the search AJAJ call failed
       events: [],  // list of events details
       eventsTable: {}, // datatables object
-      recipient: null // Information on the Receiver of the ticket
+      recipient: null // information on the receiver of the ticket
     }
   },
   computed: {
     ticketInputClass: function () {
       return {
         'has-error': this.eventsErrorMsg !== '',
-        'has-warning': this.eventsErrorMsg === '' && this.eventIDs.length === 0,
+        'has-warning': this.eventsErrorMsg === '' &&
+                       this.eventIDs.length === 0 &&
+                       this.ticketID !== '',
         'has-success': this.eventIDs.length > 0
       }
     },
@@ -388,7 +391,7 @@ module.exports = {
   },
   created: function () {
     // If the page was called with ?search=
-    // Start searching for the given parameter immediately
+    // start searching for the given parameter immediately
     // and display the tickets
     if (this.$route.query.search) {
       this.ticketID = this.$route.query.search

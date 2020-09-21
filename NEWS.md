@@ -1,7 +1,8 @@
 ## 0.8.0 to 0.8.1 (unreleased)
 **TODO**
- * Show diagnostic message in the "Recent sent" info box, if the backend
-   request fails.
+ * Show diagnostic message, if the backend request fails in the places
+  * Dashboard: in all three info boxes.
+  * Tickets: Examine Ticket search field.
 
 
 ## 0.7.0 to 0.8.0
