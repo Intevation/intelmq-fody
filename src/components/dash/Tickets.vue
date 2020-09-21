@@ -71,13 +71,15 @@
         </div>
         </div>
       </div>
-      <div class='col-md-6 col-sm-8 col-xs-12'  v-if="recipient">
-        <router-link :to="{ path: 'contacts', query: { email: recipient.recipient_address }}">
+      <div v-if="recipient || recipientErrorMsg !==''"
+           class='col-md-6 col-sm-8 col-xs-12'>
+        <router-link :to="{ path: 'contacts', query: { email: recipient? recipient.recipient_address:'' }}">
         <div class='info-box linked-info-box col-md-2'>
-          <span class='info-box-icon bg-green'><i class='fa fa-user'></i></span>
-
+          <span class='info-box-icon' :class="recipientIconClass"
+            ><i class='fa fa-user'></i>
+          </span>
           <div class='info-box-content'>
-            <table class='info-box-table'>
+            <table v-if="recipient" class='info-box-table'>
               <tr> <th>To:</th>
                 <td><strong>{{ recipient.recipient_address }}</strong></td>
               </tr>
@@ -98,11 +100,13 @@
                 <td>{{ (recipient.medium || 'unknown' ) }}</td>
               </tr>
             </table>
+            <div v-else class="info-box-text text-warning">
+              {{ recipientErrorMsg}}
+            </div>
           </div>
         </div>
         </router-link>
       </div>
-
     </div> <!-- /.row -->
 
     <div class="row">
@@ -165,11 +169,12 @@ module.exports = {
       ticketID: '',  // ticket to be examined, not searched yet
       searchedForID: null, // this ticket has been searched for
       eventIDs: [],  // list of corresponding ids for the ticket
-      eventsErrorMsg: '', // has string if the search AJAJ call failed
+      eventsErrorMsg: '', // has string if the lookupIDs() AJAJ call failed
       events: [],  // list of events details
-      eventsDetailsErrorMsg: '', // has string if loadDetails() failed
+      eventsDetailsErrorMsg: '', // has string if loadDetails() AJAJ call failed
       eventsTable: {}, // datatables object
-      recipient: null // information on the receiver of the ticket
+      recipient: null, // information on the receiver of the ticket
+      recipientErrorMsg: '' // has string if loadReceiver() AJAJ call failed
     }
   },
   computed: {
@@ -181,6 +186,9 @@ module.exports = {
                        this.ticketID !== '',
         'has-success': this.eventIDs.length > 0
       }
+    },
+    recipientIconClass: function () {
+      return { 'bg-green': this.recipient }
     },
     recipientGroup: function () {
       if (this.recipient && 'aggregate_identifier' in this.recipient) {
@@ -207,9 +215,8 @@ module.exports = {
     },
     lookupIDs: function () {
       this.ticketID = this.ticketID.trim()
-      var url = this.queryURL + 'getEventIDsForTicket?ticket=' + this.ticketID
-
       this.eventsErrorMsg = ''
+      var url = this.queryURL + 'getEventIDsForTicket?ticket=' + this.ticketID
       this.$http.get(url).then((response) => {
         response.json().then((value) => {
           if (value) {
@@ -222,7 +229,7 @@ module.exports = {
             this.updateEventsTable()
           }
           this.searchedForID = this.ticketID
-          this.loadReceiver(this.ticketID)
+          this.loadReceiver()
         })
       }, (response) => {
         // failure
@@ -231,11 +238,11 @@ module.exports = {
         this.updateEventsTable()
         this.recipient = null
         this.searchedForID = null
-
         this.setErrorMsg(response, 'eventsErrorMsg')
       })
     },
-    loadReceiver: function (ticket) {
+    loadReceiver: function () {
+      this.recipientErrorMsg = ''
       var url = '/api/tickets/getRecipient?ticketnumber=' + this.ticketID
       this.$http.get(url).then((response) => {
         response.json().then((value) => {
@@ -245,6 +252,7 @@ module.exports = {
         })
       }, (response) => {
         this.recipient = null
+        this.setErrorMsg(response, 'recipientErrorMsg')
       })
     },
     formatEventDetailRow: function (d) {
@@ -361,7 +369,7 @@ module.exports = {
       this.eventsTable.draw()
     },
     loadDetails: function () {
-      this.eventsErrorMsg = ''
+      this.eventsDetailsErrorMsg = ''
       var url = (this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID +
                  '&limit=' + this.loadingLimit)
       // the following endpoint may give similiar results (without limit)

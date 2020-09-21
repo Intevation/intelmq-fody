@@ -2,7 +2,7 @@
 **TODO**
  * Show diagnostic message, if the backend request fails in the places
   * Dashboard: in all three info boxes.
-  * Tickets: Examine Ticket search field. Events table when loading details.
+  * Tickets: Examine Ticket search field, events table and recipient info box.
 
 
 ## 0.7.0 to 0.8.0
