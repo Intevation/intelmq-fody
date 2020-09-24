@@ -5,6 +5,7 @@
   * Tickets: Examine Ticket search field, events table and recipient info box.
   * Stats: when getting subqueries, searching tickets/events and event table.
   * Contacts: all searches, loading each org and when committing.
+ * Contacts: trim leading and tailing spaces from org cidr input fields.
 
 
 ## 0.7.0 to 0.8.0
