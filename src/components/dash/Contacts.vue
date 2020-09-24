@@ -224,6 +224,12 @@
                 v-on:trash="trashOrg(index)"
                 ></org-card>
     </div>
+    <div v-if="commitPendingOrgsErrorMsg" class="row">
+      <div class="alert alert-danger col-xs-12" role="alert">
+        Committing changes to server failed with
+        {{ commitPendingOrgsErrorMsg }}
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-4 col-sm-4">
         <button class="btn btn-primary btn-lg btn-block"
@@ -279,7 +285,8 @@ module.exports = {
       //   'create' for adding a new manual entry
       //   'update' for replacing the manual entry
       pendingOrgIndex: [],
-      pendingOrgs: []  // objects, potentially changed, to be written back
+      pendingOrgs: [],  // objects, potentially changed, to be written back
+      commitPendingOrgsErrorMsg: '' // !== '' if commitPendingOrgs() failed
     }
   },
   components: {
@@ -687,7 +694,9 @@ module.exports = {
       this.pendingOrgIndex = []
     },
     commitPendingOrgs () {
-      // console.log('commitPendingOrgs() called')
+      if (this.pendingOrgs.length === 0) {
+        return
+      }
 
       // TODO clear out empty values for asns, networks, fqdns, annotations
       // those will fail when commiting
@@ -699,35 +708,31 @@ module.exports = {
       }
 
       // TODO block until we have a response
+      this.commitPendingOrgsErrorMsg = ''
       this.$http.post(url, commitObject).then(response => {
-        // request was good, remove pending items
-        this.pendingOrgIndex = []
-        this.pendingOrgs = []
         // TODO unblock
 
         // getting a list of new or updated manual Org IDs back
         response.json().then(value => {
           // json parsed correctly
+
           if (value) {
             // TODO updates ids that have changed to manualOrgIDs
             // (which will then trigger an update)
 
+            // request was good, remove pending items
+            this.pendingOrgIndex = []
+            this.pendingOrgs = []
+
             // using the more simple approach now to redo the current search
             this.refreshCurrentSearch()
           }
+        }, (response) => {
+          this.commitPendingOrgsErrorMsg = 'Error: got invalid json from server.'
         })
       }, response => {
         // error callback
-        console.log('Committing changes to server failed, status code = ' +
-                    response.status + ' (' + response.statusText + ').')
-        // TODO display error message
-        if (response.status === 400) {  // we get json for "bad request"s
-          response.json().then(value => {
-            // json parsed correctly
-            console.log('Server answer:' + JSON.stringify(value))
-          })
-        }
-        // TODO unblock
+        this.setErrorMsg(response, 'commitPendingOrgsErrorMsg')
       })
     }
   },
