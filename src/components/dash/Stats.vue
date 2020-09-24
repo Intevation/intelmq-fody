@@ -34,6 +34,10 @@
     <div class="box">
         <div class="box-header with-border">
           <h3 class="box-title">Prepare Query</h3>
+            <div v-if="getSubQueriesErrorMsg !== ''"
+                class="alert alert-danger">
+              {{ getSubQueriesErrorMsg }}
+            </div>
             <div class="box-body">
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
@@ -97,12 +101,14 @@
     <!-- Area where some statistics are shown -->
     <div class="row">
         <div v-if='mode == "events"'>
-            <div v-if="queryData.total > 0">
+            <div v-if="queryData.total > 0 || loadStatsErrorMsg !== ''">
                 <div class='col-md-6 col-sm-8 col-xs-12'>
-                    <div class='info-box info-box'>
-                        <span class='info-box-icon bg-green'><i class='fa fa-server'></i></span>
+                    <div class='info-box col-md-2'>
+                        <span class='info-box-icon' :class='queryDataIconClass'
+                          ><i class='fa fa-server'></i></span>
                         <div class='info-box-content'>
-                            <span class='info-box-text'>Events Total for this Query</span>
+                          <span class='info-box-text'>Events Total for this Query</span>
+                          <div v-if='queryData.total > 0'>
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
@@ -116,6 +122,10 @@
                               (More than 50k events. Use more filters to enable table.)
                             </div>
                             <!-- ./ v-else -->
+                          </div>
+                          <div v-else class="info-box-number text-warning">
+                            {{ loadStatsErrorMsg }}
+                          </div>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -127,15 +137,20 @@
         </div>
         <!-- ./ v-if -->
         <div v-if='mode == "tickets"'>
-            <div v-if="queryData.total > 0">
-                <div class='col-md-4 col-sm-4 col-xs-12'>
+            <div v-if="queryData.total > 0 || loadStatsErrorMsg !== ''">
+                <div class='col-md-6 col-sm-8 col-xs-12'>
                     <div class='info-box info-box col-md-2'>
-                        <span class='info-box-icon bg-green'><i class='fa fa-ticket'></i></span>
+                        <span class='info-box-icon' :class='queryDataIconClass'
+                          ><i class='fa fa-ticket'></i></span>
                         <div class='info-box-content'>
-                            <span class='info-box-text'>Tickets Total for this Query</span>
-                            <span class='info-box-number'>
-                                {{queryData.total}}
-                            </span>
+                          <span class='info-box-text'>Tickets Total for this Query</span>
+                          <span v-if='queryData.total > 0'
+                                class='info-box-number'>
+                            {{queryData.total}}
+                          </span>
+                          <div v-else class="info-box-number text-warning">
+                             {{ loadStatsErrorMsg }}
+                          </div>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -152,6 +167,9 @@
         <div class="box">
           <div class="box-header">
             <h3 class="box-title">Events</h3>
+            <div v-if="loadEventsErrorMsg !== ''" class="alert alert-danger">
+              {{ loadEventsErrorMsg }}
+            </div>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
@@ -227,6 +245,7 @@ import $ from 'jquery'
 import VueFlatpickr from 'vue-flatpickr'
 import 'vue-flatpickr/theme/airbnb.css'
 
+import { errorMixin } from '../../mixins/errorHelper.js'
 import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
 import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
 
@@ -257,10 +276,13 @@ module.exports = {
       modeHeader: '',
       mode: '',
       allowedSubs: [],  // allowed subqueries as [key, value] array from backend
+      getSubQueriesErrorMsg: '',
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
       queryData: {}, // Data used for statistics
+      loadStatsErrorMsg: '',
       eventData: {}, // Events
+      loadEventsErrorMsg: '',
       eventsTable: null, // datatables object
       query: {
         timeres: 'hour',
@@ -283,6 +305,9 @@ module.exports = {
       const width = this.width - this.margin.left - this.margin.right
       const height = this.height - this.margin.top - this.margin.bottom
       return { width, height }
+    },
+    queryDataIconClass: function () {
+      return { 'bg-green': this.queryData.total > 0 }
     }
   },
   mounted: function () {
@@ -314,6 +339,7 @@ module.exports = {
       this.update()
     }
   },
+  mixins: [errorMixin], // adds method setErrorMsg()
   methods: {
     onResize: function () {
       this.width = document.getElementById('chart_container').offsetWidth
@@ -403,6 +429,7 @@ module.exports = {
     },
     getSubQueries: function () {
       // ask the server what kind of subqueries are allowed
+      this.getSubQueriesErrorMsg = ''
       var url = this.baseQueryURL + '/subqueries'
       this.$http.get(url).then((response) => {
         // got valid response
@@ -414,7 +441,12 @@ module.exports = {
               (a, b) => a[1].label.localeCompare(b[1].label, 'en')
             )
           }
+        }, (response) => {
+          this.getSubQueriesErrorMsg = 'Error: got invalid json from server.'
         })
+      }, (response) => {
+        // failed $http.get
+        this.setErrorMsg(response, 'getSubQueriesErrorMsg')
       })
     },
     setMode: function (mode) {
@@ -475,11 +507,19 @@ module.exports = {
             this.eventData = value
             this.updateEventsTable()
           }
+        }, (response) => {
+          this.initEventsTable()
+          this.eventData = {}
+          this.updateEventsTable()
+          this.getSubQueriesErrorMsg = 'Error: got invalid json from server.'
         })
       }, (response) => {
         // no valid response
+        this.initEventsTable()
         this.eventData = {}
         this.updateEventsTable()
+        this.setErrorMsg(response, 'loadEventsErrorMsg')
+        console.log('bong')
       })
     },
     loadStats: function () {
@@ -504,6 +544,7 @@ module.exports = {
         this.lastQueryURL +
         '&timeres=' + this.query.timeres
 
+      this.loadStatsErrorMsg = ''
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {
@@ -523,10 +564,14 @@ module.exports = {
           } else {
             this.resetQueryData()
           }
+        }, (response) => {
+          this.resetQueryData()
+          this.loadStatsErrorMsg = 'Error: got invalid json from server.'
         })
       }, (response) => {
         // no valid response
         this.resetQueryData()
+        this.setErrorMsg(response, 'loadStatsErrorMsg')
       })
 
       if (this.mode === 'events') {
