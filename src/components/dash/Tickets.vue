@@ -160,7 +160,6 @@ import IBoxRecentlySentTicket from '../widgets/IBoxRecentlySentTicket.vue'
 
 module.exports = {
   name: 'Tickets',
-  mixins: [errorMixin],
   components: {
     IBoxRecentlySentTicket
   },
@@ -204,6 +203,7 @@ module.exports = {
     },
     ...mapState(['lastTicketNumber'])
   },
+  mixins: [errorMixin],  // adds method setErrorMsg()
   methods: {
     lookupIDs: function () {
       this.ticketID = this.ticketID.trim()

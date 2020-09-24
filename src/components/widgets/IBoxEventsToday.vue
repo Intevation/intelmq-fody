@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { errorMixin } from '../../mixins/errorHelper.js'
+
 module.exports = {
   name: 'events-today',
   data: function () {
@@ -34,6 +36,7 @@ module.exports = {
   created: function () {
     this.eventsToday()
   },
+  mixins: [errorMixin], // adds method setErrorMsg()
   methods: {
     eventsToday: function () {
       // show the amount of todays Events
@@ -61,14 +64,7 @@ module.exports = {
           }
         })
       }, (response) => {
-        // failure
-        if (response.status === 0) {
-          this.events = 'Error: Failed to connect properly.'
-        } else {
-          response.text().then((bodyText) => {
-            this.events = 'Error ' + response.status + ': ' + bodyText
-          })
-        }
+        this.setErrorMsg(response, 'events')
       })
     }
   }
