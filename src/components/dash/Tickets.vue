@@ -155,10 +155,12 @@ require('datatables.net-bs')
 
 import { mapState } from 'vuex'
 
+import { errorMixin } from '../../mixins/errorHelper.js'
 import IBoxRecentlySentTicket from '../widgets/IBoxRecentlySentTicket.vue'
 
 module.exports = {
   name: 'Tickets',
+  mixins: [errorMixin],
   components: {
     IBoxRecentlySentTicket
   },
@@ -203,16 +205,6 @@ module.exports = {
     ...mapState(['lastTicketNumber'])
   },
   methods: {
-    setErrorMsg: function (response, targetVar) {
-      // construct the error message for a failed $http.get() from response
-      if (response.status === 0) {
-        this[targetVar] = 'Error: Failed to connect properly.'
-      } else {
-        response.text().then((bodyText) => {
-          this[targetVar] = 'Error ' + response.status + ': ' + bodyText
-        })
-      }
-    },
     lookupIDs: function () {
       this.ticketID = this.ticketID.trim()
       this.eventsErrorMsg = ''
