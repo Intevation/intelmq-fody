@@ -1,11 +1,16 @@
-## 0.8.0 to 0.8.1 (unreleased)
-**TODO**
+## 0.8.0 to 0.9.0
+
  * Show a diagnostic message, if a backend request fails in the places
   * Dashboard: in all three info boxes.
   * Tickets: Examine Ticket search field, events table and recipient info box.
-  * Stats: when getting subqueries, searching tickets/events and event table.
   * Contacts: all searches, loading each org and when committing.
+  * Stats: when getting subqueries, searching tickets/events and event table.
  * Contacts: trim leading and tailing spaces from org cidr input fields.
+ * Stats: Don't allow to give the time interval parameters multiple times.
+
+### Upgrade
+ * technical:
+   Recommends fody-backend v>=0.8.1
 
 
 ## 0.7.0 to 0.8.0

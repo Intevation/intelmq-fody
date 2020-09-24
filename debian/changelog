@@ -1,3 +1,9 @@
+intelmq-fody (0.9.0) stable; urgency=medium
+
+  * New release.
+
+ -- Bernhard E. Reiter <bernhard@intevation.de>  Thu, 24 Sep 2020 17:38:29 +0200
+
 intelmq-fody (0.8.0) stable; urgency=medium
 
   * New release.
