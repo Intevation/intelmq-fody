@@ -4,6 +4,7 @@
   * Dashboard: in all three info boxes.
   * Tickets: Examine Ticket search field, events table and recipient info box.
   * Stats: when getting Subqueries, searching for tickets/events, event details.
+  * Contacts: all searches, loading each org
 
 
 ## 0.7.0 to 0.8.0

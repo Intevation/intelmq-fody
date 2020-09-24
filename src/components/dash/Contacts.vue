@@ -188,6 +188,15 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
+      <div v-if="annotationHintsErrorMsg"
+           class="alert alert-danger col-xs-12" role="alert">
+        Could not get annotation hints from backend:
+        {{ annotationHintsErrorMsg }}
+      </div>
+      <div v-if="searchErrorMsg"
+           class="alert alert-danger col-xs-12" role="alert">
+        {{ searchErrorMsg }}
+      </div>
       <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
         Shown entries limited to {{ loadLimit }} per auto or manual.
         Try a more specific search.
@@ -241,8 +250,7 @@
 </template>
 
 <script>
-// import $ from 'jquery'
-
+import { errorMixin } from '../../mixins/errorHelper.js'
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import OrgCard from './OrgCard.vue'
 
@@ -261,9 +269,11 @@ module.exports = {
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
-      loadLimit: 100, // max number of manual- and autoorgs to load
+      searchErrorMsg: '', // !=='' if getOrdIDs()' backend call failed
+      loadLimit: 5, // max number of manual- and autoorgs to load
       limited: false,  // if we are only loading some of the search results
       annotationHints: {},  // from the server to help editing annotations
+      annotationHintsErrorMsg: '',  // !=='' if getAnnotationHints() failed
       // state of the entries in pendingOrgs, three values
       //   'delete' for removing the manual entry with org.id
       //   'create' for adding a new manual entry
@@ -369,8 +379,10 @@ module.exports = {
       }
     }
   },
+  mixins: [errorMixin],  // adds method setErrorMsg()
   methods: {
     getOrgIDs: function (queryPartStr) {
+      this.searchErrorMsg = ''
       var url = this.baseQueryURL + queryPartStr
       this.$http.get(url).then((response) => {
         // got a valid response
@@ -383,17 +395,20 @@ module.exports = {
             this.autoOrgIDs = []
             this.manualOrgIDs = []
           }
+        }, (response) => {
+          this.searchErrorMsg = 'Error: got invalid json from server.'
         })
       }, (response) => {
         // no valid response
         this.autoOrgIDs = []
         this.manualOrgIDs = []
+        this.setErrorMsg(response, 'searchErrorMsg')
       })
     },
     lookupASN: function () {
       // FUTURE: we may need some debounce or throttle function here
 
-      // fixed testing values with out AJAJ request:
+      // fixed testing values with our AJAJ request:
       // this.manualOrgIDs = [1, 23]
       // this.autoOrgIDs = [23, 456]
 
@@ -517,14 +532,27 @@ module.exports = {
           } else {
             orgList.splice(index, 1, null)
           }
+        }, (response) => {
+          let errOrg = {name: ids[index], errorMsg: 'Error: got invalid json.'}
+          orgList.splice(index, 1, errOrg)
         })
       }, (response) => {
         // no valid response
-        orgList[index] = null
+        let errOrg = {name: ids[index], errorMsg: ''}
+        if (response.status === 0) {
+          errOrg.errorMsg = 'Error: Failed to connect properly.'
+          orgList.splice(index, 1, errOrg)
+        } else {
+          response.text().then((bodyText) => {
+            errOrg.errorMsg = 'Error ' + response.status + ': ' + bodyText
+            orgList.splice(index, 1, errOrg)
+          })
+        }
       })
     },
     getAnnotationHints () {
       var url = this.baseQueryURL + '/annotation/hints'
+      this.annotationHintsErrorMsg = ''
       this.$http.get(url).then((response) => {
         // got valid response
         response.json().then((value) => {
@@ -532,9 +560,12 @@ module.exports = {
           if (value) {
             this.annotationHints = value
           }
+        }, (response) => {
+          this.annotationHintsErrorMsg = 'Error: got invalid json from server.'
         })
       }, (response) => {
         // no valid response
+        this.setErrorMsg(response, 'annotationHintsErrorMsg')
       })
     },
     newOrg: function () {

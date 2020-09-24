@@ -28,7 +28,11 @@
         </span>
       </div>
 
-      <div class="panel-body">
+      <div v-if='org.errorMsg' class="panel-body text-warning">
+        Loading failed with
+        {{ org.errorMsg }}
+      </div>
+      <div v-else class="panel-body">
 
         <!-- contact details section -->
         <ul v-if="!editable" class="list-group">
@@ -176,7 +180,8 @@
         <button v-if="status === 'manual'" v-on:click="editMe"
           class="btn btn-default btn-xs"
           ><i class="fa fa-pencil-square-o rme"></i>Edit</button>
-      </div>
+
+      </div> <!-- class="panel-body" -->
     </div>
   </div>
 </template>
@@ -252,9 +257,12 @@ module.exports = {
     },
     computedPanelClass: function () {
       return {
-        'panel-primary': !this.editable,
-        'panel-warning': this.editable,
-        'panel-danger': this.status === 'delete'
+        'panel-primary': !this.editable &&
+                         this.org.hasOwnProperty('errorMsg') === false,
+        'panel-warning': this.editable &&
+                         this.org.hasOwnProperty('errorMsg') === false,
+        'panel-danger': this.status === 'delete' &&
+                        this.org.hasOwnProperty('errorMsg') === false
       }
     }
 
