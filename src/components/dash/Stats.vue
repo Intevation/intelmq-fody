@@ -437,9 +437,14 @@ module.exports = {
           // json parsed correctly
           if (value) {
             // sort by label into an array to have the right display order
+            // and filter out timeResParams for interactive choice
+            // as they are already there and backend won't like multiples
+            let timeResParams = this.getTimeResParams(this.mode)
             this.allowedSubs = Object.entries(value).sort(
               (a, b) => a[1].label.localeCompare(b[1].label, 'en')
-            )
+            ).filter((element) => {
+              return timeResParams.indexOf(element[0]) < 0
+            })
           }
         }, (response) => {
           this.getSubQueriesErrorMsg = 'Error: got invalid json from server.'
