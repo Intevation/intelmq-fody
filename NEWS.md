@@ -1,10 +1,10 @@
 ## 0.8.0 to 0.8.1 (unreleased)
 **TODO**
- * Show diagnostic message, if the backend request fails in the places
+ * Show a diagnostic message, if a backend request fails in the places
   * Dashboard: in all three info boxes.
   * Tickets: Examine Ticket search field, events table and recipient info box.
-  * Stats: when getting Subqueries, searching for tickets/events, event details.
-  * Contacts: all searches, loading each org
+  * Stats: when getting subqueries, searching tickets/events and event table.
+  * Contacts: all searches, loading each org and when committing.
 
 
 ## 0.7.0 to 0.8.0
