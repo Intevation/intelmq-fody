@@ -1,6 +1,8 @@
 ## 0.9.0 to 0.9.1 (unreleased)
 **todo**
 
+ * Stats: If no tickets or events are found, show the box with a zero.
+
 
 ## 0.8.0 to 0.9.0
 

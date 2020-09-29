@@ -101,27 +101,28 @@
     <!-- Area where some statistics are shown -->
     <div class="row">
         <div v-if='mode == "events"'>
-            <div v-if="queryData.total > 0 || loadStatsErrorMsg !== ''">
+            <div v-if="queryData.total >= 0 || loadStatsErrorMsg !== ''">
                 <div class='col-md-6 col-sm-8 col-xs-12'>
                     <div class='info-box col-md-2'>
                         <span class='info-box-icon' :class='queryDataIconClass'
                           ><i class='fa fa-server'></i></span>
                         <div class='info-box-content'>
                           <span class='info-box-text'>Events Total for this Query</span>
-                          <div v-if='queryData.total > 0'>
+                          <div v-if='queryData.total >= 0'>
                             <span class='info-box-number'>
                                 {{queryData.total}}
                             </span>
-                            <div v-if="queryData.total <= 50000">
+                            <span v-if="queryData.total > 0">
+                              <div v-if="queryData.total <= 50000">
                                 <button class="btn btn-default" v-on:click="loadEvents">
                                     Show details in table
                                 </button>
-                            </div>
-                            <!-- ./ v-if -->
-                            <div v-else>
-                              (More than 50k events. Use more filters to enable table.)
-                            </div>
-                            <!-- ./ v-else -->
+                              </div> <!-- ./ v-if -->
+                              <div v-else>
+                                (More than 50k events.
+                                 Use more filters to enable table.)
+                              </div> <!-- ./ v-else -->
+                            </span>
                           </div>
                           <div v-else class="info-box-number text-warning">
                             {{ loadStatsErrorMsg }}
@@ -137,14 +138,14 @@
         </div>
         <!-- ./ v-if -->
         <div v-if='mode == "tickets"'>
-            <div v-if="queryData.total > 0 || loadStatsErrorMsg !== ''">
+            <div v-if="queryData.total >= 0 || loadStatsErrorMsg !== ''">
                 <div class='col-md-6 col-sm-8 col-xs-12'>
                     <div class='info-box info-box col-md-2'>
                         <span class='info-box-icon' :class='queryDataIconClass'
                           ><i class='fa fa-ticket'></i></span>
                         <div class='info-box-content'>
                           <span class='info-box-text'>Tickets Total for this Query</span>
-                          <span v-if='queryData.total > 0'
+                          <span v-if='queryData.total >= 0'
                                 class='info-box-number'>
                             {{queryData.total}}
                           </span>
@@ -307,7 +308,10 @@ module.exports = {
       return { width, height }
     },
     queryDataIconClass: function () {
-      return { 'bg-green': this.queryData.total > 0 }
+      return {
+        'bg-green': this.queryData.total > 0,
+        'bg-aqua': this.queryData.total === 0
+      }
     }
   },
   mounted: function () {
