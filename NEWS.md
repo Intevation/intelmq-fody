@@ -1,3 +1,8 @@
+## 0.9.1 to 0.9.2
+
+ * Contacts: Fix regression from 0.9.0 in search limit, now 100 again.
+
+
 ## 0.9.0 to 0.9.1
 
  * Stats: If no tickets or events are found, show the info-box with a zero.

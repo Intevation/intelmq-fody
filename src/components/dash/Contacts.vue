@@ -276,7 +276,7 @@ module.exports = {
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
       searchErrorMsg: '', // !=='' if getOrdIDs()' backend call failed
-      loadLimit: 5, // max number of manual- and autoorgs to load
+      loadLimit: 100, // max number of manual- and autoorgs to load
       limited: false,  // if we are only loading some of the search results
       annotationHints: {},  // from the server to help editing annotations
       annotationHintsErrorMsg: '',  // !=='' if getAnnotationHints() failed
