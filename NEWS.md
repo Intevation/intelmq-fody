@@ -1,6 +1,12 @@
 ## 0.9.2 to 0.9.3 (unreleased)
 **todo**
 
+ * Stats: **todo** improves query building
+
+### Upgrade
+ * technical:
+   Depends on fody-backend v>=0.9.0
+
 
 ## 0.9.1 to 0.9.2
 

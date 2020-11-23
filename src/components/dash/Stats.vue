@@ -439,16 +439,19 @@ module.exports = {
         // got valid response
         response.json().then((value) => {
           // json parsed correctly
-          if (value) {
+          if (value['subqueries']) {
             // sort by label into an array to have the right display order
             // and filter out timeResParams for interactive choice
             // as they are already there and backend won't like multiples
             let timeResParams = this.getTimeResParams(this.mode)
-            this.allowedSubs = Object.entries(value).sort(
+            this.allowedSubs = Object.entries(value['subqueries']).sort(
               (a, b) => a[1].label.localeCompare(b[1].label, 'en')
             ).filter((element) => {
               return timeResParams.indexOf(element[0]) < 0
             })
+          } else {
+            this.getSubQueriesErrorMsg =
+              'Error: got no subquery hints from server.'
           }
         }, (response) => {
           this.getSubQueriesErrorMsg = 'Error: got invalid json from server.'
