@@ -42,16 +42,18 @@
                 <div class="col-sm-12 col-xs-12">
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[0] }}</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-8 input-group">
                             <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
                                 class="form-control"/>
+                            <span class="input-group-addon">{{ timezoneDB }}</span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[1] }}</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-8 input-group">
                             <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
                                 class="form-control"/>
+                            <span class="input-group-addon">{{ timezoneDB }}</span>
                         </div>
                     </div>
                     <div v-for="(sq, index) of query.subs">
@@ -66,7 +68,13 @@
                                 </select>
                             </div>
                             <!-- <p class="form-control-static">:</p> -->
-                            <div class="col-sm-8">
+                            <div  v-if="isDateTimeCond(sq.cond)"
+                                  class="col-sm-8 input-group">
+                                <Flatpickr v-bind:options="fpOptions" v-model:value="sq.value"
+                                    class="form-control"/>
+                                <span class="input-group-addon">{{ timezoneDB }}</span>
+                            </div>
+                            <div v-else class="col-sm-8 input-group">
                                 <input v-model="sq.value" type="text" class="form-control">
                             </div>
                         </div>
@@ -276,11 +284,10 @@ module.exports = {
       lastQueryURL: '',
       modeHeader: '',
       mode: '',
-      allowedSubs: [],  // allowed subqueries as [key, value] array from backend
-
-      // Fullname of timezone of the database, which is the
-      // default for interpreting datetime. We get it from the backend.
-      timezoneDB: '',
+      allowedSubs: [], // allowed subqueries as [key, value] array from backend
+      timezoneDB: '', // Fullname of timezone of the database, which is the
+                      // default for interpreting datetime.
+                      // We get it from the backend.
       getSubQueriesErrorMsg: '',
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
@@ -301,6 +308,7 @@ module.exports = {
         time_24hr: true,
         enableTime: true,
         weekNumbers: true,
+        defaultHour: 0,
         maxDate: tomorrow
       }
     }
@@ -458,7 +466,7 @@ module.exports = {
               'Error: got no subquery hints from server.'
           }
           if (value['timezone']) {
-            this.timezoneDB = value['timeone']
+            this.timezoneDB = value['timezone']
           } else {
             this.getSubQueriesErrorMsg =
               'Error: got no database timezone from server.'
@@ -470,6 +478,16 @@ module.exports = {
         // failed $http.get
         this.setErrorMsg(response, 'getSubQueriesErrorMsg')
       })
+    },
+    isDateTimeCond: function (condition) {
+      // Return true if the condition expects a datetime parameter.
+      for (let subquery of this.allowedSubs) {
+        if (subquery[0] === condition &&
+            subquery[1]['exp_type'] === 'datetime') {
+          return true
+        }
+      }
+      return false
     },
     setMode: function (mode) {
       this.mode = mode
