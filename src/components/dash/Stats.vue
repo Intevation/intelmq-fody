@@ -277,6 +277,10 @@ module.exports = {
       modeHeader: '',
       mode: '',
       allowedSubs: [],  // allowed subqueries as [key, value] array from backend
+
+      // Fullname of timezone of the database, which is the
+      // default for interpreting datetime. We get it from the backend.
+      timezoneDB: '',
       getSubQueriesErrorMsg: '',
       svgXML: '',  // SVG string for download
       dataCSV: '',  // CVS of data for download
@@ -452,6 +456,12 @@ module.exports = {
           } else {
             this.getSubQueriesErrorMsg =
               'Error: got no subquery hints from server.'
+          }
+          if (value['timezone']) {
+            this.timezoneDB = value['timeone']
+          } else {
+            this.getSubQueriesErrorMsg =
+              'Error: got no database timezone from server.'
           }
         }, (response) => {
           this.getSubQueriesErrorMsg = 'Error: got invalid json from server.'
