@@ -1,7 +1,7 @@
-## 0.9.2 to 0.9.3 (unreleased)
-**todo**
+## 0.9.2 to 0.9.3
 
- * Stats: **todo** improves query building
+ * Stats: Improv input for datetime query parameters, by using a datepicker
+   and showing in which timezone the database will interpret the value.
 
 ### Upgrade
  * technical:
