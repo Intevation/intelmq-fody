@@ -563,6 +563,15 @@ module.exports = {
       })
     },
     loadStats: function () {
+      // remove old query results from being displayed before starting a
+      // new request. Because a request may take a long time and the user
+      // could confuse a still running request with one that gave
+      // the same results.
+      this.resetQueryData()
+      if (this.mode === 'events') {
+        this.destroyEventsTable()
+      }
+
       var qParams = this.getTimeResParams(this.mode)
 
       // Build a Query-URL so that other functions
@@ -601,22 +610,14 @@ module.exports = {
                 }
               })
             }
-          } else {
-            this.resetQueryData()
           }
         }, (response) => {
-          this.resetQueryData()
           this.loadStatsErrorMsg = 'Error: got invalid json from server.'
         })
       }, (response) => {
         // no valid response
-        this.resetQueryData()
         this.setErrorMsg(response, 'loadStatsErrorMsg')
       })
-
-      if (this.mode === 'events') {
-        this.destroyEventsTable()
-      }
     },
     prepareDownloads: function () {
       var svg = document.getElementById('chart1')

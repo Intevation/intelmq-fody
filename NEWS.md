@@ -1,9 +1,12 @@
 ## 0.9.3 to 0.9.4 (unreleased)
 **todo**
 
+ * Stats: During a search, do not show the result info-box.
+
+
 ## 0.9.2 to 0.9.3
 
- * Stats: Improv input for datetime query parameters, by using a datepicker
+ * Stats: Improve input for datetime query parameters, by using a datepicker
    and showing in which timezone the database will interpret the value.
 
 ### Upgrade
