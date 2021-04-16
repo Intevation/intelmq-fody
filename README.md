@@ -1,4 +1,4 @@
-**Fody** is an interface for 
+**Fody** is an interface for
 [IntelMQ-CB-Mailgen](https://github.com/Intevation/intelmq-mailgen-release) setups.
 
 ![Screenshot](https://user-images.githubusercontent.com/8190008/29128927-8ce8bac6-7d25-11e7-9994-ec0a46cd521d.png)
@@ -30,7 +30,7 @@ Download (or clone) the source code.
 # install dependencies
 yarn
 
-# serve with hot reload at localhost:8080 
+# serve with hot reload at localhost:8080
 #   and proxy /api requests to localhost:8002
 yarn run dev
 
