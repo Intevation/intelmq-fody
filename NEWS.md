@@ -2,6 +2,7 @@
 **todo**
 
  * Stats: During a search, do not show the result info-box.
+ * Technical: Raise build dependencies to yarn>=1.22.5 and node>14.16.1.
 
 
 ## 0.9.2 to 0.9.3

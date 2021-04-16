@@ -1,6 +1,5 @@
 /* global env:true rm:true mkdir:true cp:true */
 // https://github.com/shelljs/shelljs
-require('./check-versions')()
 require('shelljs/global')
 env.NODE_ENV = 'production'
 
