@@ -13,6 +13,17 @@
         section: 'Head'
       }
     },
+    mounted () {
+      this.$http.post('api/login', {
+        username: '',
+        password: ''
+      }).then(response => response.json().then(data => {
+        if (data && data.login_token === null) {
+          this.$store.state.loggedIn = true
+          this.$store.state.user = ''
+        }
+      }))
+    },
     methods: {
       logout: function () {
         this.$store.dispatch('SET_USER', null)
