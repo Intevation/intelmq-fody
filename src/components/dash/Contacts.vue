@@ -738,6 +738,10 @@ module.exports = {
       })
     }
   },
+  mounted: function () {
+    // Start getting the annotationHints
+    this.getAnnotationHints()
+  },
   created: function () {
     // If the page was called with parameters
     // Start searching for the first machting parameter immediately
@@ -761,9 +765,6 @@ module.exports = {
       this.searchTag = this.$route.query.tag
       this.lookupTag()
     }
-
-    // Start getting the annotationHints
-    this.getAnnotationHints()
   }
 }
 </script>
