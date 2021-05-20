@@ -20,6 +20,53 @@
         <div v-if="backendProblem != null" class="backend-problem">
           {{ backendProblem }}
         </div>
+        <div v-if="!(loggedIn && user === '')" class="navbar-custom-menu">
+          <ul  class="nav navbar-nav">
+            <li class="dropdown user user-menu">
+            <div class="user">
+              <ul class="nav navbar-nav user-info">
+                <span>
+              {{ user }}
+                </span>
+              </ul>
+            </div>
+            </li>
+            <li>
+              <div class="login-btn">
+                <button v-if="!loggedIn" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-login">
+                  Login
+                </button>
+                <button v-if="loggedIn" v-on:click="signOut" type="button" class="btn btn-default">
+                  Logout
+                </button>
+              </div>
+              <div class="modal fade" tabindex="-1" ref="login-modal" id="modal-login" role="dialog" data-backdrop="false" >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                      <h4 class="modal-title">IntelMQ-Fody - Sign in</h4>
+                    </div>
+                    <div class="modal-body">
+                      <label v-if="wrongCredentials" class="text-red">Wrong username or password</label>
+                      <div class="form-group">
+                      <label for="usernameInput">Username</label>
+                      <input v-model="username" class="form-control" id="usernameInput" placeholder="Name"
+                        type="text" />
+                      <label for="passwordInput">Password</label>
+                      <input v-model="password" class="form-control" id="passwordInput" placeholder="Password" type="password" />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button  v-on:click="signIn" type="button" class="btn btn-primary">Login</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
      </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
@@ -92,6 +139,8 @@
 <script>
 import { mapState } from 'vuex'
 import { version } from '../../package.json'
+import $ from 'jquery'
+
 require('hideseek')
 
 module.exports = {
@@ -102,6 +151,9 @@ module.exports = {
       me: '',
       withMenuSearch: false,
       debugPages: false,
+      username: null,
+      password: null,
+      wrongCredentials: false,
       api: {
         servers: {
           url: '', // Back end server
@@ -120,9 +172,34 @@ module.exports = {
     version: function () {
       return version
     },
-    ...mapState(['backendProblem'])
+    ...mapState(['backendProblem', 'user', 'loggedIn'])
   },
   methods: {
+    signIn: function () {
+      this.$http.post('api/login', {
+        username: this.username,
+        password: this.password
+      }).then(response => response.json().then(data => {
+        if (data && data.login_token !== null && data.login_token !== undefined && data.username !== undefined && data.username !== '') {
+          this.$store.state.user = data.username
+          this.$store.state.token = data.login_token
+          this.$store.state.loggedIn = true
+          this.wrongCredentials = false
+          $('#modal-login').hide()
+        } else {
+          this.wrongCredentials = true
+        }
+      }))
+    },
+    signOut: function () {
+      this.username = ''
+      this.password = ''
+      this.wrongCredentials = false
+      this.$store.state.token = null
+      this.$store.state.user = null
+      this.$store.state.loggedIn = false
+      // this.$router.push('/')
+    },
     changeloading: function () {
       this.store.dispatch('TOGGLE_SEARCHING')
     },
@@ -149,5 +226,15 @@ module.exports = {
 
 .user-panel {
   height: 4em;
+}
+
+.user-info {
+  padding: 12px;
+  color: white;
+}
+
+.login-btn{
+  padding: 7px;
+  color: white;
 }
 </style>

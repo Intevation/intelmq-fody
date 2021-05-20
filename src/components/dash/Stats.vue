@@ -1,5 +1,5 @@
 <template>
-  <section class="content">
+  <section v-if="loggedIn" class="content">
     <div class="row">
       <div class='col-md-4 col-sm-4 col-xs-12'>
         <div class="box">
@@ -257,6 +257,7 @@ import 'vue-flatpickr/theme/airbnb.css'
 import { errorMixin } from '../../mixins/errorHelper.js'
 import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
 import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
+import { mapState } from 'vuex'
 
 module.exports = {
   name: 'Stats',
@@ -324,7 +325,8 @@ module.exports = {
         'bg-green': this.queryData.total > 0,
         'bg-aqua': this.queryData.total === 0
       }
-    }
+    },
+    ...mapState(['loggedIn'])
   },
   mounted: function () {
     window.addEventListener('resize', this.onResize)

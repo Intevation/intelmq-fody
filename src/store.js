@@ -9,6 +9,7 @@ const state = {
   lastTicketNumber: -1,
   user: null,
   token: null,
+  loggedIn: false,
   userInfo: {
     messages: [],
     notifications: [],

@@ -1,5 +1,5 @@
 <template>
-  <section class="content">
+  <section v-if="loggedIn" class="content">
     <div class='row'>
       <div class='col-md-4 col-sm-4 col-xs-12'>
         <div class='box'>
@@ -201,7 +201,7 @@ module.exports = {
       }
       return null
     },
-    ...mapState(['lastTicketNumber'])
+    ...mapState(['lastTicketNumber', 'loggedIn'])
   },
   mixins: [errorMixin],  // adds method setErrorMsg()
   methods: {

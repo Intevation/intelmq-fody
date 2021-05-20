@@ -1,5 +1,5 @@
 <template>
-  <section class="content">
+  <section v-if="loggedIn" class="content">
     <div class="row">
       <div class="col-md-3 col-sm-6">
         <div class='box' v-bind:class='ASNInputClass'>
@@ -256,6 +256,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { errorMixin } from '../../mixins/errorHelper.js'
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import OrgCard from './OrgCard.vue'
@@ -293,6 +294,7 @@ module.exports = {
     inputUnsignedInt, OrgCard
   },
   computed: {
+    ...mapState(['loggedIn']),
     ASNInputClass: function () {
       return {
         'has-error': (this.searchASN !== '' &&
@@ -736,6 +738,10 @@ module.exports = {
       })
     }
   },
+  mounted: function () {
+    // Start getting the annotationHints
+    this.getAnnotationHints()
+  },
   created: function () {
     // If the page was called with parameters
     // Start searching for the first machting parameter immediately
@@ -759,9 +765,6 @@ module.exports = {
       this.searchTag = this.$route.query.tag
       this.lookupTag()
     }
-
-    // Start getting the annotationHints
-    this.getAnnotationHints()
   }
 }
 </script>
