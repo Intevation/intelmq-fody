@@ -1,6 +1,6 @@
-## 0.9.3 to 0.9.4 (unreleased)
-**todo**
+## 0.9.3 to 0.9.4
 
+ * Added login and authorized requests.
  * Stats: During a search, do not show the result info-box.
  * Technical: Raise build dependencies to yarn>=1.22.5 and node>14.16.1.
 
