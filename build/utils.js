@@ -1,6 +1,6 @@
 var path = require('path')
 var config = require('../config')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin') // note: will be removed in next steps
 
 exports.assetsPath = function (_path) {
   var assetsSubDirectory = process.env.NODE_ENV === 'production'

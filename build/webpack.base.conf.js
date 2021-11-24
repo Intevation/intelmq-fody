@@ -32,39 +32,35 @@ module.exports = {
   resolveLoader: {
     fallback: [path.join(__dirname, '../node_modules')]
   },
-  module: {
-    preLoaders: [
+  module: { // rules
+    rules: [
       {
         test: /\.vue$/,
-        loader: 'eslint',
+        enforsce: 'pre',
+        loader: 'eslint-loader',
         include: projectRoot,
         exclude: /node_modules/
       },
       {
         test: /\.js$/,
-        loader: 'eslint',
+        enforsce: 'pre',
+        loader: 'eslint-loader',
         include: projectRoot,
         exclude: /node_modules/
-      }
-    ],
-    loaders: [
+      },
       {
         test: /\.vue$/,
-        loader: 'vue'
+        loader: 'vue-loader'
       },
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         include: projectRoot,
         exclude: /node_modules/
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url',
+        loader: 'url-loader',
         query: {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
@@ -72,7 +68,7 @@ module.exports = {
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url',
+        loader: 'url-loader',
         query: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
