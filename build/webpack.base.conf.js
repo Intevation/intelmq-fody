@@ -21,7 +21,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js', '.vue'],
-    fallback: [path.join(__dirname, '../node_modules')],
+    fallback: {
+      fs: false
+    },
     alias: {
       'vue$': 'vue/dist/vue',
       'src': path.resolve(__dirname, '../src'),
@@ -59,6 +61,9 @@ module.exports = {
         exclude: /node_modules/
       },
       {
+        // TODO If you have rules defined for loading assets using raw-loader,
+        // url-loader, or file-loader, please use Asset Modules instead as
+        // they're going to be deprecated in near future.
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
         query: {
@@ -87,8 +92,4 @@ module.exports = {
       })
     ]
   },
-  node: {
-    fs: 'empty',
-    child_process: 'empty'
-  }
 }
