@@ -12,9 +12,6 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
 
 module.exports = merge(baseWebpackConfig, {
   mode: 'development',
-  module: {
-    loaders: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
-  },
   devtool: 'eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
