@@ -1,16 +1,12 @@
 **Fody** is an interface for
 [IntelMQ-CB-Mailgen](https://github.com/Intevation/intelmq-mailgen-release) setups.
 
-![Screenshot](https://user-images.githubusercontent.com/8190008/29128927-8ce8bac6-7d25-11e7-9994-ec0a46cd521d.png)
+![Landing page](docs/images/landing_page.png)
 
 ### Features
  * Shows event details for a report that has been send out.
  * Inspect and edit [IntelMQ certbund-contact](https://github.com/Intevation/intelmq/tree/certbund-contact/intelmq/bots/experts/certbund_contact) database.
  * Overview charts that can be exported as SVG or CSV.
-
-[Screenshots v0.5.2](https://github.com/Intevation/intelmq-fody/issues/60)
-
-[Screenshots v0.4.2](https://github.com/Intevation/intelmq-fody/issues/49)
 
 
 
@@ -53,6 +49,15 @@ Check the [NEWS](NEWS.md) when upgrading from a previous version.
 Some [design considerations](docs/DesignConsiderations.md) are documented.
 
 The layout frame has originally been derived from the [CoPilot](https://github.com/misterGF/CoPilot) template.
+
+Screenshots
+-----------
+
+![Contacts](docs/images/contacts.png)
+
+![Tickets](docs/images/tickets.png)
+
+![Statistics](docs/images/statistics.png)
 
 License
 -------
