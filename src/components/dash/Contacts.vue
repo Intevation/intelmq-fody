@@ -560,6 +560,10 @@ module.exports = {
       })
     },
     getAnnotationHints () {
+      if (!this.loggedIn) {
+        // otherwise we trigger an "Invalid Authentication" and "Could not get annotation hints from backend" error
+        return
+      }
       var url = this.baseQueryURL + '/annotation/hints'
       this.annotationHintsErrorMsg = ''
       this.$http.get(url).then((response) => {
