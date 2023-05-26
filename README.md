@@ -81,6 +81,16 @@ and licensed under [MIT](http://opensource.org/licenses/MIT).
 CoPilot is based on the [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 template.
 
+Tests
+-----
+
+```bash
+npm npm i -D karma-webpack  # or
+yarn yarn add -D karma-webpack
+
+npm run test
+```
+
 Credits
 -------
 Exclusive usage rights: German Federal Office for Information Security (BSI).
