@@ -186,6 +186,9 @@ module.exports = {
           this.$store.state.loggedIn = true
           this.wrongCredentials = false
           $('#modal-login').hide()
+          // If the user accesses a sub-page, the frontend already tried to retrieve data from the backend without authentication, leading to errors.
+          // Clean the frontend now, so the user sees a clean interface and the frontend loads the necessary data when switching to the requested page
+          this.$router.push('/')
         } else {
           this.wrongCredentials = true
         }
