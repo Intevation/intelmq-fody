@@ -2,6 +2,7 @@ var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 var env = process.env.NODE_ENV
 // check env & config/index.js to decide weither to enable CSS Sourcemaps for the
@@ -25,22 +26,9 @@ module.exports = {
       'components': path.resolve(__dirname, '../src/components')
     }
   },
+  plugins: [new ESLintPlugin({'extensions': ['js', 'vue']})],
   module: { // rules
     rules: [
-      {
-        test: /\.vue$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: projectRoot,
-        exclude: /node_modules/
-      },
-      {
-        test: /\.js$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: projectRoot,
-        exclude: /node_modules/
-      },
       {
         test: /\.vue$/,
         loader: 'vue-loader'
@@ -63,6 +51,18 @@ module.exports = {
         type: 'asset/resource',
         generator: {
           filename: 'static/[hash][ext][query]'
+        }
+      },
+      {
+        test: /\.(?:js|mjs|cjs)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { targets: "defaults" }]
+            ]
+          }
         }
       }
     ]

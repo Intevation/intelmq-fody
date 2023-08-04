@@ -43,7 +43,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[0] }}</label>
                         <div class="col-sm-8 input-group">
-                            <Flatpickr v-bind:options="fpOptions" v-model:value="query.after"
+                            <flat-pickr v-bind:options="fpOptions" v-model:value="query.after"
                                 class="form-control"/>
                             <span class="input-group-addon">{{ timezoneDB }}</span>
                         </div>
@@ -51,7 +51,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[1] }}</label>
                         <div class="col-sm-8 input-group">
-                            <Flatpickr v-bind:options="fpOptions" v-model:value="query.before"
+                            <flat-pickr v-bind:options="fpOptions" v-model:value="query.before"
                                 class="form-control"/>
                             <span class="input-group-addon">{{ timezoneDB }}</span>
                         </div>
@@ -70,7 +70,7 @@
                             <!-- <p class="form-control-static">:</p> -->
                             <div  v-if="isDateTimeCond(sq.cond)"
                                   class="col-sm-8 input-group">
-                                <Flatpickr v-bind:options="fpOptions" v-model:value="sq.value"
+                                <flat-pickr v-bind:options="fpOptions" v-model:value="sq.value"
                                     class="form-control"/>
                                 <span class="input-group-addon">{{ timezoneDB }}</span>
                             </div>
@@ -251,8 +251,9 @@
 import * as d3 from 'd3'
 import $ from 'jquery'
 
-import VueFlatpickr from 'vue-flatpickr'
-import 'vue-flatpickr/theme/airbnb.css'
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
+import 'flatpickr/dist/themes/airbnb.css'
 
 import { errorMixin } from '../../mixins/errorHelper.js'
 import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
@@ -262,7 +263,7 @@ import { mapState } from 'vuex'
 module.exports = {
   name: 'Stats',
   components: {
-    'Flatpickr': VueFlatpickr,
+    'Flatpickr': flatPickr,
     IBoxTicketsToday,
     IBoxEventsToday
   },

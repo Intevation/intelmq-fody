@@ -1,10 +1,10 @@
 var config = require('../config')
 if (!process.env.NODE_ENV) process.env.NODE_ENV = config.dev.env
 var path = require('path')
-var express = require('express')
+const express = require('express');
 var webpack = require('webpack')
 var open = require('open')
-var { proxyMiddleware } = require('http-proxy-middleware')
+const { createProxyMiddleware } = require('http-proxy-middleware');
 var webpackConfig = require('./webpack.dev.conf')
 
 // default port where dev server listens for incoming traffic
@@ -13,8 +13,10 @@ var port = process.env.PORT || config.dev.port
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
 
-var app = express()
+const app = express();
 var compiler = webpack(webpackConfig)
+
+console.error('createProxyMiddleware', createProxyMiddleware);
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
@@ -39,7 +41,7 @@ Object.keys(proxyTable).forEach(function (context) {
   if (typeof options === 'string') {
     options = { target: options }
   }
-  app.use(proxyMiddleware(context, options))
+  app.use(context, createProxyMiddleware(options))
 })
 
 // handle fallback for HTML5 history API
