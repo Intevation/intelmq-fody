@@ -13,7 +13,7 @@
                     <i class="fa fa-ticket"></i>
                 </span>
                 <input type="text" class="form-control"
-                  v-model:title="ticketID"
+                  v-model="ticketID"
                   v-on:change="lookupIDs"
                   placeholder="20161020-10000004"
                 >
@@ -158,8 +158,8 @@ import { mapState } from 'vuex'
 import { errorMixin } from '../../mixins/errorHelper.js'
 import IBoxRecentlySentTicket from '../widgets/IBoxRecentlySentTicket.vue'
 
-module.exports = {
-  name: 'Tickets',
+export default {
+  name: 'TicketsDash',
   components: {
     IBoxRecentlySentTicket
   },

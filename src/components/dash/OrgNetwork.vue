@@ -33,7 +33,7 @@
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
 
-module.exports = {
+export default {
   name: 'org-network',
   props: {
     'status': String,

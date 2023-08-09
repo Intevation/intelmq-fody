@@ -39,7 +39,7 @@
 </div>
 </template>
 <script>
-module.exports = {
+export default {
   name: 'org-national-certs',
   props: {
     'status': String,

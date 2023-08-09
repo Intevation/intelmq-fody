@@ -20,7 +20,7 @@
 <script>
 import { errorMixin } from '../../mixins/errorHelper.js'
 
-module.exports = {
+export default {
   name: 'events-today',
   data: function () {
     return {

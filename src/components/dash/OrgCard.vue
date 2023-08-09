@@ -194,7 +194,7 @@ import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
 
-module.exports = {
+export default {
   name: 'org-card',
   // because our prop 'org' is an object it is passed by reference (see
   // warning at // https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow)

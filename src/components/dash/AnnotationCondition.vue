@@ -48,9 +48,10 @@
 </div>
 </template>
 <script>
-import annotationCondition from './AnnotationCondition.vue'
+//FIXME: is this self-import required?
+//import annotationCondition from './AnnotationCondition.vue'
 
-module.exports = {
+export default {
   name: 'annotation-condition',
   props: {
     'status': String,

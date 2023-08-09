@@ -32,7 +32,8 @@ import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
 import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
 import IBoxRecentlySentTicket from '../widgets/IBoxRecentlySentTicket.vue'
 
-module.exports = {
+export default {
+  name: 'DashBoard',
   components: {
     IBoxTicketsToday,
     IBoxEventsToday,

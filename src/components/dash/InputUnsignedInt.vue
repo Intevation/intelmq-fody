@@ -1,7 +1,6 @@
 <template>
   <input ref="input" type="text" v-bind:value="value"
-    v-on:input="updateValue($event.target.value)"></input>
-  </span>
+    v-on:input="updateValue($event.target.value)" />
 </template>
 <script>
 // Documentation:
@@ -11,7 +10,7 @@
 // It will go back to the last valid input, if a different char is entered
 // and this may cause the cursor to jump to the end of the value, because
 // the cursor position is not retained.
-module.exports = {
+export default {
   name: 'input-unsigned-int',
   props: {
     'value': [Number, String]

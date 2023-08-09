@@ -1,14 +1,16 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
+    parser: '@babel/eslint-parser',
     sourceType: 'module'
   },
   // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
-  extends: 'standard',
+  extends: [
+    'plugin:vue/recommended' // Use this if you are using Vue.js 2.x.
+  ],
   // required to lint *.vue files
   plugins: [
-    'html'
+    "vue"
   ],
   // add your custom rules here
   'rules': {
@@ -18,5 +20,5 @@ module.exports = {
     'generator-star-spacing': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
-  }
+  },
 }

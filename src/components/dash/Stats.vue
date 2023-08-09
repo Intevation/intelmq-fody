@@ -43,7 +43,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[0] }}</label>
                         <div class="col-sm-8 input-group">
-                            <flat-pickr v-bind:options="fpOptions" v-model:value="query.after"
+                            <flat-pickr v-bind:options="fpOptions" v-model="query.after"
                                 class="form-control"/>
                             <span class="input-group-addon">{{ timezoneDB }}</span>
                         </div>
@@ -51,17 +51,18 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">{{ getTimeResParamLabels(this.mode)[1] }}</label>
                         <div class="col-sm-8 input-group">
-                            <flat-pickr v-bind:options="fpOptions" v-model:value="query.before"
+                            <flat-pickr v-bind:options="fpOptions" v-model="query.before"
                                 class="form-control"/>
                             <span class="input-group-addon">{{ timezoneDB }}</span>
                         </div>
                     </div>
-                    <div v-for="(sq, index) of query.subs">
+                    <div v-for="(sq, index) of query.subs" v-bind:key="index">
                         <div class="form-group row">
                             <div class="col-sm-4 col-form-label">
                                 <select v-model="sq.cond" class="form-control">
                                     <option value=""></option>
                                     <option v-for="item in allowedSubs"
+                                            v-bind:key="item[0]"
                                             v-bind:value="item[0]">
                                         {{ item[1].label }}
                                     </option>
@@ -70,7 +71,7 @@
                             <!-- <p class="form-control-static">:</p> -->
                             <div  v-if="isDateTimeCond(sq.cond)"
                                   class="col-sm-8 input-group">
-                                <flat-pickr v-bind:options="fpOptions" v-model:value="sq.value"
+                                <flat-pickr v-bind:options="fpOptions" v-model="sq.value"
                                     class="form-control"/>
                                 <span class="input-group-addon">{{ timezoneDB }}</span>
                             </div>
@@ -260,10 +261,9 @@ import IBoxTicketsToday from '../widgets/IBoxTicketsToday.vue'
 import IBoxEventsToday from '../widgets/IBoxEventsToday.vue'
 import { mapState } from 'vuex'
 
-module.exports = {
-  name: 'Stats',
+export default {
+  name: 'StatsDash',
   components: {
-    'Flatpickr': flatPickr,
     IBoxTicketsToday,
     IBoxEventsToday
   },

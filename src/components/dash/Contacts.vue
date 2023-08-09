@@ -206,6 +206,7 @@
       <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" status="manual"
+                v-bind:key="org.organisation_id"
                 v-bind:annotation-hints="annotationHints"
                 v-on:edit="editOrg(index)"
                 v-on:delete="deleteOrg(index)"
@@ -213,12 +214,14 @@
       <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" status="auto"
+                v-bind:key="org.organisation_id"
                 v-bind:annotation-hints="annotationHints"
                 v-on:clone="cloneOrg(index, $event)"></org-card>
 
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
+                v-bind:key="org.organisation_id"
                 v-bind:annotation-hints="annotationHints"
                 v-on:clone="cloneOrg(index, $event)"
                 v-on:trash="trashOrg(index)"
@@ -261,7 +264,7 @@ import { errorMixin } from '../../mixins/errorHelper.js'
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import OrgCard from './OrgCard.vue'
 
-module.exports = {
+export default {
   name: 'Contacts',
   data: function () {
     return {

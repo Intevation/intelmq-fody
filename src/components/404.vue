@@ -13,9 +13,9 @@
   </div>
 </template>
 <script>
-  export default {
+export default {
     name: 'NotFound'
-  }
+}
 </script>
 
 <style>

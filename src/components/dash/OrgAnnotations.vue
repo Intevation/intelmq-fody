@@ -1,6 +1,6 @@
 <template>
 <div v-bind:class="outerClass">
-  <div v-for="(annotation, index) in value">
+  <div v-for="(annotation, index) in value" v-bind:key="index">
     <org-annotation v-model="value[index]"
               v-bind:status="status"
               v-bind:annotation-hints="annotationHints"
@@ -23,7 +23,7 @@
 <script>
 import orgAnnotation from './OrgAnnotation.vue'
 
-module.exports = {
+export default {
   name: 'org-annotations',
   props: {
     'status': String,

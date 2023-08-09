@@ -19,7 +19,8 @@
 
 <script>
 import { mapState } from 'vuex'
-module.exports = {
+
+export default {
   name: 'recently-sent',
   data: function () {
     return {

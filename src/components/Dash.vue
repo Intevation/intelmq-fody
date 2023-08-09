@@ -138,13 +138,14 @@
 
 <script>
 import { mapState } from 'vuex'
+// FIXME const appVersion = require('./package.json').version; https://stackoverflow.com/questions/64993118/error-should-not-import-the-named-export-version-imported-as-version
 import { version } from '../../package.json'
 import $ from 'jquery'
 
 require('hideseek')
 
-module.exports = {
-  name: 'Dash',
+export default {
+  name: 'DashView',
   data: function () {
     return {
       section: 'Dash',

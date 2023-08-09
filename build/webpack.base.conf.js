@@ -3,6 +3,8 @@ var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
 const ESLintPlugin = require('eslint-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { VueLoaderPlugin } = require('vue-loader')
 
 var env = process.env.NODE_ENV
 // check env & config/index.js to decide weither to enable CSS Sourcemaps for the
@@ -14,7 +16,7 @@ module.exports = {
   },
   output: {
     path: config.build.assetsRoot,
-    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
+    publicPath: env === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
     filename: '[name].js'
   },
   resolve: {
@@ -26,18 +28,13 @@ module.exports = {
       'components': path.resolve(__dirname, '../src/components')
     }
   },
-  plugins: [new ESLintPlugin({'extensions': ['js', 'vue']})],
+  plugins: [new ESLintPlugin({'extensions': ['js', 'vue']}), new VueLoaderPlugin()
+].concat(env === 'production' ? [new MiniCssExtractPlugin({filename: "[name].[contenthash].css", chunkFilename: "[id].[contenthash].css"})] : []),
   module: { // rules
     rules: [
       {
         test: /\.vue$/,
         loader: 'vue-loader'
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: projectRoot,
-        exclude: /node_modules/
       },
       {
         // TODO If you have rules defined for loading assets using raw-loader,
@@ -63,8 +60,18 @@ module.exports = {
               ['@babel/preset-env', { targets: "defaults" }]
             ]
           }
-        }
-      }
+        },
+      },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          env === 'production' ? MiniCssExtractPlugin.loader : "vue-style-loader",
+          "css-loader",
+// FIXME: is this needed?
+//          "postcss-loader",
+          "sass-loader",
+        ],
+      },
     ]
   }
 }

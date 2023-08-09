@@ -23,7 +23,7 @@
         <label class="control-label">Tag</label>
         <select v-model='selectionValue' class="form-control btn-info">
           <option disabled value="">(custom)</option>
-          <option v-for="tag in annotationHints.tags">{{ tag }}</option>
+          <option v-for="tag in annotationHints.tags" v-bind:key="tag">{{ tag }}</option>
         </select>
         <input type="text" v-model="value.tag" class="form-control" />
       </div>
@@ -36,7 +36,7 @@
 <script>
 import annotationCondition from './AnnotationCondition.vue'
 
-module.exports = {
+export default {
   name: 'org-annotation',
   props: {
     'status': String,

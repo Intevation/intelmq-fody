@@ -48,7 +48,7 @@
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
 
-module.exports = {
+export default {
   name: 'org-fqdns',
   props: {
     'status': String,

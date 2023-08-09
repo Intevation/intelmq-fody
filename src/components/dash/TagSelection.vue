@@ -4,13 +4,14 @@
           v-on:input="setSelected"
           class="form-control btn-info">
     <option v-for="entry in orderedTags"
+            v-bind:key="entry[0]"
             v-bind:value="entry[0]">{{ entry[1] }}</option>
   </select>
 </div>
 </template>
 
 <script>
-module.exports = {
+export default {
   name: 'tag-selection',
   props: {
     'category': String,

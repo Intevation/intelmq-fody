@@ -17,7 +17,7 @@
       </div>
     </div>
   </div>
-  <div v-for="entry in annotationHints.email_tags" :key="category"
+  <div v-for="entry in annotationHints.email_tags" v-bind:key="category"
        class="container-fluid" style="margin-top: 15px;">
     <div class="row" style="display:flex;align-items:center;">
       <div class="col-xs-3" style="width:20%">
@@ -39,7 +39,7 @@
       <i class="fa fa-envelope-o"></i></label>
     <div class="col-sm-9 com-xs-9">
       <input v-model="value.email"
-        type="email" class="form-control"></input>
+        type="email" class="form-control" />
     </div>
     <div class="col-sm-2 col-xs-2" style="padding-left:3px; padding-right:3px">
       <small>
@@ -67,7 +67,7 @@
     </label>
       <div class="col-sm-8">
         <input v-model="value.firstname"
-          type="text" class="form-control"></input>
+          type="text" class="form-control" />
     </div>
   </div>
   <div class="form-group">
@@ -76,7 +76,7 @@
     </label>
       <div class="col-sm-8">
         <input v-model="value.lastname"
-          type="text" class="form-control"></input>
+          type="text" class="form-control" />
     </div>
   </div>
   <div class="form-group">
@@ -85,7 +85,7 @@
     </label>
       <div class="col-sm-8">
         <input v-model="value.comment"
-          type="text" class="form-control"></input>
+          type="text" class="form-control" />
     </div>
   </div>
 </div>
@@ -93,9 +93,9 @@
 
 <script>
 import debounce from 'lodash.debounce'
-import tagSelection from './TagSelection.vue'
+import { tagSelection } from './TagSelection.vue'
 
-module.exports = {
+export default {
   name: 'contact-email',
   props: {
     'value': Object,
