@@ -9,7 +9,7 @@
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
               <input-unsigned-int class="form-control"
                 v-model.lazy.trim:title="searchASN"
-                v-on:change="lookupASN"
+                v-on:change.native="lookupASN"
                 placeholder="49234"
               />
               <span class="input-group-btn">
