@@ -25,7 +25,21 @@
           <option disabled value="">(custom)</option>
           <option v-for="tag in annotationHints.tags">{{ tag }}</option>
         </select>
-        <input type="text" v-model="value.tag" class="form-control" />
+        <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
+        <select name="relative-date" class="form-control relative-date" v-model="relativeDate" style="float: right">
+          <option value="no-selection">----</option>
+          <option value="1-month">1 Month</option>
+          <option value="3-months">3 Months</option>
+          <option value="6-months">6 Months</option>
+          <option value="1-year">1 Year</option>
+          <option value="2-years">2 Years</option>
+          <option value="3-years">3 Years</option>
+        </select>
+        <span class="expiry_text">now +</span>
+        <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires"
+                                class="form-control" placeholder="optional expiry date" style="float: right"
+                                v-on:change="onExpiresFlatpickrChange" />
+        <label class="control-label" style="float: right, margin-right: .5em">Expires:</label>
       </div>
     </div>
     <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
@@ -35,6 +49,8 @@
 </template>
 <script>
 import annotationCondition from './AnnotationCondition.vue'
+import VueFlatpickr from 'vue-flatpickr'
+import 'vue-flatpickr/theme/airbnb.css'
 
 module.exports = {
   name: 'org-annotation',
@@ -49,12 +65,22 @@ module.exports = {
     }
   },
   data: function () {
+    var today = new Date().toJSON().split('T')[0]
     return {
-      selectionValue: ''  // value of tag's <select>
+      selectionValue: '',  // value of tag's <select> (Tag Name)
+      flatpickrOptions: {
+        allowInput: true, // allow direct input
+        enableTime: false,
+        weekNumbers: true,
+        minDate: today,
+        onChange: this.onExpiresFlatpickrChange
+      },
+      relativeDate: ''
     }
   },
   components: {
-    annotationCondition
+    annotationCondition,
+    'Flatpickr': VueFlatpickr
   },
   computed: {
     conditionHints: function () {
@@ -88,6 +114,19 @@ module.exports = {
     value: {
       handler: function (newValue) { this.updateSelection(newValue) },
       deep: true
+    },
+    relativeDate: function (newValue) {
+      var newDate = new Date()
+      switch (newValue) {
+        case 'no-selection': this.value.expires = ''; return
+        case '1-month': newDate.setMonth(newDate.getMonth() + 1); break
+        case '2-months': newDate.setMonth(newDate.getMonth() + 2); break
+        case '6-months': newDate.setMonth(newDate.getMonth() + 6); break
+        case '1-year': newDate.setFullYear(newDate.getFullYear() + 1); break
+        case '2-years': newDate.setFullYear(newDate.getFullYear() + 2); break
+        case '3-years': newDate.setFullYear(newDate.getFullYear() + 3)
+      }
+      this.value.expires = newDate.toJSON().split('T')[0]
     }
   },
   methods: {
@@ -97,6 +136,10 @@ module.exports = {
       } else {
         this.selectionValue = ''
       }
+    },
+    onExpiresFlatpickrChange: function (selectedDates, dateStr, instance) {
+      // clear the quick selector after manual input
+      instance.element.parentElement.getElementsByClassName('relative-date')[0].value = ''
     }
   },
   mounted: function () {
@@ -108,5 +151,12 @@ module.exports = {
 <style>
 .label {
   display: inline-block;
+}
+.expiry_text {
+  margin-left: 1em;
+  float: right;
+  /* as the span is displayed as block element because it's floating, the vertical baseline moved upwards. Push it down manually */
+  position: relative;
+  top: .4em;
 }
 </style>
