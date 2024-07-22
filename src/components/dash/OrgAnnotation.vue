@@ -1,9 +1,13 @@
 <template>
   <div v-if="!editable">
-    <span v-if="value.tag !== 'inhibition'" class="label label-info"
+    <span v-if="value.tag !== 'inhibition'" v-bind:class="tagLabelClass"
       style="display:box"
       >{{ value.tag }}</span>
-    <div v-else class="list-group-item list-group-item-warning row">
+      <span v-if="value.expires && expired"
+        >Expired: {{ value.expires }}</span>
+      <span v-if="value.expires && !expired"
+        >Expires: {{ value.expires }}</span>
+    <div v-if="value.tag === 'inhibition'" class="list-group-item list-group-item-warning row">
       <div>Inhibition:
       </div>
       <annotation-condition class="col-sm-10"
@@ -98,6 +102,16 @@ module.exports = {
         'list-group-item': this.value.tag !== 'inhibition',
         'list-group-item list-group-item-warning row':
           this.value.tag === 'inhibition'
+      }
+    },
+    expired: function () {
+      return this.value.expires && new Date(this.value.expires) < new Date()
+    },
+    tagLabelClass: function () {
+      if (this.expired) {
+        return 'label label-danger'
+      } else {
+        return 'label label-info'
       }
     }
   },
