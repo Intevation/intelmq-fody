@@ -39,11 +39,12 @@
           <option value="2-years">2 Years</option>
           <option value="3-years">3 Years</option>
         </select>
-        <span class="expiry_text">now +</span>
+        <span class="expiry-text floating-text">now +</span>
+        <span v-on:click="clearExpires" class="floating-text" title="Clear expiry date" style="cursor: pointer">❌</span>
         <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires"
                                 class="form-control" placeholder="optional expiry date" style="float: right"
                                 v-on:change="onExpiresFlatpickrChange" />
-        <label class="control-label" style="float: right, margin-right: .5em">Expires:</label>
+        <label class="control-label floating-text" style="margin-right: .5em">Expires:</label>
       </div>
     </div>
     <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
@@ -71,6 +72,7 @@ module.exports = {
   data: function () {
     var today = new Date().toJSON().split('T')[0]
     return {
+      today: today,
       selectionValue: '',  // value of tag's <select> (Tag Name)
       flatpickrOptions: {
         allowInput: true, // allow direct input
@@ -105,7 +107,8 @@ module.exports = {
       }
     },
     expired: function () {
-      return this.value.expires && new Date(this.value.expires) < new Date()
+      // a tag is expired when it's past the expiry date
+      return this.value.expires && this.value.expires < this.today
     },
     tagLabelClass: function () {
       if (this.expired) {
@@ -153,7 +156,11 @@ module.exports = {
     },
     onExpiresFlatpickrChange: function (selectedDates, dateStr, instance) {
       // clear the quick selector after manual input
-      instance.element.parentElement.getElementsByClassName('relative-date')[0].value = ''
+      this.relativeDate = ''
+    },
+    clearExpires: function (event) {
+      event.preventDefault()
+      this.value.expires = ''
     }
   },
   mounted: function () {
@@ -166,8 +173,10 @@ module.exports = {
 .label {
   display: inline-block;
 }
-.expiry_text {
+.expiry-text {
   margin-left: 1em;
+}
+.floating-text {
   float: right;
   /* as the span is displayed as block element because it's floating, the vertical baseline moved upwards. Push it down manually */
   position: relative;
