@@ -134,7 +134,7 @@
               <input class="form-control"
                 v-model.lazy.trim:title="searchTag"
                 v-on:change="lookupTag"
-                placeholder="whitelist-opendns"
+                placeholder="Whitelist:DNS-Open-Resolver"
               >
               <span class="input-group-btn">
                 <button class="btn btn-default" v-on:click="lookupTag">
