@@ -1,3 +1,24 @@
+intelmq-fody (0.9.5-1) stable; urgency=medium
+
+  * Tag expiry date
+   * Dashboard
+    * On login open dashboard to deliver a clean interface
+      If the user accesses a sub-page, the frontend already tried to retrieve data from the backend without authentication, leading to errors.
+      Clean the frontend, so the user sees a clean interface and the frontend loads the necessary data when switching to the requested page
+   * Contacts
+    * Do not load the annotation hints when not logged in
+    * Organisation Annotations: Add input field for tag expiry
+     * with date selector, quick selector (relative times) and clear button
+     * Show expiry date for annotations in view mode
+     * search interface: use current format "Whitelist:" in placeholder tag
+   * Documentation
+    * how to run tests
+    * add screenshots to README
+   * Dependencies
+    * re-resolve packages
+
+ -- Sebastian Wagner <swagner@intevation.de>  Wed, 24 Jul 2024 16:35:47 +0200
+
 intelmq-fody (0.9.4) stable; urgency=medium
 
   * Added support for authentication and session management.
