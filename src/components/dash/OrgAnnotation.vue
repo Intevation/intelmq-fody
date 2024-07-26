@@ -87,7 +87,7 @@ module.exports = {
         minDate: today,
         onChange: this.onExpiresFlatpickrChange
       },
-      relativeDate: 'no-selection'
+      relativeDate: ''
     }
   },
   components: {
@@ -158,6 +158,9 @@ module.exports = {
         this.selectionValue = newValue.tag
       } else {
         this.selectionValue = ''
+      }
+      if (!newValue.expires) { // never
+        this.relativeDate = 'no-selection'
       }
     },
     onExpiresFlatpickrChange: function (selectedDates, dateStr, instance) {
