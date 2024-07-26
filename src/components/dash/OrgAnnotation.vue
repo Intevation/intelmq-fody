@@ -1,50 +1,56 @@
 <template>
   <div v-if="!editable">
-    <span v-if="value.tag !== 'inhibition'" v-bind:class="tagLabelClass"
-      style="display:box"
-      >{{ value.tag }}</span>
-      <span v-if="value.expires && expired"
-        >Expired: {{ value.expires }}</span>
-      <span v-if="value.expires && !expired"
-        >Expires: {{ value.expires }}</span>
+    <span v-if="value.tag !== 'inhibition'" v-bind:class="tagLabelClass" style="display:box">{{ value.tag }}</span>
+    <span v-if="value.expires && expired">Expired {{ value.expires }}</span>
+    <span v-if="value.expires && !expired">Expires {{ value.expires }}</span>
     <div v-if="value.tag === 'inhibition'" class="list-group-item list-group-item-warning row">
       <div>Inhibition:
       </div>
-      <annotation-condition class="col-sm-10"
-        v-model="value.condition" v-bind:status="status"
-        v-bind:condition-hints="conditionHints"/>
+      <annotation-condition class="col-sm-10" v-model="value.condition" v-bind:status="status"
+        v-bind:condition-hints="conditionHints" />
     </div>
   </div>
-  <div v-else class="list-group form-inline">
-    <div v-bind:class="annoClass">
-      <div v-if="value.tag === 'inhibition'" class="form-group-sm">
-        Inhibition:
-        <annotation-condition v-model="value.condition"
-          v-bind:status="status"
-          v-bind:condition-hints="conditionHints"/>
+  <div v-else class="list-group form-horizontal">
+    <div class="list-group-item">
+      <div class="form-group-sm row" style="margin-bottom: 5px;">
+        <label class="col-sm-4 control-label">Tag</label>
+        <div class="col-sm-4">
+          <select v-model='selectionValue' class="form-control btn-info">
+            <option disabled value="">(custom)</option>
+            <option v-for="tag in annotationHints.tags">{{ tag }}</option>
+          </select>
+        </div>
+        <div class="col-sm-4">
+          <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
+        </div>
       </div>
-      <div v-else class="form-group-sm">
-        <label class="control-label">Tag</label>
-        <select v-model='selectionValue' class="form-control btn-info">
-          <option disabled value="">(custom)</option>
-          <option v-for="tag in annotationHints.tags">{{ tag }}</option>
-        </select>
-        <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
-        <select name="relative-date" class="form-control relative-date" v-model="relativeDate" style="float: right">
-          <option value="no-selection">----</option>
-          <option value="1-month">1 Month</option>
-          <option value="3-months">3 Months</option>
-          <option value="6-months">6 Months</option>
-          <option value="1-year">1 Year</option>
-          <option value="2-years">2 Years</option>
-          <option value="3-years">3 Years</option>
-        </select>
-        <span class="expiry-text floating-text">now +</span>
-        <span v-on:click="clearExpires" class="floating-text" title="Clear expiry date" style="cursor: pointer">❌</span>
-        <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires"
-                                class="form-control" placeholder="optional expiry date" style="float: right"
-                                v-on:change="onExpiresFlatpickrChange" />
-        <label class="control-label floating-text" style="margin-right: .5em">Expires:</label>
+      <div class="form-group-sm row">
+        <label class="col-sm-4 control-label">Expires</label>
+        <div class="col-sm-3">
+          <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires" class="form-control"
+            placeholder="optional expiry date" v-on:change="onExpiresFlatpickrChange" />
+        </div>
+        <div class="col-sm-1" style="padding-left: 0;">
+          <button class="btn btn-default btn-xs" v-on:click="clearExpires" title="Clear expiry date"><i
+              class="fa fa-trash-o rme"></i></button>
+        </div>
+        <div class="col-sm-4">
+          <select name="relative-date" class="form-control relative-date" v-model="relativeDate">
+            <option value="no-selection">Never</option>
+            <option value="1-month">1 Month</option>
+            <option value="3-months">3 Months</option>
+            <option value="6-months">6 Months</option>
+            <option value="1-year">1 Year</option>
+            <option value="2-years">2 Years</option>
+            <option value="3-years">3 Years</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div v-if="value.tag === 'inhibition'" v-bind:class="annoClass">
+      <div class="form-group-sm">
+        Inhibition:
+        <annotation-condition v-model="value.condition" v-bind:status="status" v-bind:condition-hints="conditionHints" />
       </div>
     </div>
     <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
@@ -81,7 +87,7 @@ module.exports = {
         minDate: today,
         onChange: this.onExpiresFlatpickrChange
       },
-      relativeDate: ''
+      relativeDate: 'no-selection'
     }
   },
   components: {
@@ -137,7 +143,7 @@ module.exports = {
       switch (newValue) {
         case 'no-selection': this.value.expires = ''; return
         case '1-month': newDate.setMonth(newDate.getMonth() + 1); break
-        case '2-months': newDate.setMonth(newDate.getMonth() + 2); break
+        case '3-months': newDate.setMonth(newDate.getMonth() + 3); break
         case '6-months': newDate.setMonth(newDate.getMonth() + 6); break
         case '1-year': newDate.setFullYear(newDate.getFullYear() + 1); break
         case '2-years': newDate.setFullYear(newDate.getFullYear() + 2); break
@@ -159,7 +165,6 @@ module.exports = {
       this.relativeDate = ''
     },
     clearExpires: function (event) {
-      event.preventDefault()
       this.value.expires = ''
     }
   },
@@ -172,14 +177,5 @@ module.exports = {
 <style>
 .label {
   display: inline-block;
-}
-.expiry-text {
-  margin-left: 1em;
-}
-.floating-text {
-  float: right;
-  /* as the span is displayed as block element because it's floating, the vertical baseline moved upwards. Push it down manually */
-  position: relative;
-  top: .4em;
 }
 </style>
