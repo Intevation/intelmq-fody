@@ -4,7 +4,7 @@
       <div v-if="editable" class="form-group">
         <label class="col-sm-4 control-label">Address</label>
         <div class="col-sm-8">
-          <input type="text" v-model.lazy.trim="value.address" class="col-sm-8"/>
+          <input type="text" v-model.lazy.trim="value.address" class="col-sm-8 form-control"/>
         </div>
       </div>
       <div v-else>

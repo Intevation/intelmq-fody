@@ -8,7 +8,7 @@
         <label class="col-sm-4 control-label">Country</label>
         <div class="col-sm-8">
           <input type="text" v-model="national_cert.country_code"
-            class="col-sm-8"/>
+            class="col-sm-8 form-control"/>
         </div>
       </div>
       <div v-else>
