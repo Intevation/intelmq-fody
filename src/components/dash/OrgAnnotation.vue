@@ -12,7 +12,7 @@
   </div>
   <div v-else class="list-group form-horizontal">
     <div class="list-group-item">
-      <div class="form-group-sm row" style="margin-bottom: 5px;">
+      <div class="form-group-sm row flex-center" style="margin-bottom: 5px;">
         <label class="col-sm-4 control-label">Tag</label>
         <div class="col-sm-4">
           <select v-model='selectionValue' class="form-control btn-info">
@@ -24,7 +24,7 @@
           <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
         </div>
       </div>
-      <div class="form-group-sm row">
+      <div class="form-group-sm row flex-center">
         <label class="col-sm-4 control-label">Expires</label>
         <div class="col-sm-3">
           <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires" class="form-control"
@@ -180,5 +180,10 @@ module.exports = {
 <style>
 .label {
   display: inline-block;
+}
+/* Vertically-align the trash-icon, it was aligned to the top before (default behaviour). Thanks to https://stackoverflow.com/a/9431007/2851664 */
+.flex-center {
+  display: flex;
+  align-items: center;
 }
 </style>
