@@ -1,18 +1,30 @@
 <template>
   <div v-if="!editable">
-    <span v-if="value.tag !== 'inhibition'" v-bind:class="tagLabelClass" style="display:box">{{ value.tag }}</span>
-    <span v-if="value.expires && expired">Expired {{ value.expires }}</span>
-    <span v-if="value.expires && !expired">Expires {{ value.expires }}</span>
-    <div v-if="value.tag === 'inhibition'" class="list-group-item list-group-item-warning row">
+    <div v-if="value.tag === 'inhibition'" :class="'list-group-item row list-group-item-' + (expired ? 'danger' : 'warning')">
       <div>Inhibition:
       </div>
       <annotation-condition class="col-sm-10" v-model="value.condition" v-bind:status="status"
         v-bind:condition-hints="conditionHints" />
+      <div style="float: left; clear: both;">
+        <span v-if="expired">Expired {{ value.expires }}</span>
+        <span v-if="value.expires && !expired">Expires {{ value.expires }}</span>
+      </div>
+    </div>
+    <div v-else>
+      <span v-if="value.tag !== 'inhibition'" v-bind:class="tagLabelClass" style="display:box">{{ value.tag }}</span>
+      <span v-if="expired">Expired {{ value.expires }}</span>
+      <span v-if="value.expires && !expired">Expires {{ value.expires }}</span>
     </div>
   </div>
   <div v-else class="list-group form-horizontal">
+    <div v-if="value.tag === 'inhibition'" v-bind:class="annoClass">
+      <div class="form-group-sm">
+        Inhibition:
+        <annotation-condition v-model="value.condition" v-bind:status="status" v-bind:condition-hints="conditionHints" />
+      </div>
+    </div>
     <div class="list-group-item">
-      <div class="form-group-sm row flex-center" style="margin-bottom: 5px;">
+      <div v-if="value.tag !== 'inhibition'" class="form-group-sm row flex-center" style="margin-bottom: 5px;">
         <label class="col-sm-4 control-label">Tag</label>
         <div class="col-sm-4">
           <select v-model='selectionValue' class="form-control btn-info">
@@ -45,12 +57,6 @@
             <option value="3-years">3 Years</option>
           </select>
         </div>
-      </div>
-    </div>
-    <div v-if="value.tag === 'inhibition'" v-bind:class="annoClass">
-      <div class="form-group-sm">
-        Inhibition:
-        <annotation-condition v-model="value.condition" v-bind:status="status" v-bind:condition-hints="conditionHints" />
       </div>
     </div>
     <button v-on:click="$emit('deleteMe')" class="btn btn-default btn-xs">
