@@ -37,9 +37,9 @@
         <div class="col-sm-4">
           <select name="relative-date" class="form-control relative-date" v-model="relativeDate">
             <option value="no-selection">Never</option>
-            <option value="1-month">1 Month</option>
-            <option value="3-months">3 Months</option>
-            <option value="6-months">6 Months</option>
+            <option value="30-days">30 Days</option>
+            <option value="90-days">90 Days</option>
+            <option value="180-days">180 Days</option>
             <option value="1-year">1 Year</option>
             <option value="2-years">2 Years</option>
             <option value="3-years">3 Years</option>
@@ -142,9 +142,9 @@ module.exports = {
       var newDate = new Date()
       switch (newValue) {
         case 'no-selection': this.value.expires = ''; return
-        case '1-month': newDate.setMonth(newDate.getMonth() + 1); break
-        case '3-months': newDate.setMonth(newDate.getMonth() + 3); break
-        case '6-months': newDate.setMonth(newDate.getMonth() + 6); break
+        case '30-days': newDate.setDate(newDate.getDate() + 30); break
+        case '90-days': newDate.setDate(newDate.getDate() + 90); break
+        case '180-days': newDate.setDate(newDate.getDate() + 180); break
         case '1-year': newDate.setFullYear(newDate.getFullYear() + 1); break
         case '2-years': newDate.setFullYear(newDate.getFullYear() + 2); break
         case '3-years': newDate.setFullYear(newDate.getFullYear() + 3)
