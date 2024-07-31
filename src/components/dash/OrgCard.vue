@@ -99,9 +99,9 @@
         <div v-if="editable" class="list-group form-horizontal">
           <div v-for="(asn, index) in org.asns" class="list-group-item">
             <div class="form-group">
-              <label class="col-sm-4 control-label">
+              <label class="col-sm-2 control-label">
                 <i class="fa fa-hdd-o rme"></i>ASN</label>
-                <div class="col-sm-8">
+                <div class="col-sm-10">
                   <input-unsigned-int v-model="org.asns[index].asn"
                     class="form-control"></input-unsigned-int>
               </div>
@@ -155,8 +155,8 @@
         <div v-else class="well form-horizontal">
           <div v-for="key in Object.keys(otherAttributes).sort()"
                class="form-group">
-            <label class="col-sm-4 control-label">{{ key }}</label>
-            <div class="col-sm-8">
+            <label class="col-sm-2 control-label">{{ key }}</label>
+            <div class="col-sm-10">
               <input-unsigned-int v-if="key === 'sector_id'"
                 v-model="org[key]" class="form-control"></input-unsigned-int>
               <input v-if="key !== 'sector_id'" type="text"

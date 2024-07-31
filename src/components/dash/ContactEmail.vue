@@ -53,37 +53,37 @@
   </div>
   <div v-for="entry in annotationHints.email_tags" :key="category"
        class="form-group">
-    <label class="col-sm-4 control-label">{{entry[0]}}</label>
+    <label class="col-sm-2 control-label">{{entry[0]}}</label>
     <tag-selection v-bind:category="entry[0]"
                    v-bind:tags="entry[1].tags"
                    v-bind:defaultTag="entry[1].default_tag"
                    v-bind:selected="chosenTags.tags[entry[0]]"
                    v-on:input="setEmailTag"
-                   class="col-sm-8" />
+                   class="col-sm-10" />
   </div>
     <div class="form-group">
-    <label class="col-sm-4 control-label">
+    <label class="col-sm-2 control-label">
       Firstname
     </label>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
         <input v-model="value.firstname"
           type="text" class="form-control"></input>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-4 control-label">
+    <label class="col-sm-2 control-label">
       Lastname
     </label>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
         <input v-model="value.lastname"
           type="text" class="form-control"></input>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-4 control-label">
+    <label class="col-sm-2 control-label">
       <em>Comment</em>
     </label>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
         <input v-model="value.comment"
           type="text" class="form-control"></input>
     </div>

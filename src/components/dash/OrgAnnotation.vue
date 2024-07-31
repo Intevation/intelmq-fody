@@ -25,20 +25,20 @@
     </div>
     <div class="list-group-item">
       <div v-if="value.tag !== 'inhibition'" class="form-group-sm row flex-center" style="margin-bottom: 5px;">
-        <label class="col-sm-4 control-label">Tag</label>
-        <div class="col-sm-4">
+        <label class="col-sm-2 control-label">Tag</label>
+        <div class="col-sm-5">
           <select v-model='selectionValue' class="form-control btn-info">
             <option disabled value="">(custom)</option>
             <option v-for="tag in annotationHints.tags">{{ tag }}</option>
           </select>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
         </div>
       </div>
       <div class="form-group-sm row flex-center">
-        <label class="col-sm-4 control-label">Expires</label>
-        <div class="col-sm-3">
+        <label class="col-sm-2 control-label">Expires</label>
+        <div class="col-sm-4">
           <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires" class="form-control"
             placeholder="optional expiry date" v-on:change="onExpiresFlatpickrChange" />
         </div>
@@ -46,7 +46,7 @@
           <button class="btn btn-default btn-xs" v-on:click="clearExpires" title="Clear expiry date"><i
               class="fa fa-trash-o rme"></i></button>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
           <select name="relative-date" class="form-control relative-date" v-model="relativeDate">
             <option value="no-selection">Never</option>
             <option value="30-days">30 Days</option>

@@ -9,9 +9,9 @@
       <div v-bind:class="outerClass">
         <div class="list-group-item">
           <div v-if="editable" class="form-group">
-            <label class="col-sm-4 control-label">FQDN</label>
-            <div class="col-sm-8">
-              <input type="text" v-model="fqdn.fqdn" class="col-sm-8 form-control"/>
+            <label class="col-sm-2 control-label">FQDN</label>
+            <div class="col-sm-10">
+              <input type="text" v-model="fqdn.fqdn" class="col-sm-10 form-control"/>
             </div>
           </div>
           <div v-else>
@@ -19,8 +19,8 @@
             <em v-if="fqdn.comment !== ''">({{ fqdn.comment }})</em>
           </div>
           <div v-if="editable" class="form-group">
-            <label class="col-sm-4 control-label">Comment</label>
-            <div class="col-sm-8">
+            <label class="col-sm-2 control-label">Comment</label>
+            <div class="col-sm-10">
               <input type="text" v-model="fqdn.comment" class="form-control" />
             </div>
           </div>

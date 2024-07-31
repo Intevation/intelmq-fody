@@ -2,9 +2,9 @@
   <div v-bind:class="outerClass">
     <div class="list-group-item">
       <div v-if="editable" class="form-group">
-        <label class="col-sm-4 control-label">Address</label>
-        <div class="col-sm-8">
-          <input type="text" v-model.lazy.trim="value.address" class="col-sm-8 form-control"/>
+        <label class="col-sm-2 control-label">Address</label>
+        <div class="col-sm-10">
+          <input type="text" v-model.lazy.trim="value.address" class="col-sm-10 form-control"/>
         </div>
       </div>
       <div v-else>
@@ -13,8 +13,8 @@
         >({{ value.comment }})</em>
       </div>
       <div v-if="editable" class="form-group">
-        <label class="col-sm-4 control-label">Comment</label>
-        <div class="col-sm-8">
+        <label class="col-sm-2 control-label">Comment</label>
+        <div class="col-sm-10">
           <input type="text" v-model="value.comment" class="form-control" />
         </div>
       </div>
