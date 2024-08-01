@@ -18,13 +18,13 @@
   </div>
   <div v-else class="list-group form-horizontal">
     <div v-if="value.tag === 'inhibition'" v-bind:class="annoClass">
-      <div class="form-group-sm">
+      <div class="form-group">
         Inhibition:
         <annotation-condition v-model="value.condition" v-bind:status="status" v-bind:condition-hints="conditionHints" />
       </div>
     </div>
     <div class="list-group-item">
-      <div v-if="value.tag !== 'inhibition'" class="form-group-sm row flex-center" style="margin-bottom: 5px;">
+      <div v-if="value.tag !== 'inhibition'" class="row flex-center" style="margin-bottom: 5px;">
         <label class="col-sm-2 control-label">Tag</label>
         <div class="col-sm-5">
           <select v-model='selectionValue' class="form-control btn-info">
@@ -36,7 +36,7 @@
           <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
         </div>
       </div>
-      <div class="form-group-sm row flex-center">
+      <div class="form-group row flex-center">
         <label class="col-sm-2 control-label">Expires</label>
         <div class="col-sm-4">
           <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires" class="form-control"
