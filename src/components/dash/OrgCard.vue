@@ -25,6 +25,9 @@
               <span class="badge warning pull-right">{{ status }}</span>
             </span>
           </span>
+          <div v-if="validationErrors['#/name']">
+            {{ validationErrors['#/name'].message }}
+          </div>
         </span>
       </div>
 
@@ -144,7 +147,8 @@
 
         <!-- national_certs -->
         <org-national-certs v-model="org.national_certs"
-                            v-bind:status="status"/>
+                            v-bind:status="status"
+                            v-bind:errors="validationErrors"/>
 
         <!-- other attributes -->
         <div v-if="!editable" class="well">
@@ -187,12 +191,42 @@
 </template>
 
 <script>
+import { Draft2019 } from 'json-schema-library'
+
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import orgAnnotations from './OrgAnnotations.vue'
 import orgFqdns from './OrgFqdns.vue'
 import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
+
+const nationalCertSchema = {
+  'type': 'object',
+  'properties': {
+    'address': {'type': 'string'},
+    'comment': {'type': 'string'},
+    'country_code': {'type': 'string', 'pattern': '^[a-zA-Z][a-zA-Z]$'}
+  },
+  'required': ['address']
+}
+
+const orgSchemaDef = {
+  'type': 'object',
+  'properties': {
+    'name': {'type': 'string', 'minLength': 1},
+    'comment': {'type': 'string'},
+    'ripe_org_hdl': {'type': 'string'},
+    'ti_handle': {'type': 'string'},
+    'first_handle': {'type': 'string'},
+    'national_certs': {
+      'type': 'array',
+      'items': nationalCertSchema
+    }
+  },
+  'required': ['name']
+}
+
+const orgSchema = new Draft2019(orgSchemaDef)
 
 module.exports = {
   name: 'org-card',
@@ -264,8 +298,16 @@ module.exports = {
         'panel-danger': this.status === 'delete' &&
                         this.org.hasOwnProperty('errorMsg') === false
       }
+    },
+    validationErrors: function () {
+      var newOrg = JSON.parse(JSON.stringify(this.org))
+      const validationErrors = orgSchema.validate(newOrg)
+      var errors = {}
+      for (const err of validationErrors) {
+        errors[err.data.pointer] = err
+      }
+      return errors
     }
-
   },
   methods: {
     cloneMe: function () {
@@ -282,6 +324,10 @@ module.exports = {
     },
     newContactTemplate: function () {
       return JSON.parse(JSON.stringify(this.contactTemplate))
+    },
+    errorsFor: function (path) {
+      const err = this.validationErrors['#/' + path]
+      return err
     }
   }
 }

@@ -17,6 +17,7 @@
     "datatables.net-bs": "^1.10.11",
     "font-awesome": "^4.5.7",
     "hideseek": "^0.7.0",
+    "json-schema-library": "^10.0.0-rc2",
     "lodash.debounce": "^4.0.8",
     "npm-font-source-sans-pro": "^1.0.2",
     "vue": "^2.0.3",
