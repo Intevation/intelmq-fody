@@ -1,3 +1,44 @@
+## 0.9.5 to 0.9.6 (ContactDB: Annotation improvements)
+
+ * ContactDB:
+   * in edit mode, make label column smaller
+     so there's more space for the long values
+     based on user-feedback
+   * contacts: add missing form-control class to inputs
+     of FQDN, National CERT and Network input fields
+ * ContactDB OrgAnnotation:
+   * annotations: use normal font size
+     based on user-feedback, the font size should not be small but the
+     default one
+   * OrgAnnotations: Improve Expiry date for inhibitions
+     * in view mode, make the container red if expired
+     * in view mode display the expiry date, inside the block
+     * in edit mode display the expiry date form below the inhibition form
+     * in edit mode display hide the tag form (value == 'inhibition')
+     * use days instead of months for relative dates
+     * vertically align expiry trash icon
+     * relativedate: set never if expires is empty
+     * layout of tag/expiry form
+       make them the same layout as all other forms with a col-4/8 layout
+       and one line per input object
+   * revert yar.lock to 0.9.4 version, because that didn't work with the production build
+
+## 0.9.4 to 0.9.5 (ContactDB: Annotation expiry)
+
+ * ContactDB OrgAnnotation:
+   Add expiry input field, with quick selector
+   Show expiry date for annotations
+   add clear button
+   do not load the annotation hints when not logged in
+   placeholder tag: use current format "Whitelist:"
+ * re-resolve packages with yarn
+ * login: open dashboard to deliver a clean interface
+   If the user accesses a sub-page, the frontend already tried to retrieve data from the backend without authentication, leading to errors.
+   Clean the frontend, so the user sees a clean interface and the frontend loads the necessary data when switching to the requested page
+ * Documentation
+   add screenshots to readme
+   doc: how to run tests
+
 ## 0.9.3 to 0.9.4
 
  * Added login and authorized requests.

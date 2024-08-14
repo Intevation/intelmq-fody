@@ -1,3 +1,30 @@
+intelmq-fody (0.9.6-1) stable; urgency=medium
+
+  * ContactDB:
+    * in edit mode, make label column smaller
+      so there's more space for the long values
+      based on user-feedback
+    * contacts: add missing form-control class to inputs
+      of FQDN, National CERT and Network input fields
+  * ContactDB OrgAnnotation:
+    * annotations: use normal font size
+      based on user-feedback, the font size should not be small but the
+      default one
+    * OrgAnnotations: Improve Expiry date for inhibitions
+      * in view mode, make the container red if expired
+      * in view mode display the expiry date, inside the block
+      * in edit mode display the expiry date form below the inhibition form
+      * in edit mode display hide the tag form (value == 'inhibition')
+      * use days instead of months for relative dates
+      * vertically align expiry trash icon
+      * relativedate: set never if expires is empty
+      * layout of tag/expiry form
+        make them the same layout as all other forms with a col-4/8 layout
+        and one line per input object
+    * revert yar.lock to 0.9.4 version, because that didn't work with the production build
+
+ -- Sebastian Wagner <swagner@intevation.de>  Wed, 14 Aug 2024 14:39:54 +0200
+
 intelmq-fody (0.9.5-1) stable; urgency=medium
 
   * Tag expiry date
