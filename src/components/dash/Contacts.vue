@@ -139,7 +139,7 @@
            class="alert alert-success col-xs-12" role="alert">
         <div>
           Results for search criterion {{ searchCriterion }}
-	</div>
+        </div>
         <div v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
           Not found.
         </div>
