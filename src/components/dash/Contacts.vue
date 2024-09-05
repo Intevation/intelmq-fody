@@ -329,7 +329,7 @@ module.exports = {
       }
 
       if (prefix !== '') {
-        return prefix + ' ' + this.lastSearchValue
+        return prefix + ' "' + this.lastSearchValue + '"'
       }
       return ''
     }
