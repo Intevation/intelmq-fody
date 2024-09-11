@@ -34,7 +34,7 @@
       </div>
   </div>
   <button v-if="editable"
-      v-on:click="newFqdn({'address': '', 'comment': '', 'annotations': []})"
+      v-on:click="newNationalCert({'country_code': '', 'comment': ''})"
       class="list-group-item btn btn-default">
     <i class="fa fa-plus"></i>
     National CERT
@@ -69,7 +69,7 @@ module.exports = {
       this.value.splice(index, 1)
       this.$emit('input', this.value)
     },
-    newFqdn: function (template) {
+    newNationalCert: function (template) {
       this.value.push(template)
       this.$emit('input', this.value)
     }
