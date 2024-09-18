@@ -10,9 +10,10 @@
           <input type="text" v-model="national_cert.country_code"
             class="col-sm-8"/>
         </div>
-        <div v-if="errors[`#/national_certs/${index}/country_code`]">
-	  {{errors[`#/national_certs/${index}/country_code`].message}}
-	</div>
+        <div v-if="errors[`#/national_certs/${index}/country_code`]"
+             class="help-block col-sm-8 col-sm-offset-4">
+          {{errors[`#/national_certs/${index}/country_code`].message}}
+        </div>
       </div>
       <div v-else>
         {{ national_cert.country_code }}

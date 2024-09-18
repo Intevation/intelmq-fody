@@ -13,7 +13,8 @@
             <div class="col-sm-8">
               <input type="text" v-model="fqdn.fqdn" class="col-sm-8"/>
             </div>
-            <div v-if="errors[`#/fqdns/${index}/address`]">
+            <div v-if="errors[`#/fqdns/${index}/address`]"
+                 class="help-block col-sm-8 col-sm-offset-4">
               {{errors[`#/fqdns/${index}/address`].message}}
             </div>
           </div>

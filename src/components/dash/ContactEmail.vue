@@ -41,9 +41,6 @@
       <input v-model="value.email"
         type="email" class="form-control"></input>
     </div>
-    <div v-if="errors[`${errorPrefix}/email`]">
-      {{ errors[`${errorPrefix}/email`].message }}
-    </div>
     <div class="col-sm-2 col-xs-2" style="padding-left:3px; padding-right:3px">
       <small>
         <toggle-button :value="mailEnabled" :sync="true"
@@ -52,6 +49,10 @@
                        :labels="{checked: 'on', unchecked: 'off'}"
                        :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
       </small>
+    </div>
+    <div v-if="errors[`${errorPrefix}/email`]"
+         class="help-block col-sm-9 col-sm-offset-1">
+      {{ errors[`${errorPrefix}/email`].message }}
     </div>
   </div>
   <div v-for="entry in annotationHints.email_tags" :key="category"

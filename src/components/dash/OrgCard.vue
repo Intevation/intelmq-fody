@@ -110,7 +110,8 @@
                   <input-unsigned-int v-model="org.asns[index].asn"
                     class="form-control"></input-unsigned-int>
               </div>
-              <div v-if="validationErrors[`#/asns/${index}/asn`]">
+              <div v-if="validationErrors[`#/asns/${index}/asn`]"
+                   class="help-block col-sm-8 col-sm-offset-4">
                 {{ validationErrors[`#/asns/${index}/asn`].message }}
               </div>
             </div>
