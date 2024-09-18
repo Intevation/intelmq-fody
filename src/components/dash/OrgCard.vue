@@ -200,12 +200,79 @@ import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
 
+const annotationSchema = {
+  'type': 'object',
+  'properties': {
+    'tag': {'type': 'string', 'minLength': 1},
+    'condition': {'type': 'array'}
+  },
+  'required': ['tag']
+}
+
+const asnSchema = {
+  'type': 'object',
+  'properties': {
+    'asn': {'type': 'integer', 'minimum': 0},
+    'annotations': {
+      'type': 'array',
+      'items': annotationSchema
+    }
+  },
+  'required': ['asn']
+}
+
+const contactSchema = {
+  'type': 'object',
+  'properties': {
+    'firstname': {'type': 'string'},
+    'lastname': {'type': 'string'},
+    'email': {'type': 'string', 'minLength': 1},
+    'tel': {'type': 'string'},
+    'comment': {'type': 'string'},
+    'openpgp_fpr': {'type': 'string'}
+  },
+  'required': [
+    'firstname',
+    'lastname',
+    'tel',
+    'openpgp_fpr',
+    'email',
+    'comment'
+  ]
+}
+
 const nationalCertSchema = {
   'type': 'object',
   'properties': {
     'address': {'type': 'string'},
     'comment': {'type': 'string'},
     'country_code': {'type': 'string', 'pattern': '^[a-zA-Z][a-zA-Z]$'}
+  },
+  'required': ['address']
+}
+
+const networkSchema = {
+  'type': 'object',
+  'properties': {
+    'address': {'type': 'string', 'minLength': 1},
+    'comment': {'type': 'string'},
+    'annotations': {
+      'type': 'array',
+      'items': annotationSchema
+    }
+  },
+  'required': ['address']
+}
+
+const fqdnSchema = {
+  'type': 'object',
+  'properties': {
+    'address': {'type': 'string', 'minLength': 1},
+    'comment': {'type': 'string'},
+    'annotations': {
+      'type': 'array',
+      'items': annotationSchema
+    }
   },
   'required': ['address']
 }
@@ -218,6 +285,26 @@ const orgSchemaDef = {
     'ripe_org_hdl': {'type': 'string'},
     'ti_handle': {'type': 'string'},
     'first_handle': {'type': 'string'},
+    'annotations': {
+      'type': 'array',
+      'items': annotationSchema
+    },
+    'asns': {
+      'type': 'array',
+      'items': asnSchema
+    },
+    'contacts': {
+      'type': 'array',
+      'items': contactSchema
+    },
+    'fqdns': {
+      'type': 'array',
+      'items': fqdnSchema
+    },
+    'networks': {
+      'type': 'array',
+      'items': networkSchema
+    },
     'national_certs': {
       'type': 'array',
       'items': nationalCertSchema
