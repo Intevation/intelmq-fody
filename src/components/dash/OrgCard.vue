@@ -59,7 +59,9 @@
           <div v-for="(contact, index) in org.contacts" class="list-group-item">
             <contact-email v-model="org.contacts[index]"
                            v-bind:status="status"
-                           v-bind:annotationHints="annotationHints"/>
+                           v-bind:annotationHints="annotationHints"
+                           v-bind:errors="validationErrors"
+                           v-bind:error-prefix="`#/contacts/${index}`"/>
             <div class="form-group">
               <label class="col-sm-1 control-label">
                 <i class="fa fa-phone"></i></label>
@@ -108,6 +110,9 @@
                   <input-unsigned-int v-model="org.asns[index].asn"
                     class="form-control"></input-unsigned-int>
               </div>
+              <div v-if="validationErrors[`#/asns/${index}/asn`]">
+                {{ validationErrors[`#/asns/${index}/asn`].message }}
+              </div>
             </div>
             <org-annotations v-if="'annotations' in asn"
               v-model="asn.annotations" v-bind:status="status"
@@ -131,7 +136,9 @@
               class="list-group-item">
             <org-network v-model="org.networks[index]" v-bind:status="status"
               v-on:deleteMe="org.networks.splice(index, 1)"
-              v-bind:annotation-hints="annotationHints"/>
+              v-bind:annotation-hints="annotationHints"
+              v-bind:errors="validationErrors"
+              v-bind:error-prefix="`#/networks/${index}`"/>
           </div>
           <button v-if="editable"
                   v-on:click="org.networks.push({address: '', annotations: [], comment: ''})"
@@ -143,7 +150,8 @@
 
         <!-- fqdns section -->
         <org-fqdns v-model="org.fqdns" v-bind:status="status"
-                   v-bind:annotation-hints="annotationHints"/>
+                   v-bind:annotation-hints="annotationHints"
+                   v-bind:errors="validationErrors"/>
 
         <!-- national_certs -->
         <org-national-certs v-model="org.national_certs"

@@ -41,6 +41,9 @@
       <input v-model="value.email"
         type="email" class="form-control"></input>
     </div>
+    <div v-if="errors[`${errorPrefix}/email`]">
+      {{ errors[`${errorPrefix}/email`].message }}
+    </div>
     <div class="col-sm-2 col-xs-2" style="padding-left:3px; padding-right:3px">
       <small>
         <toggle-button :value="mailEnabled" :sync="true"
@@ -105,7 +108,9 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errorPrefix': String,
+    'errors': Object
   },
   components: {
     tagSelection

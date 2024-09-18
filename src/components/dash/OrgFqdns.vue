@@ -13,6 +13,9 @@
             <div class="col-sm-8">
               <input type="text" v-model="fqdn.fqdn" class="col-sm-8"/>
             </div>
+            <div v-if="errors[`#/fqdns/${index}/address`]">
+              {{errors[`#/fqdns/${index}/address`].message}}
+            </div>
           </div>
           <div v-else>
             {{ fqdn.fqdn }}
@@ -58,7 +61,8 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errors': Object
   },
   data: function () {
     return {
