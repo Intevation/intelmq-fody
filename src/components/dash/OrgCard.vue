@@ -209,6 +209,8 @@ import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
 
+const ipaddr = require('ipaddr.js')
+
 const annotationSchema = {
   'type': 'object',
   'properties': {
@@ -263,7 +265,7 @@ const nationalCertSchema = {
 const networkSchema = {
   'type': 'object',
   'properties': {
-    'address': {'type': 'string', 'minLength': 1},
+    'address': {'type': 'string', 'minLength': 1, 'format': 'cidr'},
     'comment': {'type': 'string'},
     'annotations': {
       'type': 'array',
@@ -322,7 +324,25 @@ const orgSchemaDef = {
   'required': ['name']
 }
 
-const orgSchema = new Draft2019(orgSchemaDef)
+const orgSchema = new Draft2019(orgSchemaDef, {
+  validateFormat: {
+    cidr: (node, value) => {
+      const { schema, pointer } = node
+      if (typeof value !== 'string' || value === '') {
+        return undefined
+      }
+      if (!ipaddr.isValidCIDR(value)) {
+        return {
+          type: 'error',
+          code: 'cidr-error',
+          name: 'CidrError',
+          message: 'Invalid CIDR',
+          data: { value, schema, pointer }
+        }
+      }
+    }
+  }
+})
 
 module.exports = {
   name: 'org-card',
