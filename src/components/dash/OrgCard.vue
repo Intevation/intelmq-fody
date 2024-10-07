@@ -200,7 +200,7 @@
 </template>
 
 <script>
-import { Draft2019 } from 'json-schema-library'
+import { Draft2019, config } from 'json-schema-library'
 
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import orgAnnotations from './OrgAnnotations.vue'
@@ -323,6 +323,16 @@ const orgSchemaDef = {
   },
   'required': ['name']
 }
+
+// customize some of the messages so that they don't contain the
+// pointer (JSON path) that we don't need in Fody. E.g. The message
+//    "A value is required in `{{pointer}}`"
+// is replaced by
+//    'A value is required'
+
+config.strings.MinLengthOneError = 'A value is required'
+config.strings.PatternError = 'Value should match \'{{description}}\', but received \'{{received}}\''
+config.strings.TypeError = 'Expected \'{{value}}\' ({{received}}) to be of type \'{{expected}}\''
 
 const orgSchema = new Draft2019(orgSchemaDef, {
   validateFormat: {
