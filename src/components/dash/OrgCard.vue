@@ -334,6 +334,25 @@ config.strings.MinLengthOneError = 'A value is required'
 config.strings.PatternError = 'Value should match \'{{description}}\', but received \'{{received}}\''
 config.strings.TypeError = 'Expected \'{{value}}\' ({{received}}) to be of type \'{{expected}}\''
 
+const isValidCIDR = function (value) {
+  var parsed
+  try {
+    parsed = ipaddr.parseCIDR(value)
+  } catch (e) {
+    return 'Cannot be parsed as CIDR'
+  }
+
+  const nwaddr = parsed[0].kind() === 'ipv4'
+        ? ipaddr.IPv4.networkAddressFromCIDR(value)
+        : ipaddr.IPv6.networkAddressFromCIDR(value)
+
+  if (parsed[0].toNormalizedString() !== nwaddr.toNormalizedString()) {
+    return `${value} has host bits set`
+  }
+
+  return ''
+}
+
 const orgSchema = new Draft2019(orgSchemaDef, {
   validateFormat: {
     cidr: (node, value) => {
@@ -341,12 +360,13 @@ const orgSchema = new Draft2019(orgSchemaDef, {
       if (typeof value !== 'string' || value === '') {
         return undefined
       }
-      if (!ipaddr.isValidCIDR(value)) {
+      const err = isValidCIDR(value)
+      if (err !== '') {
         return {
           type: 'error',
           code: 'cidr-error',
           name: 'CidrError',
-          message: 'Invalid CIDR',
+          message: err,
           data: { value, schema, pointer }
         }
       }
