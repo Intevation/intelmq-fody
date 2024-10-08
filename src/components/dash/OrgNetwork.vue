@@ -6,7 +6,8 @@
         <div class="col-sm-8">
           <input type="text" v-model.trim="value.address" class="col-sm-8"/>
         </div>
-        <div v-if="errors[`${errorPrefix}/address`]">
+        <div v-if="errors[`${errorPrefix}/address`]"
+             class="help-block col-sm-8 col-sm-offset-4">
           {{errors[`${errorPrefix}/address`].message}}
         </div>
       </div>
