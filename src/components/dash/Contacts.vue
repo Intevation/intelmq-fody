@@ -9,7 +9,7 @@
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
               <input-unsigned-int class="form-control"
                 v-model.lazy.trim:title="searchASN"
-                v-on:change="lookupASN"
+                v-on:change.native="lookupASN"
                 placeholder="49234"
               />
               <span class="input-group-btn">
@@ -18,17 +18,6 @@
                 </button>
               </span>
             </div>
-            <span v-if="searchASN !== ''">
-              <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                Not found.
-              </span>
-              <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                Found {{ autoOrgIDs.length }} auto-imported and
-                      {{ manualOrgIDs.length }} manual organisations.
-              </span>
-            </span>
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
@@ -49,17 +38,6 @@
                 </button>
               </span>
             </div>
-            <span v-if="searchCFN !== ''">
-              <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                Not found.
-              </span>
-              <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                Found {{ autoOrgIDs.length }} auto-imported and
-                      {{ manualOrgIDs.length }} manual organisations.
-              </span>
-            </span>
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
@@ -80,17 +58,6 @@
                 </button>
               </span>
             </div>
-            <span v-if="searchEmail !== ''">
-              <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                Not found.
-              </span>
-              <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                Found {{ autoOrgIDs.length }} auto-imported and
-                      {{ manualOrgIDs.length }} manual organisations.
-              </span>
-            </span>
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
@@ -111,17 +78,6 @@
                 </button>
               </span>
             </div>
-            <span v-if="searchName !== ''">
-              <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                Not found.
-              </span>
-              <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                Found {{ autoOrgIDs.length }} auto-imported and
-                      {{ manualOrgIDs.length }} manual organisations.
-              </span>
-            </span>
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
@@ -142,17 +98,6 @@
                 </button>
               </span>
             </div>
-            <span v-if="searchTag !== ''">
-              <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                Not found.
-              </span>
-              <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                Found {{ autoOrgIDs.length }} auto-imported and
-                      {{ manualOrgIDs.length }} manual organisations.
-              </span>
-            </span>
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
@@ -174,17 +119,6 @@
                 </button>
               </span>
             </div>
-            <span v-if="searchDisabledEmail !== ''">
-              <span class="help-block"
-                  v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
-                Not found.
-              </span>
-              <span class="help-block"
-                    v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
-                Found {{ autoOrgIDs.length }} auto-imported and
-                      {{ manualOrgIDs.length }} manual organisations.
-              </span>
-            </span>
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
@@ -200,6 +134,19 @@
       <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
         Shown entries limited to {{ loadLimit }} per auto or manual.
         Try a more specific search.
+      </div>
+      <div v-if="searchSuccessful"
+           class="alert alert-success col-xs-12" role="alert">
+        <div>
+          Results for search criterion {{ searchCriterion }}
+        </div>
+        <div v-if="autoOrgIDs.length + manualOrgIDs.length === 0">
+          Not found.
+        </div>
+        <div v-if="autoOrgIDs.length + manualOrgIDs.length > 0">
+          Found {{ autoOrgIDs.length }} auto-imported and
+                {{ manualOrgIDs.length }} manual organisations.
+        </div>
       </div>
     </div> <!-- .row -->
     <div class="row">
@@ -272,6 +219,8 @@ module.exports = {
       searchName: '',  // org name we are searching for
       searchCFN: '', // contents of multi search field for cidr, fqdn and nc
       searchTag: '', // annotation.tag substring we are searching for
+      lastSearchCriterion: '',
+      lastSearchValue: '',
       manualOrgIDs: [],  // list of ids of manual orgs we currently show
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
@@ -350,6 +299,39 @@ module.exports = {
       return {
         'disabled': (this.pendingOrgs.length === 0)
       }
+    },
+    searchSuccessful: function () {
+      return this.lastSearchCriterion && !this.searchErrorMsg
+    },
+    searchCriterion: function () {
+      var prefix = ''
+      switch (this.lastSearchCriterion) {
+        case 'asn':
+          prefix = 'ASN'
+          break
+        case 'email':
+          prefix = 'Email'
+          break
+        case 'disabled-email':
+          prefix = 'Disabled Email'
+          break
+        case 'name':
+          prefix = 'Name'
+          break
+        case 'cfn':
+          prefix = 'IP/CIDR/FQDN/CC'
+          break
+        case 'tag':
+          prefix = 'Tag'
+          break
+        default:
+          prefix = ''
+      }
+
+      if (prefix !== '') {
+        return prefix + ' "' + this.lastSearchValue + '"'
+      }
+      return ''
     }
   },
   watch: {
@@ -427,6 +409,8 @@ module.exports = {
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchasn?asn=' + this.searchASN)
+      this.lastSearchCriterion = 'asn'
+      this.lastSearchValue = this.searchASN
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {asn: this.searchASN}})
@@ -440,6 +424,8 @@ module.exports = {
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchcontact?email=' + this.searchEmail)
+      this.lastSearchCriterion = 'email'
+      this.lastSearchValue = this.searchEmail
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {email: this.searchEmail}})
@@ -453,6 +439,8 @@ module.exports = {
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchdisabledcontact?email=' + this.searchDisabledEmail)
+      this.lastSearchCriterion = 'disabled-email'
+      this.lastSearchValue = this.searchDisabledEmail
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {disabledemail: this.searchDisabledEmail}})
@@ -466,6 +454,8 @@ module.exports = {
       this.searchCFN = ''
       this.searchTag = ''
       this.getOrgIDs('/searchorg?name=' + this.searchName)
+      this.lastSearchCriterion = 'name'
+      this.lastSearchValue = this.searchName
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {name: this.searchName}})
@@ -485,6 +475,8 @@ module.exports = {
       } else {
         this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
       }
+      this.lastSearchCriterion = 'cfn'
+      this.lastSearchValue = this.searchCFN
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {cfn: this.searchCFN}})
@@ -496,8 +488,10 @@ module.exports = {
       this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchCFN = ''
-
       this.getOrgIDs('/annotation/search?tag=' + this.searchTag)
+      this.lastSearchCriterion = 'tag'
+      this.lastSearchValue = this.searchTag
+
       this.$router.replace({query: {tag: this.searchTag}})
     },
     refreshCurrentSearch: function () {
