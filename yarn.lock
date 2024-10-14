@@ -2582,10 +2582,10 @@ he@1.2.x, he@^1.1.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-hideseek@^0.7.0:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/hideseek/-/hideseek-0.7.1.tgz#0b85da72ce96911018bbd9c9d3450a5cd62695e8"
-  integrity sha1-C4Xacs6WkRAYu9nJ00UKXNYmleg=
+hideseek@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/hideseek/-/hideseek-0.8.0.tgz#5fb3922be1c916c79442400c844a3d8f374ba2d4"
+  integrity sha512-X5RTn/+yQCoMdS52SY2Qvf63ePU/r8oQ1sATfjqml1OJT8E6LxVC3EFTM2v2CTee6zzZg/TZDQZLlk3ZbKx/Eg==
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
