@@ -4,7 +4,11 @@
       <div v-if="editable" class="form-group">
         <label class="col-sm-2 control-label">Address</label>
         <div class="col-sm-10">
-          <input type="text" v-model.lazy.trim="value.address" class="col-sm-10 form-control"/>
+          <input type="text" v-model.trim="value.address" class="col-sm-10 form-control"/>
+        </div>
+        <div v-if="errors[`${errorPrefix}/address`]"
+             class="help-block col-sm-8 col-sm-offset-4">
+          {{errors[`${errorPrefix}/address`].message}}
         </div>
       </div>
       <div v-else>
@@ -43,7 +47,9 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errorPrefix': String,
+    'errors': Object
   },
   data: function () {
     return {

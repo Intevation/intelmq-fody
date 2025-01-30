@@ -50,6 +50,10 @@
                        :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
       </small>
     </div>
+    <div v-if="errors[`${errorPrefix}/email`]"
+         class="help-block col-sm-9 col-sm-offset-1">
+      {{ errors[`${errorPrefix}/email`].message }}
+    </div>
   </div>
   <div v-for="entry in annotationHints.email_tags" :key="category"
        class="form-group">
@@ -105,7 +109,9 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errorPrefix': String,
+    'errors': Object
   },
   components: {
     tagSelection
