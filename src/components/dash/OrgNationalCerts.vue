@@ -10,6 +10,10 @@
           <input type="text" v-model="national_cert.country_code"
             class="col-sm-10 form-control"/>
         </div>
+        <div v-if="errors[`#/national_certs/${index}/country_code`]"
+             class="help-block col-sm-8 col-sm-offset-4">
+          {{errors[`#/national_certs/${index}/country_code`].message}}
+        </div>
       </div>
       <div v-else>
         {{ national_cert.country_code }}
@@ -31,7 +35,7 @@
       </div>
   </div>
   <button v-if="editable"
-      v-on:click="newFqdn({'address': '', 'comment': '', 'annotations': []})"
+      v-on:click="newNationalCert({'country_code': '', 'comment': ''})"
       class="list-group-item btn btn-default">
     <i class="fa fa-plus"></i>
     National CERT
@@ -43,7 +47,8 @@ module.exports = {
   name: 'org-national-certs',
   props: {
     'status': String,
-    'value': Array
+    'value': Array,
+    'errors': Object
   },
   data: function () {
     return {
@@ -65,7 +70,7 @@ module.exports = {
       this.value.splice(index, 1)
       this.$emit('input', this.value)
     },
-    newFqdn: function (template) {
+    newNationalCert: function (template) {
       this.value.push(template)
       this.$emit('input', this.value)
     }
