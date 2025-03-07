@@ -25,9 +25,7 @@
               <span class="badge warning pull-right">{{ status }}</span>
             </span>
           </span>
-          <div v-if="validationErrors['#/name']">
-            {{ validationErrors['#/name'].message }}
-          </div>
+          <validation-error v-bind:errorMessage="getErrorMessage('#/name')"/>
         </span>
       </div>
 
@@ -57,11 +55,11 @@
         </ul>
         <div v-if="editable" class="list-group form-horizontal">
           <div v-for="(contact, index) in org.contacts" class="list-group-item">
-            <contact-email v-model="org.contacts[index]"
-                           v-bind:status="status"
-                           v-bind:annotationHints="annotationHints"
-                           v-bind:errors="validationErrors"
-                           v-bind:error-prefix="`#/contacts/${index}`"/>
+            <contact-email
+              v-model="org.contacts[index]"
+              v-bind:status="status"
+              v-bind:annotationHints="annotationHints"
+              v-bind:errorMessage="getErrorMessage(`#/contacts/${index}/email`)"/>
             <div class="form-group">
               <label class="col-sm-1 control-label">
                 <i class="fa fa-phone"></i></label>
@@ -110,10 +108,9 @@
                   <input-unsigned-int v-model="org.asns[index].asn"
                     class="form-control"></input-unsigned-int>
               </div>
-              <div v-if="validationErrors[`#/asns/${index}/asn`]"
-                   class="help-block col-sm-8 col-sm-offset-4">
-                {{ validationErrors[`#/asns/${index}/asn`].message }}
-              </div>
+              <validation-error
+                v-bind:errorMessage="getErrorMessage(`#/asns/${index}/asn`)"
+                class="col-sm-8 col-sm-offset-4"/>
             </div>
             <org-annotations v-if="'annotations' in asn"
               v-model="asn.annotations" v-bind:status="status"
@@ -138,8 +135,7 @@
             <org-network v-model="org.networks[index]" v-bind:status="status"
               v-on:deleteMe="org.networks.splice(index, 1)"
               v-bind:annotation-hints="annotationHints"
-              v-bind:errors="validationErrors"
-              v-bind:error-prefix="`#/networks/${index}`"/>
+              v-bind:errorMessage="getErrorMessage(`#/networks/${index}/address`)"/>
           </div>
           <button v-if="editable"
                   v-on:click="org.networks.push({address: '', annotations: [], comment: ''})"
@@ -150,14 +146,15 @@
         </div>
 
         <!-- fqdns section -->
-        <org-fqdns v-model="org.fqdns" v-bind:status="status"
-                   v-bind:annotation-hints="annotationHints"
-                   v-bind:errors="validationErrors"/>
+        <org-fqdns
+          v-model="org.fqdns" v-bind:status="status"
+          v-bind:annotation-hints="annotationHints"
+          v-bind:errorMessageGetter="makeErrorMessageGetter('#/fqdns/', '/fqdn')" v-bind:errors="validationErrors"/>
 
         <!-- national_certs -->
         <org-national-certs v-model="org.national_certs"
                             v-bind:status="status"
-                            v-bind:errors="validationErrors"/>
+                            v-bind:errorMessageGetter="makeErrorMessageGetter('#/national_certs/', '/country_code')"/>
 
         <!-- other attributes -->
         <div v-if="!editable" class="well">
@@ -208,6 +205,7 @@ import orgFqdns from './OrgFqdns.vue'
 import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
+import validationError from './ValidationError.vue'
 
 const ipaddr = require('ipaddr.js')
 
@@ -278,7 +276,7 @@ const networkSchema = {
 const fqdnSchema = {
   'type': 'object',
   'properties': {
-    'address': {'type': 'string', 'minLength': 1},
+    'fqdn': {'type': 'string', 'minLength': 1},
     'comment': {'type': 'string'},
     'annotations': {
       'type': 'array',
@@ -418,7 +416,13 @@ module.exports = {
     }
   },
   components: {
-    inputUnsignedInt, orgAnnotations, orgFqdns, orgNationalCerts, orgNetwork, contactEmail
+    inputUnsignedInt,
+    orgAnnotations,
+    orgFqdns,
+    orgNationalCerts,
+    orgNetwork,
+    contactEmail,
+    validationError
   },
   computed: {
     otherAttributes: function () {
@@ -471,9 +475,13 @@ module.exports = {
     newContactTemplate: function () {
       return JSON.parse(JSON.stringify(this.contactTemplate))
     },
-    errorsFor: function (path) {
-      const err = this.validationErrors['#/' + path]
-      return err
+    getErrorMessage (s) {
+      var o = this.validationErrors[s]
+      if (!o) return null
+      return o.message
+    },
+    makeErrorMessageGetter (prefix, suffix) {
+      return i => this.getErrorMessage(`${prefix}${i}${suffix}`)
     }
   }
 }

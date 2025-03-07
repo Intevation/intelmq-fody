@@ -6,10 +6,8 @@
         <div class="col-sm-10">
           <input type="text" v-model.trim="value.address" class="col-sm-10 form-control"/>
         </div>
-        <div v-if="errors[`${errorPrefix}/address`]"
-             class="help-block col-sm-8 col-sm-offset-4">
-          {{errors[`${errorPrefix}/address`].message}}
-        </div>
+        <validation-error v-bind:errorMessage="errorMessage"
+                          class="col-sm-8 col-sm-offset-4"/>
       </div>
       <div v-else>
         {{ value.address }}
@@ -34,8 +32,10 @@
     </div>
   </div>
 </template>
+
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
+import validationError from './ValidationError.vue'
 
 module.exports = {
   name: 'org-network',
@@ -48,15 +48,14 @@ module.exports = {
         return {}
       }
     },
-    'errorPrefix': String,
-    'errors': Object
+    'errorMessage': String
   },
   data: function () {
     return {
     }
   },
   components: {
-    orgAnnotations
+    orgAnnotations, validationError
   },
   computed: {
     editable: function () {
@@ -70,5 +69,4 @@ module.exports = {
     }
   }
 }
-
 </script>
