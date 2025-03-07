@@ -10,6 +10,8 @@
           <input type="text" v-model="national_cert.country_code"
             class="col-sm-10 form-control"/>
         </div>
+        <validation-error v-bind:errorMessage="errorMessageGetter(index)"
+                          class="col-sm-8 col-sm-offset-4"/>
       </div>
       <div v-else>
         {{ national_cert.country_code }}
@@ -31,7 +33,7 @@
       </div>
   </div>
   <button v-if="editable"
-      v-on:click="newFqdn({'address': '', 'comment': '', 'annotations': []})"
+      v-on:click="newNationalCert({'country_code': '', 'comment': ''})"
       class="list-group-item btn btn-default">
     <i class="fa fa-plus"></i>
     National CERT
@@ -39,15 +41,24 @@
 </div>
 </template>
 <script>
+import validationError from './ValidationError.vue'
+
 module.exports = {
   name: 'org-national-certs',
   props: {
     'status': String,
-    'value': Array
+    'value': Array,
+    'errorMessageGetter': {
+      type: Function,
+      default: () => null
+    }
   },
   data: function () {
     return {
     }
+  },
+  components: {
+    validationError
   },
   computed: {
     editable: function () {
@@ -65,7 +76,7 @@ module.exports = {
       this.value.splice(index, 1)
       this.$emit('input', this.value)
     },
-    newFqdn: function (template) {
+    newNationalCert: function (template) {
       this.value.push(template)
       this.$emit('input', this.value)
     }

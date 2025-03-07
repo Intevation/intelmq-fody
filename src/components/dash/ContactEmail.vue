@@ -50,6 +50,8 @@
                        :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
       </small>
     </div>
+    <validation-error v-bind:errorMessage="errorMessage"
+                      class="col-sm-9 col-sm-offset-1"/>
   </div>
   <div v-for="entry in annotationHints.email_tags" :key="category"
        class="form-group">
@@ -94,6 +96,7 @@
 <script>
 import debounce from 'lodash.debounce'
 import tagSelection from './TagSelection.vue'
+import validationError from './ValidationError.vue'
 
 module.exports = {
   name: 'contact-email',
@@ -105,10 +108,11 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errorMessage': String
   },
   components: {
-    tagSelection
+    tagSelection, validationError
   },
   created: function () {
     // this has to be done early and for all email addresses

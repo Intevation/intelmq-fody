@@ -4,8 +4,10 @@
       <div v-if="editable" class="form-group">
         <label class="col-sm-2 control-label">Address</label>
         <div class="col-sm-10">
-          <input type="text" v-model.lazy.trim="value.address" class="col-sm-10 form-control"/>
+          <input type="text" v-model.trim="value.address" class="col-sm-10 form-control"/>
         </div>
+        <validation-error v-bind:errorMessage="errorMessage"
+                          class="col-sm-8 col-sm-offset-4"/>
       </div>
       <div v-else>
         {{ value.address }}
@@ -30,8 +32,10 @@
     </div>
   </div>
 </template>
+
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
+import validationError from './ValidationError.vue'
 
 module.exports = {
   name: 'org-network',
@@ -43,14 +47,15 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errorMessage': String
   },
   data: function () {
     return {
     }
   },
   components: {
-    orgAnnotations
+    orgAnnotations, validationError
   },
   computed: {
     editable: function () {
@@ -64,5 +69,4 @@ module.exports = {
     }
   }
 }
-
 </script>

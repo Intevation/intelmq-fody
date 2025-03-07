@@ -13,6 +13,8 @@
             <div class="col-sm-10">
               <input type="text" v-model="fqdn.fqdn" class="col-sm-10 form-control"/>
             </div>
+            <validation-error v-bind:errorMessage="errorMessageGetter(index)"
+                              class="col-sm-8 col-sm-offset-4"/>
           </div>
           <div v-else>
             {{ fqdn.fqdn }}
@@ -45,8 +47,10 @@
     </button>
   </div>
 </template>
+
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
+import validationError from './ValidationError.vue'
 
 module.exports = {
   name: 'org-fqdns',
@@ -58,14 +62,19 @@ module.exports = {
       default: function () {
         return {}
       }
-    }
+    },
+    'errorMessageGetter': {
+      type: Function,
+      default: () => null
+    },
+    'errors': Object
   },
   data: function () {
     return {
     }
   },
   components: {
-    orgAnnotations
+    orgAnnotations, validationError
   },
   computed: {
     editable: function () {
