@@ -66,8 +66,7 @@ module.exports = {
     'errorMessageGetter': {
       type: Function,
       default: () => null
-    },
-    'errors': Object
+    }
   },
   data: function () {
     return {

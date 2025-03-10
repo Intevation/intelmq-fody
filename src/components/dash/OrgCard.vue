@@ -149,7 +149,7 @@
         <org-fqdns
           v-model="org.fqdns" v-bind:status="status"
           v-bind:annotation-hints="annotationHints"
-          v-bind:errorMessageGetter="makeErrorMessageGetter('#/fqdns/', '/fqdn')" v-bind:errors="validationErrors"/>
+          v-bind:errorMessageGetter="makeErrorMessageGetter('#/fqdns/', '/fqdn')"/>
 
         <!-- national_certs -->
         <org-national-certs v-model="org.national_certs"
@@ -197,8 +197,6 @@
 </template>
 
 <script>
-import { Draft2019, config } from 'json-schema-library'
-
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import orgAnnotations from './OrgAnnotations.vue'
 import orgFqdns from './OrgFqdns.vue'
@@ -206,171 +204,6 @@ import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
 import validationError from './ValidationError.vue'
-
-const ipaddr = require('ipaddr.js')
-
-const annotationSchema = {
-  'type': 'object',
-  'properties': {
-    'tag': {'type': 'string', 'minLength': 1},
-    'condition': {'type': 'array'}
-  },
-  'required': ['tag']
-}
-
-const asnSchema = {
-  'type': 'object',
-  'properties': {
-    'asn': {'type': 'integer', 'minimum': 0},
-    'annotations': {
-      'type': 'array',
-      'items': annotationSchema
-    }
-  },
-  'required': ['asn']
-}
-
-const contactSchema = {
-  'type': 'object',
-  'properties': {
-    'firstname': {'type': 'string'},
-    'lastname': {'type': 'string'},
-    'email': {'type': 'string', 'minLength': 1},
-    'tel': {'type': 'string'},
-    'comment': {'type': 'string'},
-    'openpgp_fpr': {'type': 'string'}
-  },
-  'required': [
-    'firstname',
-    'lastname',
-    'tel',
-    'openpgp_fpr',
-    'email',
-    'comment'
-  ]
-}
-
-const nationalCertSchema = {
-  'type': 'object',
-  'properties': {
-    'address': {'type': 'string'},
-    'comment': {'type': 'string'},
-    'country_code': {'type': 'string', 'pattern': '^[a-zA-Z][a-zA-Z]$'}
-  },
-  'required': ['address']
-}
-
-const networkSchema = {
-  'type': 'object',
-  'properties': {
-    'address': {'type': 'string', 'minLength': 1, 'format': 'cidr'},
-    'comment': {'type': 'string'},
-    'annotations': {
-      'type': 'array',
-      'items': annotationSchema
-    }
-  },
-  'required': ['address']
-}
-
-const fqdnSchema = {
-  'type': 'object',
-  'properties': {
-    'fqdn': {'type': 'string', 'minLength': 1},
-    'comment': {'type': 'string'},
-    'annotations': {
-      'type': 'array',
-      'items': annotationSchema
-    }
-  },
-  'required': ['address']
-}
-
-const orgSchemaDef = {
-  'type': 'object',
-  'properties': {
-    'name': {'type': 'string', 'minLength': 1},
-    'comment': {'type': 'string'},
-    'ripe_org_hdl': {'type': 'string'},
-    'ti_handle': {'type': 'string'},
-    'first_handle': {'type': 'string'},
-    'annotations': {
-      'type': 'array',
-      'items': annotationSchema
-    },
-    'asns': {
-      'type': 'array',
-      'items': asnSchema
-    },
-    'contacts': {
-      'type': 'array',
-      'items': contactSchema
-    },
-    'fqdns': {
-      'type': 'array',
-      'items': fqdnSchema
-    },
-    'networks': {
-      'type': 'array',
-      'items': networkSchema
-    },
-    'national_certs': {
-      'type': 'array',
-      'items': nationalCertSchema
-    }
-  },
-  'required': ['name']
-}
-
-// customize some of the messages so that they don't contain the
-// pointer (JSON path) that we don't need in Fody. E.g. The message
-//    "A value is required in `{{pointer}}`"
-// is replaced by
-//    'A value is required'
-
-config.strings.MinLengthOneError = 'A value is required'
-config.strings.PatternError = 'Value should match \'{{description}}\', but received \'{{received}}\''
-config.strings.TypeError = 'Expected \'{{value}}\' ({{received}}) to be of type \'{{expected}}\''
-
-const isValidCIDR = function (value) {
-  var parsed
-  try {
-    parsed = ipaddr.parseCIDR(value)
-  } catch (e) {
-    return 'Cannot be parsed as CIDR'
-  }
-
-  const nwaddr = parsed[0].kind() === 'ipv4'
-        ? ipaddr.IPv4.networkAddressFromCIDR(value)
-        : ipaddr.IPv6.networkAddressFromCIDR(value)
-
-  if (parsed[0].toNormalizedString() !== nwaddr.toNormalizedString()) {
-    return `${value} has host bits set`
-  }
-
-  return ''
-}
-
-const orgSchema = new Draft2019(orgSchemaDef, {
-  validateFormat: {
-    cidr: (node, value) => {
-      const { schema, pointer } = node
-      if (typeof value !== 'string' || value === '') {
-        return undefined
-      }
-      const err = isValidCIDR(value)
-      if (err !== '') {
-        return {
-          type: 'error',
-          code: 'cidr-error',
-          name: 'CidrError',
-          message: err,
-          data: { value, schema, pointer }
-        }
-      }
-    }
-  }
-})
 
 module.exports = {
   name: 'org-card',
@@ -389,6 +222,12 @@ module.exports = {
       type: Object,
       default: function () {
         return {}
+      }
+    },
+    'orgSchemaDraft': {
+      type: Object,
+      default: function () {
+        return null
       }
     }
   },
@@ -450,8 +289,11 @@ module.exports = {
       }
     },
     validationErrors: function () {
+      if (!this.editable || !this.orgSchemaDraft) {
+        return {}
+      }
       var newOrg = JSON.parse(JSON.stringify(this.org))
-      const validationErrors = orgSchema.validate(newOrg)
+      const validationErrors = this.orgSchemaDraft.validate(newOrg)
       var errors = {}
       for (const err of validationErrors) {
         errors[err.data.pointer] = err

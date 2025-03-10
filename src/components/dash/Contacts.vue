@@ -154,6 +154,7 @@
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" status="manual"
                 v-bind:annotation-hints="annotationHints"
+                v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:edit="editOrg(index)"
                 v-on:delete="deleteOrg(index)"
                 ></org-card>
@@ -161,12 +162,14 @@
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" status="auto"
                 v-bind:annotation-hints="annotationHints"
+                v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:clone="cloneOrg(index, $event)"></org-card>
 
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
                 v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
                 v-bind:annotation-hints="annotationHints"
+                v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:clone="cloneOrg(index, $event)"
                 v-on:trash="trashOrg(index)"
                 ></org-card>
@@ -208,6 +211,34 @@ import { errorMixin } from '../../mixins/errorHelper.js'
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import OrgCard from './OrgCard.vue'
 
+import { Draft2019, config } from 'json-schema-library'
+const ipaddr = require('ipaddr.js')
+
+// customize some of the messages so that they don't contain the
+// pointer (JSON path) that we don't need in Fody. E.g. The message
+//    "A value is required in `{{pointer}}`"
+// is replaced by
+//    'A value is required'
+config.strings.MinLengthOneError = 'A value is required'
+config.strings.PatternError = 'Value should match \'{{description}}\', but received \'{{received}}\''
+config.strings.TypeError = 'Expected \'{{value}}\' ({{received}}) to be of type \'{{expected}}\''
+
+const validateCIDR = value => {
+  var parsed
+  try {
+    parsed = ipaddr.parseCIDR(value)
+  } catch (e) {
+    return 'Cannot be parsed as CIDR'
+  }
+  const nwaddr = parsed[0].kind() === 'ipv4'
+        ? ipaddr.IPv4.networkAddressFromCIDR(value)
+        : ipaddr.IPv6.networkAddressFromCIDR(value)
+  if (parsed[0].toNormalizedString() !== nwaddr.toNormalizedString()) {
+    return `${value} has host bits set`
+  }
+  return null
+}
+
 module.exports = {
   name: 'Contacts',
   data: function () {
@@ -225,6 +256,7 @@ module.exports = {
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
+      orgSchemaDraft: null, // Draft2019 instance
       searchErrorMsg: '', // !=='' if getOrdIDs()' backend call failed
       loadLimit: 100, // max number of manual- and autoorgs to load
       limited: false,  // if we are only loading some of the search results
@@ -763,6 +795,37 @@ module.exports = {
       this.searchTag = this.$route.query.tag
       this.lookupTag()
     }
+
+    this.$http.get(this.baseQueryURL + '/org/schema.json').then((response) => {
+      // got a valid response
+      response.json().then((schema) => {
+        // json parsed correctly
+        this.orgSchemaDraft = new Draft2019(schema, {
+          validateFormat: {
+            cidr: (node, value) => {
+              const { schema, pointer } = node
+              if (typeof value === 'string' && value) {
+                const err = validateCIDR(value)
+                if (err) {
+                  return {
+                    type: 'error',
+                    code: 'cidr-error',
+                    name: 'CidrError',
+                    message: err,
+                    data: { value, schema, pointer }
+                  }
+                }
+              }
+            }
+          }
+        })
+      }, (response) => {
+        this.searchErrorMsg = 'Error: got invalid json from server.'
+      })
+    }, (response) => {
+      // no valid response
+      this.setErrorMsg(response, 'searchErrorMsg')
+    })
   }
 }
 </script>
