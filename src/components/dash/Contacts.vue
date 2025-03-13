@@ -177,7 +177,7 @@
     <div v-if="commitPendingOrgsErrorMsg" class="row">
       <div class="alert alert-danger col-xs-12" role="alert">
         Committing changes to server failed with
-        {{ commitPendingOrgsErrorMsg }}
+        <span style="white-space: pre-line;">{{ commitPendingOrgsErrorMsg }}</span>
       </div>
     </div>
     <div class="row">
