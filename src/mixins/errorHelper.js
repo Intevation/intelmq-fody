@@ -34,7 +34,7 @@ export const errorMixin = {
       // construct the error message for a failed $http.get() from response
       // place it in this.[targetVar]
       if (response.status === 0) {
-        this[targetVar] = 'Error: Failed to connect properly.'
+        this[targetVar] = 'Failed to connect properly.'
       } else {
         response.text().then(bodyText => {
           bodyText = tryParseAsJSON(bodyText)

@@ -158,7 +158,7 @@
     <div class="row">
       <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
-                v-bind:org="org" status="manual"
+                v-model="manualOrgs[index]" status="manual"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:edit="editOrg(index)"
@@ -166,14 +166,14 @@
                 ></org-card>
       <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
-                v-bind:org="org" status="auto"
+                v-model="autoOrgs[index]" status="auto"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:clone="cloneOrg(index, $event)"></org-card>
 
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
-                v-bind:org="org" v-bind:status="pendingOrgIndex[index]"
+                v-model="pendingOrgs[index]" v-bind:status="pendingOrgIndex[index]"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:clone="cloneOrg(index, $event)"
@@ -426,7 +426,7 @@ module.exports = {
             this.manualOrgIDs = []
           }
         }, (response) => {
-          this.searchErrorMsg = 'Error: got invalid json from server.'
+          this.searchErrorMsg = 'Got invalid JSON from server.'
         })
       }, (response) => {
         // no valid response
@@ -575,7 +575,7 @@ module.exports = {
             orgList.splice(index, 1, null)
           }
         }, (response) => {
-          let errOrg = {name: ids[index], errorMsg: 'Error: got invalid json.'}
+          let errOrg = {name: ids[index], errorMsg: 'Error: Got invalid JSON.'}
           orgList.splice(index, 1, errOrg)
         })
       }, (response) => {
@@ -607,7 +607,7 @@ module.exports = {
             this.annotationHints = value
           }
         }, (response) => {
-          this.annotationHintsErrorMsg = 'Error: got invalid json from server.'
+          this.annotationHintsErrorMsg = 'Got invalid JSON from server.'
         })
       }, (response) => {
         // no valid response
@@ -740,6 +740,14 @@ module.exports = {
       // TODO clear out empty values for asns, networks, fqdns, annotations
       // those will fail when commiting
 
+      // https://github.com/vuejs/vue/issues/1953#issuecomment-567855890
+      if (this.$children.some(
+        child => child.$options.name === 'org-card' &&
+                 Object.keys(child.validationErrors).length !== 0)) {
+        this.commitPendingOrgsErrorMsg = 'Some field(s) failed validation.'
+        return
+      }
+
       var url = this.baseQueryURL + '/org/manual/commit'
       var commitObject = {
         'commands': this.pendingOrgIndex,
@@ -767,7 +775,7 @@ module.exports = {
             this.refreshCurrentSearch()
           }
         }, (response) => {
-          this.commitPendingOrgsErrorMsg = 'Error: got invalid json from server.'
+          this.commitPendingOrgsErrorMsg = 'Got invalid JSON from server.'
         })
       }, response => {
         // error callback
@@ -827,7 +835,7 @@ module.exports = {
           }
         })
       }, (response) => {
-        this.schemaErrorMsg = 'Error: Got invalid json from server.'
+        this.schemaErrorMsg = 'Got invalid JSON from server.'
       })
     }, (response) => {
       // no valid response
