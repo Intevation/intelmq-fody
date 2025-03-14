@@ -122,14 +122,20 @@
           </div> <!-- .box-body -->
         </div> <!-- .box -->
       </div>
+      <div v-if="schemaErrorMsg"
+           class="alert alert-danger col-xs-12" role="alert">
+        Could not get schema.json from backend, will be unable to validate inputs:<br>
+        <span style="white-space: pre-line;">{{ schemaErrorMsg }}</span>
+      </div>
       <div v-if="annotationHintsErrorMsg"
            class="alert alert-danger col-xs-12" role="alert">
-        Could not get annotation hints from backend:
-        {{ annotationHintsErrorMsg }}
+        Could not get annotation hints from backend:<br>
+        <span style="white-space: pre-line;">{{ annotationHintsErrorMsg }}</span>
       </div>
       <div v-if="searchErrorMsg"
            class="alert alert-danger col-xs-12" role="alert">
-        {{ searchErrorMsg }}
+        Search failed:<br>
+        <span style="white-space: pre-line;">{{ searchErrorMsg }}</span>
       </div>
       <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
         Shown entries limited to {{ loadLimit }} per auto or manual.
@@ -176,7 +182,7 @@
     </div>
     <div v-if="commitPendingOrgsErrorMsg" class="row">
       <div class="alert alert-danger col-xs-12" role="alert">
-        Committing changes to server failed with
+        Committing changes to server failed:<br>
         <span style="white-space: pre-line;">{{ commitPendingOrgsErrorMsg }}</span>
       </div>
     </div>
@@ -256,8 +262,9 @@ module.exports = {
       manualOrgs: [],
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
+      schemaErrorMsg: '', // !== '' if could not load schema.json
       orgSchemaDraft: null, // Draft2019 instance
-      searchErrorMsg: '', // !=='' if getOrdIDs()' backend call failed
+      searchErrorMsg: '', // !== '' if getOrdIDs()' backend call failed
       loadLimit: 100, // max number of manual- and autoorgs to load
       limited: false,  // if we are only loading some of the search results
       annotationHints: {},  // from the server to help editing annotations
@@ -820,11 +827,11 @@ module.exports = {
           }
         })
       }, (response) => {
-        this.searchErrorMsg = 'Error: got invalid json from server.'
+        this.schemaErrorMsg = 'Error: Got invalid json from server.'
       })
     }, (response) => {
       // no valid response
-      this.setErrorMsg(response, 'searchErrorMsg')
+      this.setErrorMsg(response, 'schemaErrorMsg')
     })
   }
 }
