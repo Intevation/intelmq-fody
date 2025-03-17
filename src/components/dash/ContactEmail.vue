@@ -5,7 +5,7 @@
       <div class="col-xs-3" style="width:20%"
            ><i class="fa fa-envelope-o"></i></div>
       <div class="col-xs-9" style="width:80%">
-        {{ value.firstname }} {{ value.lastname }} &lt;{{ email }}&gt;
+        {{ internalValue.firstname }} {{ internalValue.lastname }} &lt;{{ email }}&gt;
         <small>
           <toggle-button :value="mailEnabled" :sync="true"
                          :width=36 :height=14
@@ -13,7 +13,7 @@
                          :labels="{checked: 'on', unchecked: 'off'}"
                          :color="{checked: '#d4d4d4', unchecked: '#d73925'}"/>
         </small>
-        <em v-if="value.comment !== ''">({{ value.comment }})</em>
+        <em v-if="internalValue.comment !== ''">({{ internalValue.comment }})</em>
       </div>
     </div>
   </div>
@@ -38,7 +38,7 @@
     <label class="col-sm-1 control-label">
       <i class="fa fa-envelope-o"></i></label>
     <div class="col-sm-9 com-xs-9">
-      <input v-model="value.email"
+      <input v-model.trim="internalValue.email" v-on:input="update"
         type="email" class="form-control"></input>
     </div>
     <div class="col-sm-2 col-xs-2" style="padding-left:3px; padding-right:3px">
@@ -68,7 +68,7 @@
       Firstname
     </label>
       <div class="col-sm-10">
-        <input v-model="value.firstname"
+        <input v-model.trim="internalValue.firstname" v-on:input="update"
           type="text" class="form-control"></input>
     </div>
   </div>
@@ -77,7 +77,7 @@
       Lastname
     </label>
       <div class="col-sm-10">
-        <input v-model="value.lastname"
+        <input v-model.trim="internalValue.lastname" v-on:input="update"
           type="text" class="form-control"></input>
     </div>
   </div>
@@ -86,7 +86,7 @@
       <em>Comment</em>
     </label>
       <div class="col-sm-10">
-        <input v-model="value.comment"
+        <input v-model.trim="internalValue.comment" v-on:input="update"
           type="text" class="form-control"></input>
     </div>
   </div>
@@ -111,6 +111,11 @@ module.exports = {
     },
     'errorMessage': String
   },
+  data () {
+    return {
+      'internalValue': JSON.parse(JSON.stringify(this.value))
+    }
+  },
   components: {
     tagSelection, validationError
   },
@@ -121,7 +126,7 @@ module.exports = {
   },
   computed: {
     email: function () {
-      return this.value.email
+      return this.internalValue.email
     },
     mailEnabled: function () {
       if (this.email in this.$store.state.emailStatusMap) {
@@ -143,12 +148,18 @@ module.exports = {
     }
   },
   watch: {
+    value (newValue) {
+      this.internalValue = JSON.parse(JSON.stringify(newValue))
+    },
     email: function (val) {
       // this.$store.dispatch('GET_EMAIL_STATUS', this.email)
       this.getStatusForModifiedEmail(val)
     }
   },
   methods: {
+    update () {
+      this.$emit('input', this.internalValue)
+    },
     setEmailStatus: function (event) {
       this.$store.dispatch('SET_EMAIL_STATUS',
                            {email: this.email, value: event.value})

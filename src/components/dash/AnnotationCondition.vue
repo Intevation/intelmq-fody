@@ -1,37 +1,39 @@
 <template>
 <!-- Binary Operator -->
-<div v-if="condition[0] in binary_operators" class="group-inline">
-  <annotation-condition v-model="condition[1]" v-bind:status="status"
+<div v-if="internalValue[0] in binary_operators" class="group-inline">
+  <annotation-condition v-model="internalValue[1]" v-on:input="update"
+    v-bind:status="status"
     v-bind:condition-hints="conditionHints"/>
   <div v-if="editable" class="inline">
     <div v-if="Object.keys(binary_operators).length === 1">
-      {{ binary_operators[condition[0]] }}
+      {{ binary_operators[internalValue[0]] }}
     </div>
     <div v-else>
-      TODO select operator {{ conditionHints.binary_operators[condition[0]] }}
+      TODO select operator {{ conditionHints.binary_operators[internalValue[0]] }}
     </div>
   </div>
   <div v-else class="inline"
-    >{{ conditionHints.binary_operators[condition[0]]}}
+    >{{ conditionHints.binary_operators[internalValue[0]]}}
   </div>
-  <annotation-condition v-model="condition[2]" v-bind:status="status"
+  <annotation-condition v-model="internalValue[2]" v-on:input="update"
+    v-bind:status="status"
     v-bind:condition-hints="conditionHints"/>
 </div>
 
 <!-- Field (or unary operator) -->
-<div v-else-if="condition[0] in fields" class="inline">
+<div v-else-if="internalValue[0] in fields" class="inline">
   <div v-if="editable" class="inline">
     <div v-if="Object.keys(fields).length === 1">
       {{ Object.keys(fields)[0] }}
     </div>
     <div v-else>
-      TODO select field {{condition[0]}}
+      TODO select field {{internalValue[0]}}
     </div>
   </div>
   <div v-else class="inline">
-  {{condition[0]}}
+  {{internalValue[0]}}
   </div>
-  [<annotation-condition v-model="condition[1]"
+  [<annotation-condition v-model="internalValue[1]" v-on:input="update"
     v-bind:status="status"
     v-bind:condition-hints="conditionHints"/>]
 </div>
@@ -39,14 +41,15 @@
 <!-- Constant -->
 <div v-else class="inline">
   <div v-if="editable">
-    <input class="form-control" type="text" v-bind:value="condition"
-    v-on:input="updateValue($event.target.value)"/>
+    <input class="form-control" type="text"
+    v-model.trim="internalValue" v-on:input="update"/>
   </div>
   <div v-else class="inline">
-  '{{ condition }}'
+  '{{ internalValue }}'
   </div>
 </div>
 </template>
+
 <script>
 import annotationCondition from './AnnotationCondition.vue'
 
@@ -64,7 +67,12 @@ module.exports = {
   },
   data: function () {
     return {
-      condition: this.value
+      internalValue: JSON.parse(JSON.stringify(this.value))
+    }
+  },
+  watch: {
+    value (newValue) {
+      this.internalValue = JSON.parse(JSON.stringify(newValue))
     }
   },
   components: {
@@ -90,12 +98,14 @@ module.exports = {
     }
   },
   methods: {
-    updateValue: function (value) {
-      this.$emit('input', String(value))
+    update () {
+      // Is wrapping it in String() really correct?
+      this.$emit('input', String(this.internalValue))
     }
   }
 }
 </script>
+
 <style>
 div.inline {
   display: inline-block;

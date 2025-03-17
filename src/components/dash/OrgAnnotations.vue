@@ -1,7 +1,7 @@
 <template>
 <div v-bind:class="outerClass">
-  <div v-for="(annotation, index) in value">
-    <org-annotation v-model="value[index]"
+  <div v-for="(annotation, index) in internalValue">
+    <org-annotation v-model="internalValue[index]" v-on:input="update"
               v-bind:status="status"
               v-bind:annotation-hints="annotationHints"
               v-on:deleteMe="deleteMe(index)" />
@@ -20,6 +20,7 @@
   </div>
 </div>
 </template>
+
 <script>
 import orgAnnotation from './OrgAnnotation.vue'
 
@@ -37,6 +38,12 @@ module.exports = {
   },
   data: function () {
     return {
+      internalValue: JSON.parse(JSON.stringify(this.value))
+    }
+  },
+  watch: {
+    value (newValue) {
+      this.internalValue = JSON.parse(JSON.stringify(newValue))
     }
   },
   components: {
@@ -54,9 +61,12 @@ module.exports = {
     }
   },
   methods: {
+    update () {
+      this.$emit('input', this.internalValue)
+    },
     deleteMe: function (index) {
-      this.value.splice(index, 1)
-      this.$emit('input', this.value)
+      this.internalValue.splice(index, 1)
+      this.update()
     },
     newAnnotation: function (template) {
       // preload if inhibition and ..
@@ -75,10 +85,9 @@ module.exports = {
           template.condition[1] = [Object.keys(conditions.fields)[0], '']
         }
       }
-      this.value.push(template)
-      this.$emit('input', this.value)
+      this.internalValue.push(template)
+      this.update()
     }
   }
 }
-
 </script>

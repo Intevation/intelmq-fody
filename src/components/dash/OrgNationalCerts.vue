@@ -1,13 +1,13 @@
 <template>
-<div v-if="editable || value.length > 0" v-bind:class="outerClass">
+<div v-if="editable || internalValue.length > 0" v-bind:class="outerClass">
   <div v-if="!editable">National-CERT for:
   </div>
-  <div v-for="(national_cert, index) in value" class="list-group-item">
+  <div v-for="(national_cert, index) in internalValue" class="list-group-item">
     <div class="list-group">
       <div v-if="editable" class="form-group">
         <label class="col-sm-2 control-label">Country</label>
         <div class="col-sm-10">
-          <input type="text" v-model="national_cert.country_code"
+          <input type="text" v-model.trim="national_cert.country_code" v-on:input="update"
             class="col-sm-10 form-control"/>
         </div>
         <validation-error v-bind:errorMessage="errorMessageGetter(index)"
@@ -21,25 +21,27 @@
       <div v-if="editable" class="form-group">
         <label class="col-sm-2 control-label">Comment</label>
           <div class="col-sm-10">
-              <input type="text" v-model="national_cert.comment"
+              <input type="text" v-model.trim="national_cert.comment" v-on:input="update"
                  class="form-control" />
           </div>
       </div>
     </div>
       <div v-if="editable" class="list-group form-horizontal">
-        <button v-on:click="deleteMe(index)" class="btn btn-default btn-xs">
+        <button v-on:click="deleteMe(index), update()" class="btn btn-default btn-xs">
           <i class="fa fa-minus"></i>
         </button>
       </div>
   </div>
   <button v-if="editable"
-      v-on:click="newNationalCert({'country_code': '', 'comment': ''})"
+      v-on:click="newNationalCert({'country_code': '', 'comment': ''}), update()"
       class="list-group-item btn btn-default">
     <i class="fa fa-plus"></i>
     National CERT
   </button>
 </div>
+<div v-else></div>
 </template>
+
 <script>
 import validationError from './ValidationError.vue'
 
@@ -53,18 +55,19 @@ module.exports = {
       default: () => null
     }
   },
-  data: function () {
+  data () {
     return {
+      internalValue: JSON.parse(JSON.stringify(this.value))
     }
   },
   components: {
     validationError
   },
   computed: {
-    editable: function () {
-      return (this.status === 'create' || this.status === 'update')
+    editable () {
+      return this.status === 'create' || this.status === 'update'
     },
-    outerClass: function () {
+    outerClass () {
       return {
         'list-group': !this.editable,
         'list-group form-horizontal': this.editable
@@ -72,13 +75,19 @@ module.exports = {
     }
   },
   methods: {
-    deleteMe: function (index) {
-      this.value.splice(index, 1)
-      this.$emit('input', this.value)
+    deleteMe (index) {
+      this.internalValue.splice(index, 1)
     },
-    newNationalCert: function (template) {
-      this.value.push(template)
-      this.$emit('input', this.value)
+    newNationalCert (template) {
+      this.internalValue.push(template)
+    },
+    update () {
+      this.$emit('input', this.internalValue)
+    }
+  },
+  watch: {
+    value (newValue) {
+      this.internalValue = JSON.parse(JSON.stringify(newValue))
     }
   }
 }

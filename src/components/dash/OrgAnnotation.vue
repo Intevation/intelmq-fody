@@ -1,58 +1,59 @@
 <template>
   <div v-if="!editable">
-    <div v-if="value.tag === 'inhibition'" :class="'list-group-item row list-group-item-' + (expired ? 'danger' : 'warning')">
+    <div v-if="internalValue.tag === 'inhibition'" :class="'list-group-item row list-group-item-' + (expired ? 'danger' : 'warning')">
       <div>Inhibition:
       </div>
-      <annotation-condition class="col-sm-10" v-model="value.condition" v-bind:status="status"
+      <annotation-condition class="col-sm-10" v-model="internalValue.condition" v-on:input="update" v-bind:status="status"
         v-bind:condition-hints="conditionHints" />
       <div style="float: left; clear: both;">
-        <span v-if="expired">Expired {{ value.expires }}</span>
-        <span v-if="value.expires && !expired">Expires {{ value.expires }}</span>
+        <span v-if="expired">Expired {{ internalValue.expires }}</span>
+        <span v-if="internalValue.expires && !expired">Expires {{ internalValue.expires }}</span>
       </div>
     </div>
     <div v-else>
-      <span v-if="value.tag !== 'inhibition'" v-bind:class="tagLabelClass" style="display:box">{{ value.tag }}</span>
-      <span v-if="expired">Expired {{ value.expires }}</span>
-      <span v-if="value.expires && !expired">Expires {{ value.expires }}</span>
+      <span v-if="internalValue.tag !== 'inhibition'" v-bind:class="tagLabelClass" style="display:box">{{ internalValue.tag }}</span>
+      <span v-if="expired">Expired {{ internalValue.expires }}</span>
+      <span v-if="internalValue.expires && !expired">Expires {{ internalValue.expires }}</span>
     </div>
   </div>
   <div v-else class="list-group form-horizontal">
-    <div v-if="value.tag === 'inhibition'" v-bind:class="annoClass">
+    <div v-if="internalValue.tag === 'inhibition'" v-bind:class="annoClass">
       <div class="form-group">
         Inhibition:
-        <annotation-condition v-model="value.condition" v-bind:status="status" v-bind:condition-hints="conditionHints" />
+        <annotation-condition v-model="internalValue.condition" v-on:input="update" v-bind:status="status" v-bind:condition-hints="conditionHints" />
       </div>
     </div>
     <div class="list-group-item">
-      <div v-if="value.tag !== 'inhibition'" class="row flex-center" style="margin-bottom: 5px;">
+      <div v-if="internalValue.tag !== 'inhibition'" class="row flex-center" style="margin-bottom: 5px;">
         <label class="col-sm-2 control-label">Tag</label>
         <div class="col-sm-5">
-          <select v-model='selectionValue' class="form-control btn-info">
-            <option disabled value="">(custom)</option>
-            <option v-for="tag in annotationHints.tags">{{ tag }}</option>
+          <select v-model="tagSelect" v-on:change="tagSelected(), update()" class="form-control btn-info">
+            <option value="custom"><i>Custom</i></option>
+            <option v-for="(tag, i) of annotationHints.tags" v-bind:value="i">{{ tag }}</option>
           </select>
         </div>
         <div class="col-sm-5">
-          <input type="text" v-model="value.tag" class="form-control" placeholder="tag value" />
+          <input type="text" v-model.trim="internalValue.tag" v-on:input="tagSet(), update()" class="form-control" placeholder="tag value" />
         </div>
       </div>
       <div class="form-group row flex-center">
         <label class="col-sm-2 control-label">Expires</label>
         <div class="col-sm-4">
-          <Flatpickr v-bind:options="flatpickrOptions" v-model:value="value.expires" class="form-control"
-            placeholder="optional expiry date" v-on:change="onExpiresFlatpickrChange" />
+          <Flatpickr v-bind:options="flatpickrOptions" v-model:value="internalValue.expires" class="form-control"
+            placeholder="optional expiry date" v-on:change="flatpickrDateSelected(), update()" />
         </div>
         <div class="col-sm-1" style="padding-left: 0;">
-          <button class="btn btn-default btn-xs" v-on:click="clearExpires" title="Clear expiry date"><i
+          <button class="btn btn-default btn-xs" v-on:click="clearExpiryDate(), update()" title="Clear expiry date"><i
               class="fa fa-trash-o rme"></i></button>
         </div>
         <div class="col-sm-5">
-          <select name="relative-date" class="form-control relative-date" v-model="relativeDate">
-            <option value="no-selection">Never</option>
+          <select name="relative-date" class="form-control relative-date" v-model="relativeDate" v-on:change="relativeDateSelected(), update()">
+            <option value="not-relative" disabled style="display: none;"></option>
+            <option value="never">Never</option>
             <option value="30-days">30 Days</option>
             <option value="90-days">90 Days</option>
             <option value="180-days">180 Days</option>
-            <option value="1-year">1 Year</option>
+            <option value="1-years">1 Year</option>
             <option value="2-years">2 Years</option>
             <option value="3-years">3 Years</option>
           </select>
@@ -76,24 +77,23 @@ module.exports = {
     'value': Object,
     'annotationHints': {
       type: Object,
-      default: function () {
-        return {}
-      }
+      default: () => ({})
     }
   },
-  data: function () {
+  data () {
     var today = new Date().toJSON().split('T')[0]
     return {
+      internalValue: JSON.parse(JSON.stringify(this.value)),
       today: today,
-      selectionValue: '',  // value of tag's <select> (Tag Name)
+      tagSelect: 'custom',  // value of tag's <select> ('custom' or tag index)
       flatpickrOptions: {
         allowInput: true, // allow direct input
         enableTime: false,
         weekNumbers: true,
         minDate: today,
-        onChange: this.onExpiresFlatpickrChange
+        onChange: this.flatpickrDateSelected
       },
-      relativeDate: ''
+      relativeDate: this.value.expires ? 'not-relative' : 'never'
     }
   },
   components: {
@@ -101,88 +101,71 @@ module.exports = {
     'Flatpickr': VueFlatpickr
   },
   computed: {
-    conditionHints: function () {
-      if ('conditions' in this.annotationHints) {
-        return this.annotationHints.conditions
-      } else {
-        return {}
-      }
+    conditionHints () {
+      return 'conditions' in this.annotationHints
+        ? this.annotationHints.conditions : {}
     },
-    editable: function () {
-      return (this.status === 'create' || this.status === 'update')
+    editable () {
+      return this.status === 'create' || this.status === 'update'
     },
-    annoClass: function () {
+    annoClass () {
       return {
-        'list-group-item': this.value.tag !== 'inhibition',
+        'list-group-item': this.internalValue.tag !== 'inhibition',
         'list-group-item list-group-item-warning row':
-          this.value.tag === 'inhibition'
+          this.internalValue.tag === 'inhibition'
       }
     },
-    expired: function () {
-      // a tag is expired when it's past the expiry date
-      return this.value.expires && this.value.expires < this.today
+    expired () {
+      // A tag is expired when it's past the expiry date
+      return this.internalValue.expires && this.internalValue.expires < this.today
     },
-    tagLabelClass: function () {
-      if (this.expired) {
-        return 'label label-danger'
-      } else {
-        return 'label label-info'
-      }
+    tagLabelClass () {
+      return this.expired ? 'label label-danger' : 'label label-info'
     }
   },
   watch: {
-    // we want to allow value.tag to have either a value from the
-    // <select> options from annotationHints.tags or a custom,
-    // so we have to use a second variable 'selectionValue' and functions
-    // to implement that behaviour via watching it an value.tag:
-    selectionValue: function (newSelectionValue) {
-      if (newSelectionValue !== '') {
-        this.value.tag = newSelectionValue
-      }
-    },
-    value: {
-      handler: function (newValue) { this.updateSelection(newValue) },
-      deep: true
-    },
-    relativeDate: function (newValue) {
-      var newDate = new Date()
-      switch (newValue) {
-        case 'no-selection': this.value.expires = ''; return
-        case '30-days': newDate.setDate(newDate.getDate() + 30); break
-        case '90-days': newDate.setDate(newDate.getDate() + 90); break
-        case '180-days': newDate.setDate(newDate.getDate() + 180); break
-        case '1-year': newDate.setFullYear(newDate.getFullYear() + 1); break
-        case '2-years': newDate.setFullYear(newDate.getFullYear() + 2); break
-        case '3-years': newDate.setFullYear(newDate.getFullYear() + 3)
-      }
-      this.value.expires = newDate.toJSON().split('T')[0]
+    value (newValue) {
+      this.internalValue = JSON.parse(JSON.stringify(newValue))
+      this.tagSet()
     }
   },
   methods: {
-    updateSelection: function (newValue) {
-      if (this.annotationHints.tags.indexOf(newValue.tag) >= 0) {
-        this.selectionValue = newValue.tag
-      } else {
-        this.selectionValue = ''
-      }
-      if (!newValue.expires) { // never
-        this.relativeDate = 'no-selection'
-      }
+    tagSelected () {
+      this.internalValue.tag = this.tagSelect === 'custom'
+        ? '' : this.annotationHints.tags[this.tagSelect]
     },
-    onExpiresFlatpickrChange: function (selectedDates, dateStr, instance) {
-      // clear the quick selector after manual input
-      this.relativeDate = ''
+    tagSet () {
+      var i = (this.annotationHints.tags || []).indexOf(this.internalValue.tag)
+      this.tagSelect = i >= 0 ? i : 'custom'
     },
-    clearExpires: function (event) {
-      this.value.expires = ''
+    relativeDateSelected () {
+      var d = new Date()
+      var r = this.relativeDate
+      if (r === 'never') d = ''
+      else if (r.endsWith('-days')) d.setDate(d.getDate() + Number(r.slice(0, -5)))
+      else if (r.endsWith('-years')) d.setFullYear(d.getFullYear() + Number(r.slice(0, -6)))
+      else return
+      this.internalValue.expires = d && d.toJSON().split('T')[0]
+    },
+    flatpickrDateSelected (selectedDates, dateStr, instance) {
+      // Clear the quick selector after manual input
+      this.relativeDate = 'not-relative'
+    },
+    clearExpiryDate () {
+      this.internalValue.expires = ''
+      this.relativeDate = 'never'
+    },
+    update () {
+      this.$emit('input', this.internalValue)
     }
   },
-  mounted: function () {
-    // make sure the select choice reflects the initial value.tag.
-    this.updateSelection(this.value)
+  created () {
+    // Make sure the select choice reflects the initial internalValue.tag
+    this.tagSet()
   }
 }
 </script>
+
 <style>
 .label {
   display: inline-block;

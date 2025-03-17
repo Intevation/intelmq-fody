@@ -5,7 +5,7 @@
         <span v-if="!editable">
           <h3 class="panel-title pull-left">
             <i class="fa fa-id-badge rme"></i>
-            {{ value.name }}
+            {{ internalValue.name }}
           </h3>
           <span v-if="status !=='delete'"
                 class="badge primary pull-right">{{ status }}</span>
@@ -19,7 +19,7 @@
             </span>
             <input class="form-control"
               placeholder="Name"
-              v-model="value.name"
+              v-model.trim="internalValue.name" v-on:input="update"
               type="text">
             <span class="input-group-addon">
               <span class="badge warning pull-right">{{ status }}</span>
@@ -29,17 +29,17 @@
         </span>
       </div>
 
-      <div v-if='value.errorMsg' class="panel-body text-warning">
-        Loading failed with
-        {{ value.errorMsg }}
+      <div v-if='internalValue.errorMsg' class="panel-body text-warning">
+        Loading failed:<br>
+        <span style="white-space: pre-line;">{{ internalValue.errorMsg }}</span>
       </div>
       <div v-else class="panel-body">
 
         <!-- contact details section -->
         <ul v-if="!editable" class="list-group">
-          <li v-for="(contact, index) of value.contacts" class="list-group-item">
+          <li v-for="(contact, index) of internalValue.contacts" class="list-group-item">
             <div class="row">
-              <contact-email v-model="value.contacts[index]"
+              <contact-email v-model="internalValue.contacts[index]" v-on:input="update"
                              v-bind:status="status"
                              v-bind:annotationHints="annotationHints"/>
               <div v-if="contact.tel !== ''" class="col-sm-1 col-xs-1"
@@ -54,9 +54,9 @@
           </li>
         </ul>
         <div v-if="editable" class="list-group form-horizontal">
-          <div v-for="(contact, index) in value.contacts" class="list-group-item">
+          <div v-for="(contact, index) in internalValue.contacts" class="list-group-item">
             <contact-email
-              v-model="value.contacts[index]"
+              v-model="internalValue.contacts[index]" v-on:input="update"
               v-bind:status="status"
               v-bind:annotationHints="annotationHints"
               v-bind:errorMessage="getErrorMessage(`#/contacts/${index}/email`)"/>
@@ -64,7 +64,7 @@
               <label class="col-sm-1 control-label">
                 <i class="fa fa-phone"></i></label>
                 <div class="col-sm-10">
-                  <input v-model="value.contacts[index].tel"
+                  <input v-model.trim="internalValue.contacts[index].tel" v-on:input="update"
                     type="tel" class="form-control"></input>
               </div>
             </div>
@@ -72,16 +72,16 @@
               <label class="col-sm-1 control-label">
                 <i class="fa fa-key"></i></label>
                 <div class="col-sm-10">
-                  <input v-model="value.contacts[index].openpgp_fpr"
+                  <input v-model.trim="internalValue.contacts[index].openpgp_fpr" v-on:input="update"
                     type="text" class="form-control"></input>
               </div>
             </div>
-            <button v-on:click="value.contacts.splice(index,1)"
+            <button v-on:click="internalValue.contacts.splice(index, 1), update()"
                     class="btn btn-default btn-xs">
               <i class="fa fa-minus"></i>
             </button>
           </div>
-          <button v-on:click="value.contacts.push(newContactTemplate())"
+          <button v-on:click="internalValue.contacts.push(newContactTemplate()), update()"
                   class="list-group-item btn btn-default">
             <i class="fa fa-plus"></i>
             <i class="fa fa-envelope-o"></i>
@@ -90,22 +90,22 @@
 
         <!-- ASN section -->
         <ul v-if="!editable" class="list-group">
-          <li v-for="asn of value.asns" class="list-group-item">
+          <li v-for="asn of internalValue.asns" class="list-group-item">
             <i class="fa fa-hdd-o rme"></i>
             AS{{ asn.asn }}
             <org-annotations
               v-if="'annotations' in asn && asn.annotations.length > 0"
-              v-model="asn.annotations" v-bind:status="status"
+              v-model="asn.annotations" v-on:input="update" v-bind:status="status"
               v-bind:annotation-hints="annotationHints"/>
           </li>
         </ul>
         <div v-if="editable" class="list-group form-horizontal">
-          <div v-for="(asn, index) in value.asns" class="list-group-item">
+          <div v-for="(asn, index) in internalValue.asns" class="list-group-item">
             <div class="form-group">
               <label class="col-sm-2 control-label">
                 <i class="fa fa-hdd-o rme"></i>ASN</label>
                 <div class="col-sm-10">
-                  <input-unsigned-int v-model="value.asns[index].asn"
+                  <input-unsigned-int v-model="internalValue.asns[index].asn" v-on:input="update"
                     class="form-control"></input-unsigned-int>
               </div>
               <validation-error
@@ -113,14 +113,14 @@
                 class="col-sm-8 col-sm-offset-4"/>
             </div>
             <org-annotations v-if="'annotations' in asn"
-              v-model="asn.annotations" v-bind:status="status"
+              v-model="asn.annotations" v-on:input="update" v-bind:status="status"
               v-bind:annotation-hints="annotationHints"/>
-            <button v-on:click="value.asns.splice(index,1)"
+            <button v-on:click="internalValue.asns.splice(index, 1), update()"
                     class="btn btn-default btn-xs">
               <i class="fa fa-minus"></i>
             </button>
           </div>
-          <button v-on:click="value.asns.push({annotations: [], asn: ''})"
+          <button v-on:click="internalValue.asns.push({annotations: [], asn: ''}), update()"
                   class="list-group-item btn btn-default">
             <i class="fa fa-plus"></i>
             <i class="fa fa-hdd-o"></i>
@@ -128,17 +128,17 @@
         </div>
 
         <!-- networks section -->
-        <div v-if="editable || value.networks.length > 0" class="list-group">
+        <div v-if="editable || internalValue.networks.length > 0" class="list-group">
           <div v-if="!editable">Networks:</div>
-          <div v-for="(network, index) in value.networks"
+          <div v-for="(network, index) in internalValue.networks"
               class="list-group-item">
-            <org-network v-model="value.networks[index]" v-bind:status="status"
-              v-on:deleteMe="value.networks.splice(index, 1)"
+            <org-network v-model="internalValue.networks[index]" v-on:input="update" v-bind:status="status"
+              v-on:deleteMe="internalValue.networks.splice(index, 1)"
               v-bind:annotation-hints="annotationHints"
               v-bind:errorMessage="getErrorMessage(`#/networks/${index}/address`)"/>
           </div>
           <button v-if="editable"
-                  v-on:click="value.networks.push({address: '', annotations: [], comment: ''})"
+                  v-on:click="internalValue.networks.push({address: '', annotations: [], comment: ''}), update()"
               class="list-group-item btn btn-default">
             <i class="fa fa-plus"></i>
             Network
@@ -147,12 +147,12 @@
 
         <!-- fqdns section -->
         <org-fqdns
-          v-model="value.fqdns" v-bind:status="status"
+          v-model="internalValue.fqdns" v-on:input="update" v-bind:status="status"
           v-bind:annotation-hints="annotationHints"
           v-bind:errorMessageGetter="makeErrorMessageGetter('#/fqdns/', '/fqdn')"/>
 
         <!-- national_certs -->
-        <org-national-certs v-model="value.national_certs"
+        <org-national-certs v-model="internalValue.national_certs" v-on:input="update"
                             v-bind:status="status"
                             v-bind:errorMessageGetter="makeErrorMessageGetter('#/national_certs/', '/country_code')"/>
 
@@ -168,15 +168,15 @@
             <label class="col-sm-2 control-label">{{ key }}</label>
             <div class="col-sm-10">
               <input-unsigned-int v-if="key === 'sector_id'"
-                v-model="value[key]" class="form-control"></input-unsigned-int>
+                v-model="internalValue[key]" v-on:input="update" class="form-control"></input-unsigned-int>
               <input v-if="key !== 'sector_id'" type="text"
-                v-model="value[key]" class="form-control"></input>
+                v-model.trim="internalValue[key]" v-on:input="update" class="form-control"></input>
             </div>
           </div>
         </div>
 
         <!-- annotations -->
-        <org-annotations v-if="'annotations' in value" v-model="value.annotations"
+        <org-annotations v-if="'annotations' in internalValue" v-model="internalValue.annotations" v-on:input="update"
           v-bind:status="status" v-bind:annotation-hints="annotationHints"/>
 
         <button v-if="editable || status === 'delete'" v-on:click="trashMe"
@@ -207,28 +207,21 @@ import validationError from './ValidationError.vue'
 
 module.exports = {
   name: 'org-card',
-  // Using a prop (here: value) with v-model shouldn't work because writing to
-  // it (v-model does that) shouldn't trigger an update in the parent (we would
-  // have to $emit an input event to propagate the update upwards), but for some
-  // reason it does
   props: {
     'status': String,
     'value': Object,
     'annotationHints': {
       type: Object,
-      default: function () {
-        return {}
-      }
+      default: () => ({})
     },
     'orgSchemaDraft': {
       type: Object,
-      default: function () {
-        return null
-      }
+      default: () => null
     }
   },
-  data: function () {
+  data () {
     return {
+      internalValue: JSON.parse(JSON.stringify(this.value)),
       // for knownOrgKeys, the display is handled explicitely
       knownOrgKeys: {
         'asns': 0,
@@ -260,7 +253,7 @@ module.exports = {
     validationError
   },
   computed: {
-    otherAttributes: function () {
+    otherAttributes () {
       // copy over the attributes we are interested in,
       //   otherwise we would modify in place
       var newOrg = {}
@@ -271,10 +264,10 @@ module.exports = {
       }
       return newOrg
     },
-    editable: function () {
-      return (this.status === 'create' || this.status === 'update')
+    editable () {
+      return this.status === 'create' || this.status === 'update'
     },
-    computedPanelClass: function () {
+    computedPanelClass () {
       return {
         'panel-primary': !this.editable &&
                          this.value.hasOwnProperty('errorMsg') === false,
@@ -284,7 +277,7 @@ module.exports = {
                         this.value.hasOwnProperty('errorMsg') === false
       }
     },
-    validationErrors: function () {
+    validationErrors () {
       if (!this.editable || !this.orgSchemaDraft) {
         return {}
       }
@@ -298,20 +291,25 @@ module.exports = {
     }
   },
   methods: {
-    cloneMe: function () {
+    cloneMe () {
       this.$emit('clone', this.value)
     },
-    trashMe: function () {
+    trashMe () {
       this.$emit('trash')
     },
-    deleteMe: function () {
+    deleteMe () {
       this.$emit('delete')
     },
-    editMe: function () {
+    editMe () {
       this.$emit('edit')
     },
-    newContactTemplate: function () {
+    newContactTemplate () {
       return JSON.parse(JSON.stringify(this.contactTemplate))
+    },
+    update () {
+      var sanitizedValue = JSON.parse(JSON.stringify(this.internalValue))
+      // TODO
+      this.$emit('input', sanitizedValue)
     },
     getErrorMessage (s) {
       var o = this.validationErrors[s]

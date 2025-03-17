@@ -1,8 +1,7 @@
 <template>
-  <input ref="input" type="text" v-bind:value="value"
-    v-on:input="updateValue($event.target.value)"></input>
-  </span>
+  <input type="text" v-model="inputValue" v-on:input="update">
 </template>
+
 <script>
 // Documentation:
 // This component allows entering
@@ -11,37 +10,48 @@
 // It will go back to the last valid input, if a different char is entered
 // and this may cause the cursor to jump to the end of the value, because
 // the cursor position is not retained.
+
+const sanitize = value => {
+  if (value === '') return ''
+  if (!/^[0-9]+$/.test(value)) return null
+  return Number.parseInt(value, 10)
+}
+
 module.exports = {
   name: 'input-unsigned-int',
   props: {
     'value': [Number, String]
   },
-  data: function () {
+  data () {
     return {
-      previousValue: (/^[0-9]+$/.test(this.value)
-                      ? Number.parseInt(this.value, 10) : '')
+      internalValue: this.value,
+      inputValue: this.value,
+      wasValid: sanitize(this.value) !== null
     }
   },
   methods: {
-    updateValue: function (value) {
-      var sanitizedValue = Number.parseInt(value, 10)
-
-      if (value === '') {
-        sanitizedValue = ''
-      } else if (!/^[0-9]+$/.test(value)) {
-        sanitizedValue = this.previousValue
+    update () {
+      var sanitizedValue = sanitize(this.inputValue)
+      if (sanitizedValue === null) {
+        if (this.wasValid) this.inputValue = this.internalValue
+        else {
+          this.internalValue = this.inputValue
+          this.$emit('input', this.internalValue)
+        }
+      } else {
+        this.wasValid = true
+        if (sanitizedValue !== this.internalValue) {
+          this.internalValue = sanitizedValue
+          this.$emit('input', sanitizedValue)
+        }
       }
-
-      this.previousValue = sanitizedValue
-
-      // see vue guide section: # Form Input Components using Custom Events
-      // we only update if we have to, because each update will make the
-      // cursor jump to the end of the input field
-      if (String(sanitizedValue) !== value) {
-        this.$refs.input.value = sanitizedValue
-      }
-
-      this.$emit('input', sanitizedValue)
+    }
+  },
+  watch: {
+    value (newValue) {
+      this.internalValue = newValue
+      this.inputValue = newValue
+      this.wasValid = sanitize(newValue) !== null
     }
   }
 }

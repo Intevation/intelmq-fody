@@ -575,17 +575,18 @@ module.exports = {
             orgList.splice(index, 1, null)
           }
         }, (response) => {
-          let errOrg = {name: ids[index], errorMsg: 'Error: Got invalid JSON.'}
+          let errOrg = {name: ids[index], errorMsg: 'Got invalid JSON.'}
           orgList.splice(index, 1, errOrg)
         })
       }, (response) => {
         // no valid response
         let errOrg = {name: ids[index], errorMsg: ''}
         if (response.status === 0) {
-          errOrg.errorMsg = 'Error: Failed to connect properly.'
+          errOrg.errorMsg = 'Failed to connect properly.'
           orgList.splice(index, 1, errOrg)
         } else {
           response.text().then((bodyText) => {
+            // FIXME: use logic from errorHelper.js
             errOrg.errorMsg = 'Error ' + response.status + ': ' + bodyText
             orgList.splice(index, 1, errOrg)
           })
