@@ -139,13 +139,16 @@ module.exports = {
       this.tagSelect = i >= 0 ? i : 'custom'
     },
     relativeDateSelected () {
-      var d = new Date()
       var r = this.relativeDate
-      if (r === 'never') d = ''
-      else if (r.endsWith('-days')) d.setDate(d.getDate() + Number(r.slice(0, -5)))
-      else if (r.endsWith('-years')) d.setFullYear(d.getFullYear() + Number(r.slice(0, -6)))
+      if (r === 'never') {
+        this.internalValue.expires = ''
+        return
+      }
+      var d = new Date()
+      if (r.endsWith('-days')) d.setDate(d.getDate() + +r.slice(0, -5))
+      else if (r.endsWith('-years')) d.setFullYear(d.getFullYear() + +r.slice(0, -6))
       else return
-      this.internalValue.expires = d && d.toJSON().split('T')[0]
+      this.internalValue.expires = d.toJSON().split('T')[0]
     },
     flatpickrDateSelected (selectedDates, dateStr, instance) {
       // Clear the quick selector after manual input

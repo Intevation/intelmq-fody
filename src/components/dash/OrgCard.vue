@@ -257,9 +257,9 @@ module.exports = {
       // copy over the attributes we are interested in,
       //   otherwise we would modify in place
       var newOrg = {}
-      for (var key in this.value) {
+      for (var key in this.internalValue) {
         if (this.knownOrgKeys.hasOwnProperty(key) === false) {
-          newOrg[key] = this.value[key]
+          newOrg[key] = this.internalValue[key]
         }
       }
       return newOrg
@@ -270,18 +270,18 @@ module.exports = {
     computedPanelClass () {
       return {
         'panel-primary': !this.editable &&
-                         this.value.hasOwnProperty('errorMsg') === false,
+                         this.internalValue.hasOwnProperty('errorMsg') === false,
         'panel-warning': this.editable &&
-                         this.value.hasOwnProperty('errorMsg') === false,
+                         this.internalValue.hasOwnProperty('errorMsg') === false,
         'panel-danger': this.status === 'delete' &&
-                        this.value.hasOwnProperty('errorMsg') === false
+                        this.internalValue.hasOwnProperty('errorMsg') === false
       }
     },
     validationErrors () {
       if (!this.editable || !this.orgSchemaDraft) {
         return {}
       }
-      var newOrg = JSON.parse(JSON.stringify(this.value))
+      var newOrg = JSON.parse(JSON.stringify(this.internalValue))
       const validationErrors = this.orgSchemaDraft.validate(newOrg)
       var errors = {}
       for (const err of validationErrors) {
@@ -290,9 +290,14 @@ module.exports = {
       return errors
     }
   },
+  watch: {
+    value (newValue) {
+      this.internalValue = JSON.parse(JSON.stringify(newValue))
+    }
+  },
   methods: {
     cloneMe () {
-      this.$emit('clone', this.value)
+      this.$emit('clone', this.internalValue)
     },
     trashMe () {
       this.$emit('trash')
