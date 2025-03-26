@@ -631,7 +631,7 @@ module.exports = {
       this.svgXML = svgXML
 
       // we use d3.csvFormatRows() instead of d3.csvFormat() to be
-      // able to explicitely transform the values into an ISO 8601 format
+      // able to explicitly transform the values into an ISO 8601 format
       // that libreoffice can read as a date (tested with libreoffice 5.2.7).
       // We still give the original Date object coerced as string in an
       // additional column for showing the timezone.

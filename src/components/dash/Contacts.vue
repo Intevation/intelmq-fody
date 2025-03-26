@@ -687,7 +687,7 @@ module.exports = {
       this.pendingOrgIndex.push('delete')
     },
     clearPendingOrgs () {
-      // TODO add some debounce, throttle or other saftey function
+      // TODO add some debounce, throttle or other safety function
       //  like the necessity to press the button twice
       //  right now we just throw away
       this.pendingOrgs = []
@@ -699,7 +699,7 @@ module.exports = {
       }
 
       // TODO clear out empty values for asns, networks, fqdns, annotations
-      // those will fail when commiting
+      // those will fail when committing
 
       var url = this.baseQueryURL + '/org/manual/commit'
       var commitObject = {

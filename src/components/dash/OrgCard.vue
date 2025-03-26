@@ -198,7 +198,7 @@ module.exports = {
   name: 'org-card',
   // because our prop 'org' is an object it is passed by reference (see
   // warning at // https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow)
-  // and we use this pecularity to be able to change the properties of org
+  // and we use this peculiarity to be able to change the properties of org
   // when editable() so that changes directly affect our parent
   // which should use v-bind and an object ready for manipulation.
   // HINT: This makes "our app’s data flow harder to reason about" and violates
@@ -216,7 +216,7 @@ module.exports = {
   },
   data: function () {
     return {
-      // for knownOrgKeys, the display is handled explicitely
+      // for knownOrgKeys, the display is handled explicitly
       knownOrgKeys: {
         'asns': 0,
         'annotations': 0,

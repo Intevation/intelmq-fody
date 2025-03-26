@@ -23,7 +23,7 @@ have the same `fqdn` several times:
     If she wanted only one organisation to treat the `fqdn` in question
     differently, this would then need to be an annotation
     to the organisation, not the `fqdn`.
- 2. Each organisation refering to an `fqdn` gets their own entry. This makes
+ 2. Each organisation referring to an `fqdn` gets their own entry. This makes
     adding an annotation that affects the same fqdn in all places harder
     as it would have to be done editing each organisation. On the other hand
     it is easier to understand what will happen if an organisation is changed
