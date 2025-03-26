@@ -364,7 +364,7 @@ module.exports = {
       this.eventsDetailsErrorMsg = ''
       var url = (this.queryURL + 'getEventsForTicket?ticket=' + this.ticketID +
                  '&limit=' + this.loadingLimit)
-      // the following endpoint may give similiar results (without limit)
+      // the following endpoint may give similar results (without limit)
       // url = '/api/tickets/search?ticketnumber=' + this.ticketID
       this.$http.get(url).then((response) => {
         // success

@@ -1,7 +1,7 @@
 {
   "name": "fody",
   "version": "0.9.6",
-  "description": "A single page web appliction for intelmq-cb-mailgen setups.",
+  "description": "A single page web application for intelmq-cb-mailgen setups.",
   "author": "Bernhard E. Reiter <bernhard@intevation.de>",
   "repository": "https://github.com/Intevation/intelmq-fody",
   "license": "AGPL-3.0+",

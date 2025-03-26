@@ -1,0 +1,4 @@
+[codespell]
+skip = ./static/js/plugins/*,./dist/*,yarn.lock,.git/*
+# as in CERT-bund:
+ignore-words-list = bund

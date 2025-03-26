@@ -1,0 +1,34 @@
+# Build the client with yarn
+#
+#SPDX-FileCopyrightText: 2025 Intevation GmbH <swagner@intevation.de>
+#SPDX-License-Identifier: AGPL-3.0-or-later
+#
+name: Build Client
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+
+      - name: Build production bundle
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+
+      - name: Run lint
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint
