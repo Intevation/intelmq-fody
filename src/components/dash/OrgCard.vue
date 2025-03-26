@@ -129,6 +129,39 @@
 
         <!-- networks section -->
         <div v-if="editable || internalValue.networks.length > 0" class="list-group">
+          <div class="fqdn-import-btn">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-fqdn-import">
+              Bulk Import of Network addresses (CIDRs)
+            </button>
+          </div>
+          <div class="modal fade" tabindex="-1" ref="import-modal" id="modal-fqdn-import" role="dialog" data-backdrop="false" >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span></button>
+                  <h4 class="modal-title">Bulk Import of Network addresses (CIDRs)</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="bulkimportdata">List of networks:</label>
+                    <textarea v-model="bulkimportdata" class="form-control" id="bulkimportdata" placeholder="Name" type="text" />
+                    <label for="comment">Comment</label>
+                    <input v-model="comment" class="form-control" id="commentInput" placeholder="Comment" type="text" />
+                    <label for="comment">Validation result:</label>
+                    <ul>
+                      <li>10.20.30.40 is missing the netmask, using 10.20.30.40/32 instead</li>
+                      <li>10.10.400.0/34 is invalid</li>
+                      <li>10.20.30.40/32 is a duplicate, ignoring</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button  v-on:click="startImport" type="button" class="btn btn-primary">Import</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div v-if="!editable">Networks:</div>
           <div v-for="(network, index) in internalValue.networks"
               class="list-group-item">
@@ -204,6 +237,7 @@ import orgNationalCerts from './OrgNationalCerts.vue'
 import orgNetwork from './OrgNetwork.vue'
 import contactEmail from './ContactEmail.vue'
 import validationError from './ValidationError.vue'
+import $ from 'jquery'
 
 module.exports = {
   name: 'org-card',
@@ -323,6 +357,10 @@ module.exports = {
     },
     makeErrorMessageGetter (prefix, suffix) {
       return i => this.getErrorMessage(`${prefix}${i}${suffix}`)
+    },
+    startImport () {
+      console.log(this.bulkimportdata)
+      $('#modal-fqdn-import').hide()
     }
   }
 }
