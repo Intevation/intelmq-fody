@@ -1,62 +1,64 @@
 <template>
-  <div v-if="!editable">
-    <div v-if="isInhibition" :class="'list-group-item row list-group-item-' + (expired ? 'danger' : 'warning')">
-      <div>Inhibition:</div>
-      <annotation-condition class="col-sm-10" v-model="internalValue.condition" v-on:input="update" v-bind:status="status"
-        v-bind:condition-hints="conditionHints" />
-      <div style="float: left; clear: both;">{{ expiryText }}</div>
-    </div>
-    <div v-else>
-      <span v-bind:class="tagLabelClass" style="display:box">{{ internalValue.tag }}</span>
-      {{ expiryText }}
+  <div v-if="!editable" v-bind:class="['list-group-item', expired ? 'list-group-item-danger' : 'list-group-item-warning']">
+    <template v-if="isInhibition">
+      <div class="row"><div class="col-sm-10">Inhibition:</div></div>
+      <div class="row"><annotation-condition class="col-sm-10" v-model="internalValue.condition" v-on:input="update" v-bind:status="status"
+        v-bind:condition-hints="conditionHints" /></div>
+      <div class="row"><div class="col-sm-10">{{ expiryText }}</div></div>
+    </template>
+    <div v-else class="row">
+      <div class="col-sm-10">
+        <span v-bind:class="['label', expired ? 'label-danger' : 'label-info']">{{ internalValue.tag }}</span>
+        {{ expiryText }}
+      </div>
     </div>
   </div>
-  <div v-else class="list-group form-horizontal">
-    <div v-if="isInhibition" v-bind:class="annoClass">
-      <div class="form-group">
+  <div v-else v-bind:class="['list-group-item', isInhibition ? 'list-group-item-warning' : '', 'form-horizontal']">
+    <div class="list-group">
+      <div v-if="isInhibition" class="list-group-item list-group-item-warning">
         Inhibition:
         <annotation-condition v-model="internalValue.condition" v-on:input="update" v-bind:status="status" v-bind:condition-hints="conditionHints" />
       </div>
-    </div>
-    <div class="list-group-item">
-      <template v-if="!isInhibition">
-        <div class="row flex-center" style="margin-bottom: 5px;">
-          <label class="col-sm-2 control-label">Tag</label>
+      <div v-bind:class="['list-group-item', isInhibition ? 'list-group-item-warning' : '']">
+        <template v-if="!isInhibition">
+          <div class="row flex-center" style="margin-bottom: 5px;">
+            <label class="col-sm-2 control-label">Tag</label>
+            <div class="col-sm-5">
+              <select v-model="tagSelect" v-on:change="tagSelected(), update()" class="form-control btn-info">
+                <option value="custom"><i>Custom</i></option>
+                <option v-for="(tag, i) of annotationHints.tags" v-bind:value="i">{{ tag }}</option>
+              </select>
+            </div>
+            <div class="col-sm-5">
+              <input type="text" v-model.trim="tagInput" v-on:input="tagInputSet" class="form-control" placeholder="Tag Name" />
+            </div>
+          </div>
+          <validation-error class="row" style="margin-bottom: 5px; margin-right: 5px; text-align: right;"
+                            errorMessage='To add an inhibition, use the "Inhibition" button below'
+                            v-show="inhibitionError"/>
+        </template>
+        <div class="form-group row flex-center">
+          <label class="col-sm-2 control-label">Expires</label>
+          <div class="col-sm-4">
+            <Flatpickr v-bind:options="flatpickrOptions" v-model:value="internalValue.expires" class="form-control"
+              placeholder="Optional Expiry Date"/>
+          </div>
+          <div class="col-sm-1" style="padding-left: 0;">
+            <button class="btn btn-default btn-xs" v-on:click="clearExpiryDate(), update()" title="Clear expiry date"><i
+                class="fa fa-trash-o rme"></i></button>
+          </div>
           <div class="col-sm-5">
-            <select v-model="tagSelect" v-on:change="tagSelected(), update()" class="form-control btn-info">
-              <option value="custom"><i>Custom</i></option>
-              <option v-for="(tag, i) of annotationHints.tags" v-bind:value="i">{{ tag }}</option>
+            <select name="relative-date" class="form-control relative-date" v-model="relativeDate" v-on:change="relativeDateSelected(), update()">
+              <option value="not-relative" disabled style="display: none;"></option>
+              <option value="never">Never</option>
+              <option value="30-days">30 Days</option>
+              <option value="90-days">90 Days</option>
+              <option value="180-days">180 Days</option>
+              <option value="1-years">1 Year</option>
+              <option value="2-years">2 Years</option>
+              <option value="3-years">3 Years</option>
             </select>
           </div>
-          <div class="col-sm-5">
-            <input type="text" v-model.trim="tagInput" v-on:input="tagInputSet" class="form-control" placeholder="Tag Name" />
-          </div>
-        </div>
-        <validation-error class="row" style="margin-bottom: 5px; margin-right: 5px; text-align: right;"
-                          errorMessage='To add an inhibition, use the "Inhibition" button below'
-                          v-show="inhibitionError"/>
-      </template>
-      <div class="form-group row flex-center">
-        <label class="col-sm-2 control-label">Expires</label>
-        <div class="col-sm-4">
-          <Flatpickr v-bind:options="flatpickrOptions" v-model:value="internalValue.expires" class="form-control"
-            placeholder="Optional Expiry Date" v-on:change="flatpickrDateSelected(), update()" />
-        </div>
-        <div class="col-sm-1" style="padding-left: 0;">
-          <button class="btn btn-default btn-xs" v-on:click="clearExpiryDate(), update()" title="Clear expiry date"><i
-              class="fa fa-trash-o rme"></i></button>
-        </div>
-        <div class="col-sm-5">
-          <select name="relative-date" class="form-control relative-date" v-model="relativeDate" v-on:change="relativeDateSelected(), update()">
-            <option value="not-relative" disabled style="display: none;"></option>
-            <option value="never">Never</option>
-            <option value="30-days">30 Days</option>
-            <option value="90-days">90 Days</option>
-            <option value="180-days">180 Days</option>
-            <option value="1-years">1 Year</option>
-            <option value="2-years">2 Years</option>
-            <option value="3-years">3 Years</option>
-          </select>
         </div>
       </div>
     </div>
@@ -109,14 +111,7 @@ module.exports = {
       return this.annotationHints.conditions || {}
     },
     editable () {
-      return this.status === 'create' || this.status === 'update'
-    },
-    annoClass () {
-      return {
-        'list-group-item': this.internalValue.tag !== 'inhibition',
-        'list-group-item list-group-item-warning row':
-          this.internalValue.tag === 'inhibition'
-      }
+      return ['create', 'update'].includes(this.status)
     },
     expired () {
       // A tag is expired when it's past the expiry date
@@ -186,6 +181,7 @@ module.exports = {
     flatpickrDateSelected (selectedDates, dateStr, instance) {
       // Clear the quick selector after manual input
       this.relativeDate = 'not-relative'
+      this.update()
     },
     clearExpiryDate () {
       this.internalValue.expires = ''

@@ -1,5 +1,5 @@
 <template>
-<div v-bind:class="outerClass">
+<div v-bind:class="['list-group', editable ? 'form-horizontal' : '']">
   <div v-for="(annotation, index) in internalValue">
     <org-annotation v-model="internalValue[index]" v-on:input="update"
               v-bind:status="status"
@@ -12,7 +12,7 @@
       <i class="fa fa-plus"></i>
       Tag
     </button>
-    <button v-on:click="newAnnotation({'tag': 'inhibition', 'condition': ''})"
+    <button v-on:click="newAnnotation({'tag': 'inhibition', 'condition': null})"
         class="btn btn-default btn-xs">
       <i class="fa fa-plus"></i>
       Inhibition
@@ -31,12 +31,10 @@ module.exports = {
     'value': Array,
     'annotationHints': {
       type: Object,
-      default: function () {
-        return {}
-      }
+      default: () => ({})
     }
   },
-  data: function () {
+  data () {
     return {
       internalValue: JSON.parse(JSON.stringify(this.value))
     }
@@ -50,41 +48,19 @@ module.exports = {
     orgAnnotation
   },
   computed: {
-    editable: function () {
-      return (this.status === 'create' || this.status === 'update')
-    },
-    outerClass: function () {
-      return {
-        'list-group': !this.editable,
-        'list-group form-horizontal': this.editable
-      }
+    editable () {
+      return ['create', 'update'].includes(this.status)
     }
   },
   methods: {
     update () {
       this.$emit('input', this.internalValue)
     },
-    deleteMe: function (index) {
+    deleteMe (index) {
       this.internalValue.splice(index, 1)
       this.update()
     },
-    newAnnotation: function (template) {
-      // preload if inhibition and ..
-      if ('condition' in template &&
-          'conditions' in this.annotationHints) {
-        var conditions = this.annotationHints.conditions
-        // .. we only have one binary_operator
-        if ('binary_operators' in conditions &&
-            Object.keys(conditions.binary_operators).length === 1) {
-          template.condition = [
-            Object.keys(conditions.binary_operators)[0], '', '']
-        }
-        // .. we only have one field
-        if ('fields' in conditions &&
-            Object.keys(conditions.fields).length === 1) {
-          template.condition[1] = [Object.keys(conditions.fields)[0], '']
-        }
-      }
+    newAnnotation (template) {
       this.internalValue.push(template)
       this.update()
     }

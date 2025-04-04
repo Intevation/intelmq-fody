@@ -265,7 +265,7 @@ module.exports = {
       return newOrg
     },
     editable () {
-      return this.status === 'create' || this.status === 'update'
+      return ['create', 'update'].includes(this.status)
     },
     computedPanelClass () {
       return {

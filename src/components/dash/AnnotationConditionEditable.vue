@@ -3,30 +3,35 @@
     Error: Format of condition is invalid or editing is not implemented for it: <code>{{ jsonValue }}</code>
   </div>
   <div v-else>
-    <select v-model="isBoolean" v-on:change="typeChanged(), update()" class="form-control">
-      <option v-bind:value="true">Boolean Constant</option>
-      <option v-bind:value="false">Field Check</option>
-    </select>
-    <select v-if="parsedBoolean !== null" v-model="parsedBoolean" v-on:change="update" class="form-control">
-      <option v-bind:value="false">false</option>
-      <option v-bind:value="true">true</option>
-    </select>
+    <div class="row flex-center" style="margin-bottom: 5px;">
+      <div class="col-sm-5">
+        <select v-model="isBoolean" v-on:change="typeChanged(), update()" class="form-control">
+          <option v-bind:value="true">Boolean Constant</option>
+          <option v-bind:value="false">Field Check</option>
+        </select>
+      </div>
+    </div>
+    <div v-if="parsedBoolean !== null" class="row flex-center">
+      <div class="col-sm-5">
+        <select v-model="parsedBoolean" v-on:change="update" class="form-control">
+          <option v-bind:value="false">false</option>
+          <option v-bind:value="true">true</option>
+        </select>
+      </div>
+    </div>
     <div v-else>
-      <div>
-        <select-or-custom v-model="parsedNamespace" v-on:input="fieldNamespaceChanged(), update()" v-bind:hints="fieldNamespaceHints" placeholder="Field Namespace"/>
-      </div>
-      <div>
-        <select-or-custom v-model="parsedField" v-on:input="update" v-bind:hints="fieldNameHints" placeholder="Field Name"/>
-      </div>
-      <div>
-        <select-or-custom v-model="parsedOperator" v-on:input="update" v-bind:hints="conditionHints.binary_operators ?? {}" placeholder="Operator"/>
-      </div>
-      <div>
-        <input type="text" v-model.trim="parsedConstant" v-on:input="update" placeholder="String Constant" class="form-control">
+      <select-or-custom v-model="parsedNamespace" v-on:input="fieldNamespaceChanged(), update()" v-bind:hints="fieldNamespaceHints" label="Field Namespace" placeholder="Field Namespace"/>
+      <select-or-custom v-model="parsedField" v-on:input="update" v-bind:hints="fieldNameHints" label="Field Name" placeholder="Field Name"/>
+      <select-or-custom v-model="parsedOperator" v-on:input="update" v-bind:hints="operatorHints" label="Operator" placeholder="Operator"/>
+      <div class="row flex-center form-group">
+        <label class="col-sm-2 control-label">Value</label>
+        <div class="col-sm-5">
+          <input type="text" v-model.trim="parsedConstant" v-on:input="update" placeholder="String Constant" class="form-control">
+        </div>
       </div>
       <div>
         <span v-if="isEmpty">Incomplete condition</span>
-        <code v-else>{{ preview }}</code>
+        <code v-else style="color: #000; background-color: transparent;">{{ preview }}</code>
       </div>
     </div>
   </div>
@@ -54,9 +59,9 @@ const parse = value =>
     parseError: false,
     parsedBoolean: null,
     parsedOperator: value[0],
-    parsedNamespace: value[1],
-    parsedField: value[2],
-    parsedConstant: value[3]
+    parsedNamespace: value[1][0],
+    parsedField: value[1][1],
+    parsedConstant: value[2]
   } : {
     parseError: true,
     parsedBoolean: null,
@@ -66,11 +71,10 @@ const parse = value =>
     parsedConstant: null
   }
 
-const unparse = (obj, fallback) => {
-  if (obj.parseError) return fallback
-  if (obj.parsedBoolean !== null) return obj.parsedBoolean
-  return [obj.parsedOperator, [obj.parsedNamespace, obj.parsedField], obj.parsedConstant]
-}
+const unparse = (obj, fallback) =>
+  obj.parseError ? fallback
+  : obj.parsedBoolean !== null ? obj.parsedBoolean
+  : [obj.parsedOperator, [obj.parsedNamespace, obj.parsedField], obj.parsedConstant]
 
 const fieldsDefault = obj =>
   (obj.conditionHints || {}).fields || {}
@@ -123,6 +127,9 @@ module.exports = {
     },
     fieldNameHints () {
       return fieldsDefault(this)[this.parsedNamespace] || []
+    },
+    operatorHints () {
+      return binaryOperatorsDefault(this)
     },
     isEmpty () {
       return !this.parseError && this.parsedBoolean === null && (
