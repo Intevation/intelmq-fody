@@ -1,71 +1,28 @@
 <template>
-<!-- Binary Operator -->
-<div v-if="internalValue[0] in binary_operators" class="group-inline">
-  <annotation-condition v-model="internalValue[1]" v-on:input="update"
-    v-bind:status="status"
-    v-bind:condition-hints="conditionHints"/>
-  <div v-if="editable" class="inline">
-    <div v-if="Object.keys(binary_operators).length === 1">
-      {{ binary_operators[internalValue[0]] }}
-    </div>
-    <div v-else>
-      TODO select operator {{ conditionHints.binary_operators[internalValue[0]] }}
-    </div>
-  </div>
-  <div v-else class="inline"
-    >{{ conditionHints.binary_operators[internalValue[0]]}}
-  </div>
-  <annotation-condition v-model="internalValue[2]" v-on:input="update"
-    v-bind:status="status"
-    v-bind:condition-hints="conditionHints"/>
-</div>
-
-<!-- Field (or unary operator) -->
-<div v-else-if="internalValue[0] in fields" class="inline">
-  <div v-if="editable" class="inline">
-    <div v-if="Object.keys(fields).length === 1">
-      {{ Object.keys(fields)[0] }}
-    </div>
-    <div v-else>
-      TODO select field {{internalValue[0]}}
-    </div>
-  </div>
-  <div v-else class="inline">
-  {{internalValue[0]}}
-  </div>
-  [<annotation-condition v-model="internalValue[1]" v-on:input="update"
-    v-bind:status="status"
-    v-bind:condition-hints="conditionHints"/>]
-</div>
-
-<!-- Constant -->
-<div v-else class="inline">
-  <div v-if="editable">
-    <input class="form-control" type="text"
-    v-model.trim="internalValue" v-on:input="update"/>
-  </div>
-  <div v-else class="inline">
-  '{{ internalValue }}'
-  </div>
-</div>
+  <annotation-condition-non-editable
+    v-if="!editable"
+    v-bind:value="internalValue" v-bind:conditionHints="conditionHints"/>
+  <annotation-condition-editable
+    v-else
+    v-model="internalValue" v-on:input="update" v-bind:conditionHints="conditionHints"/>
 </template>
 
 <script>
-import annotationCondition from './AnnotationCondition.vue'
+import annotationConditionEditable from './AnnotationConditionEditable.vue'
+import annotationConditionNonEditable from './AnnotationConditionNonEditable.vue'
 
 module.exports = {
   name: 'annotation-condition',
+  components: {annotationConditionEditable, annotationConditionNonEditable},
   props: {
     'status': String,
-    'value': [Array, String],
+    'value': [Array, String, Boolean],
     'conditionHints': {
       type: Object,
-      default: function () {
-        return {}
-      }
+      default: () => ({})
     }
   },
-  data: function () {
+  data () {
     return {
       internalValue: JSON.parse(JSON.stringify(this.value))
     }
@@ -75,39 +32,15 @@ module.exports = {
       this.internalValue = JSON.parse(JSON.stringify(newValue))
     }
   },
-  components: {
-    annotationCondition
-  },
   computed: {
-    editable: function () {
-      return (this.status === 'create' || this.status === 'update')
-    },
-    binary_operators: function () {
-      if ('binary_operators' in this.conditionHints) {
-        return this.conditionHints.binary_operators
-      } else {
-        return {}
-      }
-    },
-    fields: function () {
-      if ('fields' in this.conditionHints) {
-        return this.conditionHints.fields
-      } else {
-        return {}
-      }
+    editable () {
+      return ['create', 'update'].includes(this.status)
     }
   },
   methods: {
     update () {
-      // Is wrapping it in String() really correct?
-      this.$emit('input', String(this.internalValue))
+      this.$emit('input', this.internalValue)
     }
   }
 }
 </script>
-
-<style>
-div.inline {
-  display: inline-block;
-}
-</style>
