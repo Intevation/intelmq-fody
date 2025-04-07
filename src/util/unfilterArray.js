@@ -28,3 +28,13 @@ export const unfilterArray = (oldUnfiltered, newFiltered, filterFn) => {
     }
   }
 }
+
+export const mapFilteredIndices = (unfiltered, filterFn, indexMapFn) => {
+  var unfilteredCount = unfiltered.length
+  var arr = new Array(unfilteredCount)
+  var filteredIndex = 0
+  for (var unfilteredIndex = 0; unfilteredIndex < unfilteredCount; ++unfilteredIndex) {
+    arr[unfilteredIndex] = filterFn(unfiltered[unfilteredIndex]) ? indexMapFn(filteredIndex++) : null
+  }
+  return arr
+}

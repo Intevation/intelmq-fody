@@ -6,7 +6,7 @@
       <org-network v-model="internalValue[index]" v-on:input="update" v-bind:status="status"
         v-on:deleteMe="internalValue.splice(index, 1)"
         v-bind:annotation-hints="annotationHints"
-        v-bind:errorMessage="errorFn(`${index}/address`)"/>
+        v-bind:errorMessage="errorMessages[index]"/>
     </div>
     <button v-if="editable"
             v-on:click="internalValue.push({address: '', annotations: [], comment: ''}), update()"
@@ -20,7 +20,7 @@
 
 <script>
 import orgNetwork from './OrgNetwork.vue'
-import { unfilterArray } from '../../util/unfilterArray.js'
+import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
 
 const isNonEmpty = network =>
   network.address !== '' ||
@@ -50,6 +50,9 @@ module.exports = {
   computed: {
     editable () {
       return ['create', 'update'].includes(this.status)
+    },
+    errorMessages () {
+      return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/address`))
     }
   },
   watch: {

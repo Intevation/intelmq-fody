@@ -205,9 +205,7 @@ module.exports = {
       this.$emit('edit')
     },
     update () {
-      var sanitizedValue = JSON.parse(JSON.stringify(this.internalValue))
-      // TODO
-      this.$emit('input', sanitizedValue)
+      this.$emit('input', this.internalValue)
     },
     getErrorMessage (s) {
       var o = this.validationErrors[s]

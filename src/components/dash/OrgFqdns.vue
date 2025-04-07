@@ -6,14 +6,14 @@
     <div v-if="!editable">Domains:
     </div>
     <div v-for="(fqdnObj, index) in internalValue" class="list-group-item">
-      <div v-bind:class="outerClass">
+      <div v-bind:class="['list-group', editable ? 'form-horizontal' : '']">
         <div class="list-group-item">
           <div v-if="editable" class="form-group">
             <label class="col-sm-2 control-label">FQDN</label>
             <div class="col-sm-10">
               <input type="text" v-model.trim="fqdnObj.fqdn" v-on:input="update" class="col-sm-10 form-control"/>
             </div>
-            <validation-error v-bind:errorMessage="errorFn(`${index}/fqdn`)"
+            <validation-error v-bind:errorMessage="errorMessages[index]"
                               class="col-sm-8 col-sm-offset-4"/>
           </div>
           <div v-else>
@@ -51,7 +51,7 @@
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
-import { unfilterArray } from '../../util/unfilterArray.js'
+import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
 
 const isNonEmpty = fqdnObj =>
   fqdnObj.fqdn !== '' ||
@@ -84,11 +84,8 @@ module.exports = {
     editable () {
       return ['create', 'update'].includes(this.status)
     },
-    outerClass () {
-      return {
-        'list-group': !this.editable,
-        'list-group form-horizontal': this.editable
-      }
+    errorMessages () {
+      return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/fqdn`))
     }
   },
   methods: {

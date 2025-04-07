@@ -19,7 +19,7 @@
               class="form-control"></input-unsigned-int>
         </div>
         <validation-error
-          v-bind:errorMessage="errorFn(`${index}/asn`)"
+          v-bind:errorMessage="errorMessages[index]"
           class="col-sm-8 col-sm-offset-4"/>
       </div>
       <org-annotations v-if="'annotations' in asnObj"
@@ -42,7 +42,7 @@
 import orgAnnotations from './OrgAnnotations.vue'
 import inputUnsignedInt from './InputUnsignedInt.vue'
 import validationError from './ValidationError.vue'
-import { unfilterArray } from '../../util/unfilterArray.js'
+import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
 
 const isNonEmpty = asnObj => asnObj.asn !== '' || (asnObj.annotations || []).length !== 0
 
@@ -69,6 +69,9 @@ module.exports = {
   computed: {
     editable () {
       return ['create', 'update'].includes(this.status)
+    },
+    errorMessages () {
+      return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/asn`))
     }
   },
   watch: {

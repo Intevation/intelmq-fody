@@ -10,7 +10,7 @@
           <input type="text" v-model.trim="nationalCert.country_code" v-on:input="update"
             class="col-sm-10 form-control"/>
         </div>
-        <validation-error v-bind:errorMessage="errorFn(`${index}/country_code`)"
+        <validation-error v-bind:errorMessage="errorMessages[index]"
                           class="col-sm-8 col-sm-offset-4"/>
       </div>
       <div v-else>
@@ -44,7 +44,7 @@
 
 <script>
 import validationError from './ValidationError.vue'
-import { unfilterArray } from '../../util/unfilterArray.js'
+import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
 
 const isNonEmpty = nationalCert =>
   nationalCert.country_code !== '' ||
@@ -71,6 +71,9 @@ module.exports = {
   computed: {
     editable () {
       return ['create', 'update'].includes(this.status)
+    },
+    errorMessages () {
+      return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/country_code`))
     }
   },
   methods: {
