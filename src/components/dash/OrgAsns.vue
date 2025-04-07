@@ -19,7 +19,7 @@
               class="form-control"></input-unsigned-int>
         </div>
         <validation-error
-          v-bind:errorMessage="getErrorMessage(`#/asns/${index}/asn`)"
+          v-bind:errorMessage="errorFn(`${index}/asn`)"
           class="col-sm-8 col-sm-offset-4"/>
       </div>
       <org-annotations v-if="'annotations' in asnObj"
@@ -39,7 +39,12 @@
 </template>
 
 <script>
+import orgAnnotations from './OrgAnnotations.vue'
 import inputUnsignedInt from './InputUnsignedInt.vue'
+import validationError from './ValidationError.vue'
+import { unfilterArray } from '../../util/unfilterArray.js'
+
+const isNonEmpty = asnObj => asnObj.asn !== '' || (asnObj.annotations || []).length !== 0
 
 module.exports = {
   name: 'org-asns',
@@ -55,9 +60,11 @@ module.exports = {
       default: () => null
     }
   },
-  components: { inputUnsignedInt },
+  components: { orgAnnotations, inputUnsignedInt, validationError },
   data () {
-    this.internalValue = JSON.parse(JSON.stringify(this.value))
+    return {
+      internalValue: JSON.parse(JSON.stringify(this.value))
+    }
   },
   computed: {
     editable () {
@@ -66,13 +73,17 @@ module.exports = {
   },
   watch: {
     value (newValue) {
-      
+      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, isNonEmpty)))
+      if (!newValue.every(isNonEmpty)) this.update()
     }
   },
   methods: {
     update () {
-      
+      this.$emit('input', this.internalValue.filter(isNonEmpty))
     }
+  },
+  created () {
+    if (!this.internalValue.every(isNonEmpty)) this.update()
   }
 }
 </script>

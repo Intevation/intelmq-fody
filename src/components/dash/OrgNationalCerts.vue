@@ -1,27 +1,27 @@
 <template>
-<div v-if="editable || internalValue.length > 0" v-bind:class="outerClass">
+<div v-if="editable || internalValue.length > 0" v-bind:class="['list-group', editable ? 'form-horizontal' : '']">
   <div v-if="!editable">National-CERT for:
   </div>
-  <div v-for="(national_cert, index) in internalValue" class="list-group-item">
+  <div v-for="(nationalCert, index) in internalValue" class="list-group-item">
     <div class="list-group">
       <div v-if="editable" class="form-group">
         <label class="col-sm-2 control-label">Country</label>
         <div class="col-sm-10">
-          <input type="text" v-model.trim="national_cert.country_code" v-on:input="update"
+          <input type="text" v-model.trim="nationalCert.country_code" v-on:input="update"
             class="col-sm-10 form-control"/>
         </div>
         <validation-error v-bind:errorMessage="errorFn(`${index}/country_code`)"
                           class="col-sm-8 col-sm-offset-4"/>
       </div>
       <div v-else>
-        {{ national_cert.country_code }}
-        <em v-if="national_cert.comment !== ''"
-          >({{ national_cert.comment }})</em>
+        {{ nationalCert.country_code }}
+        <em v-if="nationalCert.comment !== ''"
+          >({{ nationalCert.comment }})</em>
       </div>
       <div v-if="editable" class="form-group">
         <label class="col-sm-2 control-label">Comment</label>
           <div class="col-sm-10">
-              <input type="text" v-model.trim="national_cert.comment" v-on:input="update"
+              <input type="text" v-model.trim="nationalCert.comment" v-on:input="update"
                  class="form-control" />
           </div>
       </div>
@@ -44,6 +44,11 @@
 
 <script>
 import validationError from './ValidationError.vue'
+import { unfilterArray } from '../../util/unfilterArray.js'
+
+const isNonEmpty = nationalCert =>
+  nationalCert.country_code !== '' ||
+  nationalCert.comment !== ''
 
 module.exports = {
   name: 'org-national-certs',
@@ -65,13 +70,7 @@ module.exports = {
   },
   computed: {
     editable () {
-      return this.status === 'create' || this.status === 'update'
-    },
-    outerClass () {
-      return {
-        'list-group': !this.editable,
-        'list-group form-horizontal': this.editable
-      }
+      return ['create', 'update'].includes(this.status)
     }
   },
   methods: {
@@ -82,13 +81,17 @@ module.exports = {
       this.internalValue.push(template)
     },
     update () {
-      this.$emit('input', this.internalValue)
+      this.$emit('input', this.internalValue.filter(isNonEmpty))
     }
   },
   watch: {
     value (newValue) {
-      this.internalValue = JSON.parse(JSON.stringify(newValue))
+      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, isNonEmpty)))
+      if (!newValue.every(isNonEmpty)) this.update()
     }
+  },
+  created () {
+    if (!this.internalValue.every(isNonEmpty)) this.update()
   }
 }
 </script>

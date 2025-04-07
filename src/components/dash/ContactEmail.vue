@@ -65,7 +65,7 @@
   </div>
     <div class="form-group">
     <label class="col-sm-2 control-label">
-      Firstname
+      First Name
     </label>
       <div class="col-sm-10">
         <input v-model.trim="internalValue.firstname" v-on:input="update"
@@ -74,7 +74,7 @@
   </div>
   <div class="form-group">
     <label class="col-sm-2 control-label">
-      Lastname
+      Last Name
     </label>
       <div class="col-sm-10">
         <input v-model.trim="internalValue.lastname" v-on:input="update"
@@ -109,7 +109,10 @@ module.exports = {
         return {}
       }
     },
-    'errorMessage': String
+    'errorMessage': {
+      type: String,
+      default: null
+    }
   },
   data () {
     return {

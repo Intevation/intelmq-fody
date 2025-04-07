@@ -5,32 +5,32 @@
   <div v-else class="list-group">
     <div v-if="!editable">Domains:
     </div>
-    <div v-for="(fqdn, index) in internalValue" class="list-group-item">
+    <div v-for="(fqdnObj, index) in internalValue" class="list-group-item">
       <div v-bind:class="outerClass">
         <div class="list-group-item">
           <div v-if="editable" class="form-group">
             <label class="col-sm-2 control-label">FQDN</label>
             <div class="col-sm-10">
-              <input type="text" v-model.trim="fqdn.fqdn" v-on:input="update" class="col-sm-10 form-control"/>
+              <input type="text" v-model.trim="fqdnObj.fqdn" v-on:input="update" class="col-sm-10 form-control"/>
             </div>
             <validation-error v-bind:errorMessage="errorFn(`${index}/fqdn`)"
                               class="col-sm-8 col-sm-offset-4"/>
           </div>
           <div v-else>
-            {{ fqdn.fqdn }}
-            <em v-if="fqdn.comment">({{ fqdn.comment }})</em>
+            {{ fqdnObj.fqdn }}
+            <em v-if="fqdnObj.comment">({{ fqdnObj.comment }})</em>
           </div>
           <div v-if="editable" class="form-group">
             <label class="col-sm-2 control-label">Comment</label>
             <div class="col-sm-10">
-              <input type="text" v-model.trim="fqdn.comment" v-on:input="update" class="form-control" />
+              <input type="text" v-model.trim="fqdnObj.comment" v-on:input="update" class="form-control" />
             </div>
           </div>
         </div>
 
         <org-annotations
-          v-if="'annotations' in fqdn"
-          v-model="fqdn.annotations" v-on:input="update" v-bind:status="status"
+          v-if="'annotations' in fqdnObj"
+          v-model="fqdnObj.annotations" v-on:input="update" v-bind:status="status"
           v-bind:annotation-hints="annotationHints"/>
         <div v-if="editable" class="list-group form-horizontal">
           <button v-on:click="deleteMe(index), update()" class="btn btn-default btn-xs">
@@ -40,7 +40,7 @@
       </div>
     </div>
     <button v-if="editable"
-        v-on:click="newFqdn({'address': '', 'comment': '', 'annotations': []}), update()"
+        v-on:click="newFqdn({'fqdn': '', 'comment': '', 'annotations': []}), update()"
         class="list-group-item btn btn-default">
       <i class="fa fa-plus"></i>
       Domain
@@ -51,6 +51,12 @@
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
+import { unfilterArray } from '../../util/unfilterArray.js'
+
+const isNonEmpty = fqdnObj =>
+  fqdnObj.fqdn !== '' ||
+  fqdnObj.comment !== '' ||
+  fqdnObj.annotations.length !== 0
 
 module.exports = {
   name: 'org-fqdns',
@@ -76,7 +82,7 @@ module.exports = {
   },
   computed: {
     editable () {
-      return this.status === 'create' || this.status === 'update'
+      return ['create', 'update'].includes(this.status)
     },
     outerClass () {
       return {
@@ -93,13 +99,17 @@ module.exports = {
       this.internalValue.push(template)
     },
     update () {
-      this.$emit('input', this.internalValue)
+      this.$emit('input', this.internalValue.filter(isNonEmpty))
     }
   },
   watch: {
     value (newValue) {
-      this.internalValue = JSON.parse(JSON.stringify(newValue))
+      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, isNonEmpty)))
+      if (!newValue.every(isNonEmpty)) this.update()
     }
+  },
+  created () {
+    if (!this.internalValue.every(isNonEmpty)) this.update()
   }
 }
 </script>

@@ -25,6 +25,8 @@
 import orgAnnotation from './OrgAnnotation.vue'
 import { unfilterArray } from '../../util/unfilterArray.js'
 
+const isNonEmpty = v => v !== null
+
 module.exports = {
   name: 'org-annotations',
   props: {
@@ -42,7 +44,7 @@ module.exports = {
   },
   watch: {
     value (newValue) {
-      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, x => x !== null)))
+      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, isNonEmpty)))
     }
   },
   components: {
@@ -55,7 +57,7 @@ module.exports = {
   },
   methods: {
     update () {
-      this.$emit('input', this.internalValue.filter(x => x !== null))
+      this.$emit('input', this.internalValue.filter(isNonEmpty))
     },
     deleteMe (index) {
       this.internalValue.splice(index, 1)
