@@ -24,3 +24,16 @@ git push origin v0.4.3
 
 ### set dev number again
 In the mentioned files above, to something like `0.4.4-dev`.
+
+## Build with cached dependencies (reproducible)
+
+- Create a `.yarnrc` in the current directory with the following content:
+  ```json
+  {
+      "yarn-offline-mirror": "./npm-packages-offline-cache",
+      "yarn-offline-mirror-pruning": true
+  }
+  ```
+- Delete existing packages: `rm -r yarn.lock node_modules/`
+- Download the packages: `yarn install`
+- All the required packages are in `./npm-packages-offline-cache/`
