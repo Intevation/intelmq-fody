@@ -10,7 +10,7 @@
           <input type="text" v-model.trim="national_cert.country_code" v-on:input="update"
             class="col-sm-10 form-control"/>
         </div>
-        <validation-error v-bind:errorMessage="errorMessageGetter(index)"
+        <validation-error v-bind:errorMessage="errorFn(`${index}/country_code`)"
                           class="col-sm-8 col-sm-offset-4"/>
       </div>
       <div v-else>
@@ -50,7 +50,7 @@ module.exports = {
   props: {
     'status': String,
     'value': Array,
-    'errorMessageGetter': {
+    'errorFn': {
       type: Function,
       default: () => null
     }

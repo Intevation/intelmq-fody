@@ -139,6 +139,7 @@ module.exports = {
   },
   watch: {
     value (newValue) {
+      var originalNewValue = newValue
       if (newValue === null) {
         if (this.isEmpty) return
         newValue = {tag: ''}
@@ -147,6 +148,7 @@ module.exports = {
       else if (newValue.expires !== this.internalValue.expires) this.relativeDate = 'not-relative'
       this.internalValue = JSON.parse(JSON.stringify(newValue))
       this.tagSet()
+      if (originalNewValue !== null && this.isEmpty) this.update()
     }
   },
   methods: {
@@ -194,6 +196,8 @@ module.exports = {
   created () {
     // Make sure the select choice reflects the initial internalValue.tag
     this.tagSet()
+    // Inform parent that it passed a null-equivalent value
+    if (this.value !== null && this.isEmpty) this.update()
   }
 }
 </script>

@@ -149,12 +149,12 @@
         <org-fqdns
           v-model="internalValue.fqdns" v-on:input="update" v-bind:status="status"
           v-bind:annotation-hints="annotationHints"
-          v-bind:errorMessageGetter="makeErrorMessageGetter('#/fqdns/', '/fqdn')"/>
+          v-bind:errorFn="makeErrorFn('#/fqdns/')"/>
 
         <!-- national_certs -->
         <org-national-certs v-model="internalValue.national_certs" v-on:input="update"
                             v-bind:status="status"
-                            v-bind:errorMessageGetter="makeErrorMessageGetter('#/national_certs/', '/country_code')"/>
+                            v-bind:errorFn="makeErrorFn('#/national_certs/')"/>
 
         <!-- other attributes -->
         <div v-if="!editable" class="well">
@@ -321,8 +321,8 @@ module.exports = {
       if (!o) return null
       return o.message
     },
-    makeErrorMessageGetter (prefix, suffix) {
-      return i => this.getErrorMessage(`${prefix}${i}${suffix}`)
+    makeErrorFn (prefix) {
+      return suffix => this.getErrorMessage(`${prefix}${suffix}`)
     }
   }
 }

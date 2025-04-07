@@ -13,12 +13,12 @@
             <div class="col-sm-10">
               <input type="text" v-model.trim="fqdn.fqdn" v-on:input="update" class="col-sm-10 form-control"/>
             </div>
-            <validation-error v-bind:errorMessage="errorMessageGetter(index)"
+            <validation-error v-bind:errorMessage="errorFn(`${index}/fqdn`)"
                               class="col-sm-8 col-sm-offset-4"/>
           </div>
           <div v-else>
             {{ fqdn.fqdn }}
-            <em v-if="fqdn.comment !== ''">({{ fqdn.comment }})</em>
+            <em v-if="fqdn.comment">({{ fqdn.comment }})</em>
           </div>
           <div v-if="editable" class="form-group">
             <label class="col-sm-2 control-label">Comment</label>
@@ -61,7 +61,7 @@ module.exports = {
       type: Object,
       default: () => ({})
     },
-    'errorMessageGetter': {
+    'errorFn': {
       type: Function,
       default: () => null
     }

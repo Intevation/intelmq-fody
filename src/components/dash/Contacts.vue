@@ -746,6 +746,7 @@ module.exports = {
         child => child.$options.name === 'org-card' &&
                  Object.keys(child.validationErrors).length !== 0)) {
         this.commitPendingOrgsErrorMsg = 'Some field(s) failed validation.'
+        // console.log(this.$children.filter(c => c.$options.name === 'org-card').map(c => c.validationErrors))
         return
       }
 

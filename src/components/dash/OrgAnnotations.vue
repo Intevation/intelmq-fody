@@ -23,6 +23,7 @@
 
 <script>
 import orgAnnotation from './OrgAnnotation.vue'
+import { unfilterArray } from '../../util/unfilterArray.js'
 
 module.exports = {
   name: 'org-annotations',
@@ -41,7 +42,7 @@ module.exports = {
   },
   watch: {
     value (newValue) {
-      this.internalValue = JSON.parse(JSON.stringify(newValue))
+      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, x => x !== null)))
     }
   },
   components: {
@@ -54,7 +55,7 @@ module.exports = {
   },
   methods: {
     update () {
-      this.$emit('input', this.internalValue)
+      this.$emit('input', this.internalValue.filter(x => x !== null))
     },
     deleteMe (index) {
       this.internalValue.splice(index, 1)
