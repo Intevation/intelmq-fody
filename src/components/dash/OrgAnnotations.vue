@@ -45,6 +45,7 @@ module.exports = {
   watch: {
     value (newValue) {
       this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, isNonEmpty)))
+      if (!newValue.every(isNonEmpty)) this.update()
     }
   },
   components: {
@@ -67,6 +68,9 @@ module.exports = {
       this.internalValue.push(template)
       this.update()
     }
+  },
+  created () {
+    if (!this.internalValue.every(isNonEmpty)) this.update()
   }
 }
 </script>
