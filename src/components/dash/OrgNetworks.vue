@@ -15,7 +15,7 @@
         Network
       </button>
       <button type="button" class="list-group-item btn btn-default" data-toggle="modal"
-        v-bind:data-target="`#modal-networks-import-${getUid()}`">
+          v-bind:data-target="`#modal-networks-import-${getUid()}`">
         <i class="fa fa-list-ul"></i>
         Bulk Import
       </button>
@@ -24,7 +24,8 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  v-bind:id="`modal-networks-close-${getUid()}`">
                 <span aria-hidden="true">×</span></button>
               <h4 class="modal-title">Bulk Import of Network Addresses (CIDRs)</h4>
             </div>
@@ -32,7 +33,7 @@
               <div class="form-group">
                 <label v-bind:for="`networks-import-data-${getUid()}`">Networks (separated by newlines)</label>
                 <textarea class="form-control" placeholder="141.39.0.0/16" v-model="importData"
-                  v-bind:id="`networks-import-data-${getUid()}`"/>
+                    v-bind:id="`networks-import-data-${getUid()}`"/>
                 <label v-bind:for="`networks-import-comment-${getUid()}`">Comment</label>
                 <input type="text" class="form-control" v-model="importComment"
                   v-bind:id="`networks-import-comment-${getUid()}`"/>
@@ -59,8 +60,6 @@
 <script>
 import orgNetwork from './OrgNetwork.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
-
-import $ from 'jquery'
 
 const ipaddr = require('ipaddr.js')
 
@@ -167,10 +166,13 @@ module.exports = {
         this.internalValue.push(el)
       }
       this.update()
-      // $(`#modal-networks-import-${this.getUid()}`).modal('hide') FIXME
-      $(`#modal-networks-import-${this.getUid()}`).hide()
       this.importData = ''
       this.importComment = ''
+      document.getElementById(`modal-networks-close-${this.getUid()}`).click()
+      // FIXME: The proper way tho close the modal would be:
+      // $(`#modal-networks-import-${this.getUid()}`).modal('hide')
+      // but that currently throws "[...].modal is not a function" for some reason
+      // See also OrgFqdns.vue, Dash.vue
     }
   },
   created () {

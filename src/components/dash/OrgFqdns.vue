@@ -46,7 +46,7 @@
         Domain
       </button>
       <button type="button" class="list-group-item btn btn-default" data-toggle="modal"
-        v-bind:data-target="`#modal-fqdns-import-${getUid()}`">
+          v-bind:data-target="`#modal-fqdns-import-${getUid()}`">
         <i class="fa fa-list-ul"></i>
         Bulk Import
       </button>
@@ -55,7 +55,8 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                  v-bind:id="`modal-fqdns-close-${getUid()}`">
                 <span aria-hidden="true">×</span></button>
               <h4 class="modal-title">Bulk Import of Domains</h4>
             </div>
@@ -63,7 +64,7 @@
               <div class="form-group">
                 <label v-bind:for="`fqdns-import-data-${getUid()}`">FQDNs (separated by newlines)</label>
                 <textarea class="form-control" placeholder="www.example.com" v-model="importData"
-                  v-bind:id="`fqdns-import-data-${getUid()}`"/>
+                    v-bind:id="`fqdns-import-data-${getUid()}`"/>
                 <label v-bind:for="`fqdns-import-comment-${getUid()}`">Comment</label>
                 <input type="text" class="form-control" v-model="importComment"
                   v-bind:id="`fqdns-import-comment-${getUid()}`"/>
@@ -90,8 +91,6 @@
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
-
-import $ from 'jquery'
 
 var nextId = 0
 
@@ -165,10 +164,13 @@ module.exports = {
         this.internalValue.push(el)
       }
       this.update()
-      // $(`#modal-fqdns-import-${this.getUid()}`).modal('hide') // FIXME
-      $(`#modal-fqdns-import-${this.getUid()}`).hide()
       this.importData = ''
       this.importComment = ''
+      document.getElementById(`modal-fqdns-close-${this.getUid()}`).click()
+      // FIXME: The proper way tho close the modal would be:
+      // $(`#modal-fqdns-import-${this.getUid()}`).modal('hide')
+      // but that currently throws "[...].modal is not a function" for some reason
+      // See also OrgNetworks.vue, Dash.vue
     }
   },
   watch: {

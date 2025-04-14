@@ -44,7 +44,7 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="modal-login-close">
                         <span aria-hidden="true">×</span></button>
                       <h4 class="modal-title">IntelMQ-Fody - Sign in</h4>
                     </div>
@@ -139,7 +139,6 @@
 <script>
 import { mapState } from 'vuex'
 import { version } from '../../package.json'
-import $ from 'jquery'
 
 require('hideseek')
 
@@ -185,11 +184,14 @@ module.exports = {
           this.$store.state.token = data.login_token
           this.$store.state.loggedIn = true
           this.wrongCredentials = false
-          // $('#modal-login').modal('hide') FIXME
-          $('#modal-login').hide()
           // If the user accesses a sub-page, the frontend already tried to retrieve data from the backend without authentication, leading to errors.
           // Clean the frontend now, so the user sees a clean interface and the frontend loads the necessary data when switching to the requested page
           this.$router.push('/')
+          document.getElementById('modal-login-close').click()
+          // FIXME: The proper way tho close the modal would be:
+          // $('#modal-login').modal('hide')
+          // but that currently throws "[...].modal is not a function" for some reason
+          // See also OrgNetworks.vue, OrgFqdns.vue
         } else {
           this.wrongCredentials = true
         }
