@@ -39,12 +39,50 @@
         </div>
       </div>
     </div>
-    <button v-if="editable"
-        v-on:click="newFqdn({'fqdn': '', 'comment': '', 'annotations': []}), update()"
-        class="list-group-item btn btn-default">
-      <i class="fa fa-plus"></i>
-      Domain
-    </button>
+    <template v-if="editable">
+      <button type="button" class="list-group-item btn btn-default"
+          v-on:click="newFqdn({'fqdn': '', 'comment': '', 'annotations': []}), update()">
+        <i class="fa fa-plus"></i>
+        Domain
+      </button>
+      <button type="button" class="list-group-item btn btn-default" data-toggle="modal"
+        v-bind:data-target="`#modal-fqdns-import-${getUid()}`">
+        <i class="fa fa-list-ul"></i>
+        Bulk Import
+      </button>
+      <div class="modal fade" tabindex="-1" role="dialog" data-backdrop="false"
+        v-bind:id="`modal-fqdns-import-${getUid()}`">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+              <h4 class="modal-title">Bulk Import of Domains</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label v-bind:for="`fqdns-import-data-${getUid()}`">FQDNs (separated by newlines)</label>
+                <textarea class="form-control" placeholder="www.example.com" v-model="importData"
+                  v-bind:id="`fqdns-import-data-${getUid()}`"/>
+                <label v-bind:for="`fqdns-import-comment-${getUid()}`">Comment</label>
+                <input type="text" class="form-control" v-model="importComment"
+                  v-bind:id="`fqdns-import-comment-${getUid()}`"/>
+                <ul>
+                  <li v-for="msg in processedImportData.errors">{{ msg }}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary"
+                  v-bind:disabled="processedImportData.errors.length > 0 || processedImportData.fqdns.length === 0"
+                  v-on:click="doImport">
+                Import
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -52,6 +90,10 @@
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
+
+import $ from 'jquery'
+
+var nextId = 0
 
 const isNonEmpty = fqdnObj =>
   fqdnObj.fqdn !== '' ||
@@ -74,7 +116,10 @@ module.exports = {
   },
   data () {
     return {
-      internalValue: JSON.parse(JSON.stringify(this.value))
+      internalValue: JSON.parse(JSON.stringify(this.value)),
+      uniqueId: null,
+      importData: '',
+      importComment: ''
     }
   },
   components: {
@@ -86,6 +131,14 @@ module.exports = {
     },
     errorMessages () {
       return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/fqdn`))
+    },
+    processedImportData () {
+      var values = this.importData.split('\n').map(x => x.trim()).filter(x => x)
+      var fqdns = []
+      var errors = []
+      // TODO
+      fqdns = values
+      return { fqdns, errors }
     }
   },
   methods: {
@@ -97,6 +150,25 @@ module.exports = {
     },
     update () {
       this.$emit('input', this.internalValue.filter(isNonEmpty))
+    },
+    getUid () {
+      var uid = this.uniqueId
+      if (uid !== null) return uid
+      uid = this.uniqueId = ++nextId
+      return uid
+    },
+    doImport () {
+      var processed = this.processedImportData
+      if (processed.errors.length > 0) return
+      var comment = this.importComment.trim()
+      for (var el of processed.fqdns.map(fqdn => ({fqdn, comment, annotations: []})).filter(isNonEmpty)) {
+        this.internalValue.push(el)
+      }
+      this.update()
+      // $(`#modal-fqdns-import-${this.getUid()}`).modal('hide') // FIXME
+      $(`#modal-fqdns-import-${this.getUid()}`).hide()
+      this.importData = ''
+      this.importComment = ''
     }
   },
   watch: {

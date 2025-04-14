@@ -156,29 +156,30 @@
       </div>
     </div> <!-- .row -->
     <div class="row">
+      <div>
       <org-card v-for="(org, index) of manualOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
                 v-model="manualOrgs[index]" status="manual"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:edit="editOrg(index)"
-                v-on:delete="deleteOrg(index)"
-                ></org-card>
+                v-on:delete="deleteOrg(index)"/>
+      </div><div>
       <org-card v-for="(org, index) of autoOrgs" v-if="org !== null"
                 class="col-md-6 col-sm-6"
                 v-model="autoOrgs[index]" status="auto"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
-                v-on:clone="cloneOrg(index, $event)"></org-card>
-
+                v-on:clone="cloneOrg(index, $event)"/>
+      </div><div>
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
                 v-model="pendingOrgs[index]" v-bind:status="pendingOrgIndex[index]"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
                 v-on:clone="cloneOrg(index, $event)"
-                v-on:trash="trashOrg(index)"
-                ></org-card>
+                v-on:trash="trashOrg(index)"/>
+      </div>
     </div>
     <div v-if="commitPendingOrgsErrorMsg" class="row">
       <div class="alert alert-danger col-xs-12" role="alert">
@@ -234,7 +235,7 @@ const validateCIDR = value => {
   try {
     parsed = ipaddr.parseCIDR(value)
   } catch (e) {
-    return 'Cannot be parsed as CIDR'
+    return `${value} cannot be parsed as CIDR`
   }
   const nwaddr = parsed[0].kind() === 'ipv4'
         ? ipaddr.IPv4.networkAddressFromCIDR(value)
