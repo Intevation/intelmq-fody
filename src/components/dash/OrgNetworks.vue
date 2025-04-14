@@ -104,40 +104,58 @@ module.exports = {
       var values = this.importData.split('\n').map(x => x.trim()).filter(x => x)
       var cidrs = []
       var errors = []
-      var parsed
-      var noBits = {}
       for (var v of values) {
-        try {
-          parsed = ipaddr.parseCIDR(v)
-        } catch (e) {
-          try {
-            parsed = [ipaddr.parse(v), noBits]
-          } catch (e2) {
-            errors.push(`${v} cannot be parsed as CIDR or IP address`)
+        var addr = v
+        var netmask = null
+        var offset = v.indexOf('/')
+        if (offset !== -1) {
+          addr = v.substring(0, offset)
+          netmask = v.substring(offset + 1)
+          if (!/^(?:0|[1-9][0-9]*)$/.test(netmask)) {
+            errors.push(`"${v}" has invalid netmask "${netmask}"`)
             continue
           }
+          netmask = +netmask
         }
-        if (parsed[1] === noBits) {
-          if (parsed[0].kind() === 'ipv4') {
-            if (parsed[0].toByteArray()[3] === 0) {
-              errors.push(`${v} looks like a network (ends in .0) but has no netmask`)
+        try {
+          var parsed = ipaddr.parse(addr)
+        } catch (e) {
+          errors.push(`"${addr}" cannot be parsed as IP address`)
+          continue
+        }
+        var ipv4 = parsed.kind() === 'ipv4' // else 'ipv6'
+        if (ipv4 && !/^(?:(?:0|[1-9][0-9]*)\.){3}(?:0|[1-9][0-9]*)$/.test(addr)) {
+          errors.push(`"${addr}" cannot be parsed as IP address`)
+          continue
+        }
+        var byteArray = parsed.toByteArray()
+        if (netmask === null) {
+          if (ipv4) {
+            if (byteArray[3] === 0) {
+              errors.push(`"${v}" looks like a network (ends in .0) but has no netmask`)
               continue
             }
-            parsed[1] = 32
-          } else {
-            errors.push(`${v}: behavior for IPv6 addresses without netmask not implemented`)
-            continue
+            netmask = 32
+          } else { // ipv6
+            if (byteArray[15] === 0 && byteArray[14] === 0) {
+              errors.push(`"${v}" looks like a network (ends in :0) but has no netmask`)
+              continue
+            }
+            netmask = 128
           }
         } else {
-          if (
-            parsed[0].toNormalizedString() !==
-            (parsed[0].kind() === 'ipv4' ? ipaddr.IPv4 : ipaddr.IPv6).networkAddressFromCIDR(v).toNormalizedString()
-          ) {
-            errors.push(`${v} has host bits set`)
+          if (netmask > (ipv4 ? 32 : 128)) {
+            errors.push(`"${v}": netmask too large`)
             continue
           }
+          for (var i = netmask; i < byteArray.length * 8; ++i) {
+            if (byteArray[i >> 3] & 1 << 7 - i % 8) {
+              errors.push(`"${v}" has host bits set`)
+              continue
+            }
+          }
         }
-        cidrs.push(`${parsed[0].toString()}/${parsed[1]}`)
+        cidrs.push(`${parsed.toString()}/${netmask}`)
       }
       return { cidrs, errors }
     }
