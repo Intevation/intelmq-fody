@@ -1,5 +1,5 @@
 <template>
-  <input type="text" v-model="inputValue" v-on:input="update">
+  <input type="text" v-model="inputValue" v-on:input="update" v-on:keydown="$event.key === 'Enter' ? $emit('submit') : null">
 </template>
 
 <script>

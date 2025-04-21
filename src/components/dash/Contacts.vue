@@ -8,12 +8,12 @@
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
               <input-unsigned-int class="form-control"
-                v-model.lazy.trim:title="searchASN"
-                v-on:change.native="lookupASN"
+                v-model.trim="searchASN"
+                v-on:submit="lookupASN"
                 placeholder="49234"
               />
               <span class="input-group-btn">
-                <button class="btn btn-default" v-on:click="lookupASN">
+                <button type="button" class="btn btn-default" v-on:click="lookupASN">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -27,13 +27,12 @@
             <h5>Search IP/CIDR/FQDN/CC</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-hdd-o"></i></span>
-              <input type="text" class="form-control"
-                v-model.lazy.trim:title="searchCFN"
-                v-on:change="lookupCFN"
-                placeholder="2001:638:81e::/48"
-              >
+              <input-submit type="text" class="form-control"
+                v-model.trim="searchCFN"
+                v-on:submit="lookupCFN"
+                placeholder="2001:638:81e::/48"/>
               <span class="input-group-btn">
-                <button class="btn btn-default" v-on:click="lookupCFN">
+                <button type="button" class="btn btn-default" v-on:click="lookupCFN">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -47,13 +46,12 @@
             <h5>Search Email</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-              <input class="form-control"
-                v-model.lazy.trim:title="searchEmail"
-                v-on:change="lookupEmail"
-                placeholder="abuse@bund.de"
-              >
+              <input-submit class="form-control"
+                v-model.trim="searchEmail"
+                v-on:submit="lookupEmail"
+                placeholder="abuse@bund.de"/>
               <span class="input-group-btn">
-                <button class="btn btn-default" v-on:click="lookupEmail">
+                <button type="button" class="btn btn-default" v-on:click="lookupEmail">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -67,13 +65,12 @@
             <h5>Search Name</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-address-book-o"></i></span>
-              <input class="form-control"
-                v-model.lazy.trim:title="searchName"
-                v-on:change="lookupName"
-                placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"
-              >
+              <input-submit class="form-control"
+                v-model.trim="searchName"
+                v-on:submit="lookupName"
+                placeholder="Bundesamt fuer Sicherheit in der Informationstechnik"/>
               <span class="input-group-btn">
-                <button class="btn btn-default" v-on:click="lookupName">
+                <button type="button" class="btn btn-default" v-on:click="lookupName">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -87,13 +84,12 @@
             <h5>Search Tag</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-tag"></i></span>
-              <input class="form-control"
-                v-model.lazy.trim:title="searchTag"
-                v-on:change="lookupTag"
-                placeholder="Whitelist:DNS-Open-Resolver"
-              >
+              <input-submit class="form-control"
+                v-model.trim="searchTag"
+                v-on:submit="lookupTag"
+                placeholder="Whitelist:DNS-Open-Resolver"/>
               <span class="input-group-btn">
-                <button class="btn btn-default" v-on:click="lookupTag">
+                <button type="button" class="btn btn-default" v-on:click="lookupTag">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -107,14 +103,12 @@
             <h5>Search disabled Email ('@'=all)</h5>
             <div class="input-group input-group-sm">
               <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-              <input class="form-control"
-                v-model.lazy.trim:title="searchDisabledEmail"
-                v-on:change="lookupDisabledEmail"
-                placeholder="@"
-              >
+              <input-submit class="form-control"
+                v-model.trim="searchDisabledEmail"
+                v-on:submit="lookupDisabledEmail"
+                placeholder="@"/>
               <span class="input-group-btn">
-                <button class="btn btn-default"
-                    v-on:click="lookupDisabledEmail">
+                <button type="button" class="btn btn-default" v-on:click="lookupDisabledEmail">
                   <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -189,22 +183,19 @@
     </div>
     <div class="row">
       <div class="col-md-4 col-sm-4">
-        <button class="btn btn-primary btn-lg btn-block"
-                v-on:click="newOrg">
+        <button type="button" class="btn btn-primary btn-lg btn-block" v-on:click="newOrg">
           <i class="fa fa-plus-square-o" style="margin-right:.2em"></i>New
         </button>
       </div>
       <div class="col-md-4 col-sm-4">
-        <button class="btn btn-warning btn-lg btn-block"
-                v-on:click="commitPendingOrgs"
-                v-bind:class="ActionDisabled">
+        <button type="button" v-on:click="commitPendingOrgs"
+                class="btn btn-warning btn-lg btn-block" v-bind:class="ActionDisabled">
           <i class="fa fa-pencil-square-o" style="margin-right:.2em"></i>Commit
         </button>
       </div>
       <div class="col-md-4 col-sm-4">
-        <button class="btn btn-danger btn-lg btn-block"
-                v-on:click="clearPendingOrgs"
-                v-bind:class="ActionDisabled">
+        <button type="button" v-on:click="clearPendingOrgs"
+                class="btn btn-danger btn-lg btn-block" v-bind:class="ActionDisabled">
           <i class="fa fa-trash-o" style="margin-right:.2em"></i>Clear
         </button>
       </div>
@@ -216,6 +207,7 @@
 import { mapState } from 'vuex'
 import { errorMixin } from '../../mixins/errorHelper.js'
 import inputUnsignedInt from './InputUnsignedInt.vue'
+import inputSubmit from './InputSubmit.vue'
 import OrgCard from './OrgCard.vue'
 
 import { Draft2019, config } from 'json-schema-library'
@@ -280,7 +272,7 @@ module.exports = {
     }
   },
   components: {
-    inputUnsignedInt, OrgCard
+    inputUnsignedInt, inputSubmit, OrgCard
   },
   computed: {
     ...mapState(['loggedIn']),
