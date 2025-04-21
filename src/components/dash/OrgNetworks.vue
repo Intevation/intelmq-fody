@@ -60,8 +60,7 @@
 <script>
 import orgNetwork from './OrgNetwork.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
-
-const ipaddr = require('ipaddr.js')
+import { validateAndNormalizeCIDROrIP } from '../../util/ipParse.js'
 
 var nextId = 0
 
@@ -105,57 +104,8 @@ module.exports = {
       var cidrs = []
       var errors = []
       for (var v of values) {
-        var addr = v
-        var netmask = null
-        var offset = v.indexOf('/')
-        if (offset !== -1) {
-          addr = v.substring(0, offset)
-          netmask = v.substring(offset + 1)
-          if (!/^(?:0|[1-9][0-9]*)$/.test(netmask)) {
-            errors.push(`"${v}" has invalid netmask "${netmask}"`)
-            continue
-          }
-          netmask = +netmask
-        }
-        try {
-          var parsed = ipaddr.parse(addr)
-        } catch (e) {
-          errors.push(`"${addr}" cannot be parsed as IP address`)
-          continue
-        }
-        var ipv4 = parsed.kind() === 'ipv4' // else 'ipv6'
-        if (ipv4 && !/^(?:(?:0|[1-9][0-9]*)\.){3}(?:0|[1-9][0-9]*)$/.test(addr)) {
-          errors.push(`"${addr}" cannot be parsed as IP address`)
-          continue
-        }
-        var byteArray = parsed.toByteArray()
-        if (netmask === null) {
-          if (ipv4) {
-            if (byteArray[3] === 0) {
-              errors.push(`"${v}" looks like a network (ends in .0) but has no netmask`)
-              continue
-            }
-            netmask = 32
-          } else { // ipv6
-            if (byteArray[15] === 0 && byteArray[14] === 0) {
-              errors.push(`"${v}" looks like a network (ends in :0) but has no netmask`)
-              continue
-            }
-            netmask = 128
-          }
-        } else {
-          if (netmask > (ipv4 ? 32 : 128)) {
-            errors.push(`"${v}": netmask too large`)
-            continue
-          }
-          for (var i = netmask; i < byteArray.length * 8; ++i) {
-            if (byteArray[i >> 3] & 1 << 7 - i % 8) {
-              errors.push(`"${v}" has host bits set`)
-              continue
-            }
-          }
-        }
-        cidrs.push(`${parsed.toString()}/${netmask}`)
+        var { result, isError } = validateAndNormalizeCIDROrIP(v, {noTrailingZeroWithoutNetmask: true}); // ';' !!
+        (isError ? errors : cidrs).push(result)
       }
       return { cidrs, errors }
     }

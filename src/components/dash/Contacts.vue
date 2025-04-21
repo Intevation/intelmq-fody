@@ -128,7 +128,7 @@
       </div>
       <div v-if="searchErrorMsg"
            class="alert alert-danger col-xs-12" role="alert">
-        Search failed:<br>
+        Search for criterion {{ searchCriterion }} failed:<br>
         <span style="white-space: pre-line;">{{ searchErrorMsg }}</span>
       </div>
       <div v-if="limited" class="alert alert-info col-xs-12" role="alert">
@@ -210,8 +210,8 @@ import inputUnsignedInt from './InputUnsignedInt.vue'
 import inputSubmit from './InputSubmit.vue'
 import OrgCard from './OrgCard.vue'
 
+import { validateAndNormalizeCIDROrIP } from '../../util/ipParse.js'
 import { Draft2019, config } from 'json-schema-library'
-const ipaddr = require('ipaddr.js')
 
 // customize some of the messages so that they don't contain the
 // pointer (JSON path) that we don't need in Fody. E.g. The message
@@ -221,22 +221,6 @@ const ipaddr = require('ipaddr.js')
 config.strings.MinLengthOneError = 'A value is required'
 config.strings.PatternError = 'Value should match \'{{description}}\', but received \'{{received}}\''
 config.strings.TypeError = 'Expected \'{{value}}\' ({{received}}) to be of type \'{{expected}}\''
-
-const validateCIDR = value => {
-  var parsed
-  try {
-    parsed = ipaddr.parseCIDR(value)
-  } catch (e) {
-    return `${value} cannot be parsed as CIDR`
-  }
-  const nwaddr = parsed[0].kind() === 'ipv4'
-        ? ipaddr.IPv4.networkAddressFromCIDR(value)
-        : ipaddr.IPv6.networkAddressFromCIDR(value)
-  if (parsed[0].toNormalizedString() !== nwaddr.toNormalizedString()) {
-    return `${value} has host bits set`
-  }
-  return null
-}
 
 module.exports = {
   name: 'Contacts',
@@ -257,7 +241,7 @@ module.exports = {
       autoOrgs: [],
       schemaErrorMsg: '', // !== '' if could not load schema.json
       orgSchemaDraft: null, // Draft2019 instance
-      searchErrorMsg: '', // !== '' if getOrdIDs()' backend call failed
+      searchErrorMsg: '', // !== '' if invalid search term or getOrdIDs() backend call failed
       loadLimit: 100, // max number of manual- and autoorgs to load
       limited: false,  // if we are only loading some of the search results
       annotationHints: {},  // from the server to help editing annotations
@@ -353,6 +337,15 @@ module.exports = {
         case 'cfn':
           prefix = 'IP/CIDR/FQDN/CC'
           break
+        case 'cfn-cc':
+          prefix = 'CC'
+          break
+        case 'cfn-fqdn':
+          prefix = 'FQDN'
+          break
+        case 'cfn-ip-cidr':
+          prefix = 'IP/CIDR'
+          break
         case 'tag':
           prefix = 'Tag'
           break
@@ -419,6 +412,8 @@ module.exports = {
             this.manualOrgIDs = []
           }
         }, (response) => {
+          this.autoOrgIDs = []
+          this.manualOrgIDs = []
           this.searchErrorMsg = 'Got invalid JSON from server.'
         })
       }, (response) => {
@@ -429,8 +424,6 @@ module.exports = {
       })
     },
     lookupASN: function () {
-      // FUTURE: we may need some debounce or throttle function here
-
       // fixed testing values with our AJAJ request:
       // this.manualOrgIDs = [1, 23]
       // this.autoOrgIDs = [23, 456]
@@ -448,8 +441,6 @@ module.exports = {
       this.$router.replace({query: {asn: this.searchASN}})
     },
     lookupEmail: function () {
-      // FUTURE: we may need some debounce or throttle function here
-
       this.searchASN = ''
       this.searchDisabledEmail = ''
       this.searchName = ''
@@ -463,8 +454,6 @@ module.exports = {
       this.$router.replace({query: {email: this.searchEmail}})
     },
     lookupDisabledEmail: function () {
-      // FUTURE: we may need some debounce or throttle function here
-
       this.searchASN = ''
       this.searchEmail = ''
       this.searchName = ''
@@ -478,8 +467,6 @@ module.exports = {
       this.$router.replace({query: {disabledemail: this.searchDisabledEmail}})
     },
     lookupName: function () {
-      // FUTURE: we may need some debounce or throttle function here
-
       this.searchASN = ''
       this.searchEmail = ''
       this.searchDisabledEmail = ''
@@ -493,28 +480,39 @@ module.exports = {
       this.$router.replace({query: {name: this.searchName}})
     },
     lookupCFN: function () {
-      // FUTURE: we may need some debounce or throttle function here
-
       this.searchASN = ''
       this.searchEmail = ''
       this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchTag = ''
-      if (this.searchCFN.length === 2) {
-        this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
-      } else if (/\.[^0-9:.]+$|^[^0-9:.]+$|\.xn--[^.]*$/.test(this.searchCFN)) {
-        this.getOrgIDs('/searchfqdn?domain=' + this.searchCFN)
-      } else {
-        this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
-      }
       this.lastSearchCriterion = 'cfn'
+      if (/^[a-z]{2}$/i.test(this.searchCFN)) {
+        this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
+        this.lastSearchCriterion = 'cfn-cc'
+      } else if (/^(?:[0-9]{1,}(?:\.[0-9]{1,}){3}|[0-9a-f]*:[0-9a-f:]+)(?:\/[0-9]*)?$/i.test(this.searchCFN)) {
+        var { result, isError } = validateAndNormalizeCIDROrIP(this.searchCFN)
+        if (isError) {
+          this.autoOrgIDs = []
+          this.manualOrgIDs = []
+          this.searchErrorMsg = result
+        } else {
+          this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
+        }
+        this.lastSearchCriterion = 'cfn-ip-cidr'
+      } else if (/^[a-z0-9.-]+$/i.test(this.searchCFN) && !/-\.|\.-/.test(this.searchCFN)) {
+        this.getOrgIDs('/searchfqdn?domain=' + this.searchCFN)
+        this.lastSearchCriterion = 'cfn-fqdn'
+      } else {
+        this.autoOrgIDs = []
+        this.manualOrgIDs = []
+        this.searchErrorMsg = `"${this.searchCFN}" cannot be interpreted as IP/CIDR/FQDN/CC`
+      }
       this.lastSearchValue = this.searchCFN
 
       // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {cfn: this.searchCFN}})
     },
     lookupTag: function () {
-      // (general comments of other lookup*() functions apply.)
       this.searchASN = ''
       this.searchEmail = ''
       this.searchDisabledEmail = ''
@@ -524,6 +522,7 @@ module.exports = {
       this.lastSearchCriterion = 'tag'
       this.lastSearchValue = this.searchTag
 
+      // Modify the URL, this enables bookmarking of this search.
       this.$router.replace({query: {tag: this.searchTag}})
     },
     refreshCurrentSearch: function () {
@@ -815,13 +814,13 @@ module.exports = {
             cidr: (node, value) => {
               const { schema, pointer } = node
               if (typeof value === 'string' && value) {
-                const err = validateCIDR(value)
-                if (err) {
+                const { result, isError } = validateAndNormalizeCIDROrIP(value)
+                if (isError) {
                   return {
                     type: 'error',
                     code: 'cidr-error',
                     name: 'CidrError',
-                    message: err,
+                    message: result,
                     data: { value, schema, pointer }
                   }
                 }
