@@ -211,6 +211,7 @@ import inputSubmit from './InputSubmit.vue'
 import OrgCard from './OrgCard.vue'
 
 import { validateAndNormalizeCIDROrIP } from '../../util/ipParse.js'
+import { validateAndNormalizeDomain } from '../../util/idna.js'
 import { Draft2019, config } from 'json-schema-library'
 
 // customize some of the messages so that they don't contain the
@@ -485,12 +486,11 @@ module.exports = {
       this.searchDisabledEmail = ''
       this.searchName = ''
       this.searchTag = ''
-      this.lastSearchCriterion = 'cfn'
       if (/^[a-z]{2}$/i.test(this.searchCFN)) {
         this.getOrgIDs('/searchnational?countrycode=' + this.searchCFN)
         this.lastSearchCriterion = 'cfn-cc'
       } else if (/^(?:[0-9]{1,}(?:\.[0-9]{1,}){3}|[0-9a-f]*:[0-9a-f:]+)(?:\/[0-9]*)?$/i.test(this.searchCFN)) {
-        var { result, isError } = validateAndNormalizeCIDROrIP(this.searchCFN)
+        let { result, isError } = validateAndNormalizeCIDROrIP(this.searchCFN)
         if (isError) {
           this.autoOrgIDs = []
           this.manualOrgIDs = []
@@ -499,13 +499,16 @@ module.exports = {
           this.getOrgIDs('/searchcidr?address=' + this.searchCFN)
         }
         this.lastSearchCriterion = 'cfn-ip-cidr'
-      } else if (/^[a-z0-9.-]+$/i.test(this.searchCFN) && !/-\.|\.-/.test(this.searchCFN)) {
-        this.getOrgIDs('/searchfqdn?domain=' + this.searchCFN)
-        this.lastSearchCriterion = 'cfn-fqdn'
       } else {
-        this.autoOrgIDs = []
-        this.manualOrgIDs = []
-        this.searchErrorMsg = `"${this.searchCFN}" cannot be interpreted as IP/CIDR/FQDN/CC`
+        let { result, isError } = validateAndNormalizeDomain(this.searchCFN)
+        if (isError) {
+          this.autoOrgIDs = []
+          this.manualOrgIDs = []
+          this.searchErrorMsg = result
+        } else {
+          this.getOrgIDs('/searchfqdn?domain=' + result)
+        }
+        this.lastSearchCriterion = 'cfn-fqdn'
       }
       this.lastSearchValue = this.searchCFN
 

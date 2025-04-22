@@ -2738,6 +2738,13 @@ iconv-lite@0.4, iconv-lite@0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
+idna-uts46@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/idna-uts46/-/idna-uts46-1.1.0.tgz#be098b2b7c1cabfbef87a8b80f626fac37366aea"
+  integrity sha512-edsPih0TrHpA+8yUtGK7+fBBBCJfajYcFbKVPs3d4ls0O1sGnrvF1tl8jl9/nJssMOnyu0HGH89yHfe7syxyHA==
+  dependencies:
+    punycode "^2.1.0"
+
 ieee754@^1.1.4:
   version "1.1.13"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.13.tgz#ec168558e95aa181fd87d37f55c32bbcb6708b84"
@@ -3987,6 +3994,11 @@ punycode@^1.2.4:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
   integrity sha1-wNWmOycYgArY4esPpSachN1BhF4=
+
+punycode@^2.1.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
+  integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
 qs@6.7.0:
   version "6.7.0"

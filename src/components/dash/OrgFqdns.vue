@@ -91,6 +91,7 @@
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
+import { validateAndNormalizeDomain } from '../../util/idna.js'
 
 var nextId = 0
 
@@ -135,8 +136,10 @@ module.exports = {
       var values = this.importData.split('\n').map(x => x.trim()).filter(x => x)
       var fqdns = []
       var errors = []
-      // TODO
-      fqdns = values
+      for (var v of values) {
+        var { result, isError } = validateAndNormalizeDomain(v, {removeTrailingDot: true}); // ';' !!
+        (isError ? errors : fqdns).push(result)
+      }
       return { fqdns, errors }
     }
   },

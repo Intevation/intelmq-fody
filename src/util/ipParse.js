@@ -40,8 +40,11 @@ export const validateAndNormalizeCIDROrIP = (value, options) => {
       return {result: `"${value}": netmask too large`, isError: true}
     }
     var minNetmask = 0
-    for (var i = 0; i < byteArray.length * 8; ++i) {
-      if (byteArray[i >> 3] & 1 << 7 - i % 8) minNetmask = i + 1
+    for (var i = byteArray.length * 8 - 1; i >= 0; --i) {
+      if (byteArray[i >> 3] & 1 << 7 - i % 8) {
+        minNetmask = i + 1
+        break
+      }
     }
     if (netmask < minNetmask) {
       return {result: `"${value}" has host bits set (did you mean "${parsed.toString()}/${minNetmask}"?)`, isError: true}
