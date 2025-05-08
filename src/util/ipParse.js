@@ -52,3 +52,35 @@ export const validateAndNormalizeCIDROrIP = (value, options) => {
   }
   return {result: `${parsed.toString()}/${netmask}`, isError: false}
 }
+
+// Note that unlike the function above, this one does no validation on its
+// arguments. In particular, the arguments must be CIDRs (have a netmask) or
+// nonsense will be returned.
+export const getCIDRRelation = (cidr1, cidr2) => {
+  var [ip1, netmask1] = cidr1.split('/')
+  var [ip2, netmask2] = cidr2.split('/')
+  ip1 = ipaddr.parse(ip1)
+  ip2 = ipaddr.parse(ip2)
+  if (ip1.kind() !== ip2.kind()) return '<>'
+  netmask1 = +netmask1
+  netmask2 = +netmask2
+  var swapped = false
+  if (netmask1 > netmask2) {
+    swapped = true;
+    ([cidr1, cidr2] = [cidr2, cidr1]);
+    ([ip1, ip2] = [ip2, ip1]);
+    ([netmask1, netmask2] = [netmask2, netmask1])
+  }
+  var bytes1 = ip1.toByteArray()
+  var bytes2 = ip2.toByteArray()
+  var div = netmask1 >> 3
+  var mod = netmask1 % 8
+  if (mod !== 0) {
+    var modMask = (1 << mod) - 1
+    if (bytes1[div] & modMask !== bytes2[div] & modMask) return '<>'
+  }
+  for (var i = div - 1; i >= 0; --i) {
+    if (bytes1[i] !== bytes2[i]) return '<>'
+  }
+  return netmask1 === netmask2 ? '==' : swapped ? '>' : '<'
+}

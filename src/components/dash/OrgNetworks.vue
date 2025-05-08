@@ -60,7 +60,7 @@
 <script>
 import orgNetwork from './OrgNetwork.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
-import { validateAndNormalizeCIDROrIP } from '../../util/ipParse.js'
+import { validateAndNormalizeCIDROrIP, getCIDRRelation } from '../../util/ipParse.js'
 
 var nextId = 0
 
@@ -68,6 +68,24 @@ const isNonEmpty = network =>
   network.address !== '' ||
   network.comment !== '' ||
   network.annotations.length !== 0
+
+const checkCIDRRedundant = (check, checkStr, existing, existingStr, origin) => {
+  var relPhrase
+  switch (getCIDRRelation(check, existing)) {
+    case '==':
+      relPhrase = 'equivalent to'
+      break
+    case '<':
+      relPhrase = 'a less-specific variant of'
+      break
+    case '>':
+      relPhrase = 'a more-specific variant of'
+      break
+    default:
+      return null
+  }
+  return `"${checkStr}" is ${relPhrase} "${existingStr}"${origin}`
+}
 
 module.exports = {
   name: 'org-networks',
@@ -99,13 +117,37 @@ module.exports = {
     errorMessages () {
       return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/address`))
     },
+    nonEmptyValues () {
+      return this.internalValue.filter(isNonEmpty)
+    },
+    normalizedAndUnnormalizedValidAddresses () {
+      return this.nonEmptyValues.flatMap(v => {
+        var a = v.address
+        var r = validateAndNormalizeCIDROrIP(a)
+        return r.isError ? [] : [[r.result, a]]
+      })
+    },
     processedImportData () {
       var values = this.importData.split('\n').map(x => x.trim()).filter(x => x)
       var cidrs = []
+      var unnormalizedCidrs = []
       var errors = []
       for (var v of values) {
-        var { result, isError } = validateAndNormalizeCIDROrIP(v, {noTrailingZeroWithoutNetmask: true}); // ';' !!
-        (isError ? errors : cidrs).push(result)
+        var { result, isError } = validateAndNormalizeCIDROrIP(v, {noTrailingZeroWithoutNetmask: true})
+        if (isError) {
+          errors.push(result)
+          continue
+        }
+        for (var [normalized, unnormalized] of this.normalizedAndUnnormalizedValidAddresses) {
+          var e = checkCIDRRedundant(result, v, normalized, unnormalized, ', which is already registered for this organization')
+          if (e) errors.push(e)
+        }
+        for (var i = 0; i < cidrs.length; ++i) {
+          e = checkCIDRRedundant(result, v, cidrs[i], unnormalizedCidrs[i], ' above it')
+          if (e) errors.push(e)
+        }
+        cidrs.push(result)
+        unnormalizedCidrs.push(v)
       }
       return { cidrs, errors }
     }
@@ -118,7 +160,7 @@ module.exports = {
   },
   methods: {
     update () {
-      this.$emit('input', this.internalValue.filter(isNonEmpty))
+      this.$emit('input', this.nonEmptyValues)
     },
     getUid () {
       var uid = this.uniqueId
