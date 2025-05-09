@@ -91,7 +91,7 @@
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
 import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
-import { validateAndNormalizeDomain } from '../../util/idna.js'
+import { validateAndNormalizeDomain, getDomainRelation } from '../../util/idna.js'
 
 var nextId = 0
 
@@ -99,6 +99,24 @@ const isNonEmpty = fqdnObj =>
   fqdnObj.fqdn !== '' ||
   fqdnObj.comment !== '' ||
   fqdnObj.annotations.length !== 0
+
+const checkFQDNRedundant = (check, checkStr, existing, existingStr, origin) => {
+  var relPhrase
+  switch (getDomainRelation(check, existing)) {
+    case '==':
+      relPhrase = 'equivalent to'
+      break
+    case '<':
+      relPhrase = 'a less-specific variant of'
+      break
+    case '>':
+      relPhrase = 'a more-specific variant of'
+      break
+    default:
+      return null
+  }
+  return `"${checkStr}" is ${relPhrase} "${existingStr}"${origin}`
+}
 
 module.exports = {
   name: 'org-fqdns',
@@ -132,13 +150,37 @@ module.exports = {
     errorMessages () {
       return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/fqdn`))
     },
+    nonEmptyValues () {
+      return this.internalValue.filter(isNonEmpty)
+    },
+    normalizedAndUnnormalizedValidFQDNs () {
+      return this.nonEmptyValues.flatMap(v => {
+        var f = v.fqdn
+        var r = validateAndNormalizeDomain(f)
+        return r.isError ? [] : [[r.result, f]]
+      })
+    },
     processedImportData () {
       var values = this.importData.split('\n').map(x => x.trim()).filter(x => x)
       var fqdns = []
+      var unnormalizedFqdns = []
       var errors = []
       for (var v of values) {
-        var { result, isError } = validateAndNormalizeDomain(v, {removeTrailingDot: true}); // ';' !!
-        (isError ? errors : fqdns).push(result)
+        var { result, isError } = validateAndNormalizeDomain(v, {removeTrailingDot: true})
+        if (isError) {
+          errors.push(result)
+          continue
+        }
+        for (var [normalized, unnormalized] of this.normalizedAndUnnormalizedValidFQDNs) {
+          var e = checkFQDNRedundant(result, v, normalized, unnormalized, ', which is already registered for this organization')
+          if (e) errors.push(e)
+        }
+        for (var i = 0; i < fqdns.length; ++i) {
+          e = checkFQDNRedundant(result, v, fqdns[i], unnormalizedFqdns[i], ' above it')
+          if (e) errors.push(e)
+        }
+        fqdns.push(result)
+        unnormalizedFqdns.push(v)
       }
       return { fqdns, errors }
     }
@@ -151,7 +193,7 @@ module.exports = {
       this.internalValue.push(template)
     },
     update () {
-      this.$emit('input', this.internalValue.filter(isNonEmpty))
+      this.$emit('input', this.nonEmptyValues)
     },
     getUid () {
       var uid = this.uniqueId
