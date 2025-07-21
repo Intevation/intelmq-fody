@@ -22,6 +22,7 @@
     "json-schema-library": "^10.0.0-rc2",
     "lodash.debounce": "^4.0.8",
     "npm-font-source-sans-pro": "^1.0.2",
+    "psl": "^1.15.0",
     "vue": "^2.0.3",
     "vue-flatpickr": "^2.2.9",
     "vue-js-toggle-button": "^1.2.2",

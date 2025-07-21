@@ -737,9 +737,12 @@ module.exports = {
       // those will fail when commiting
 
       // https://github.com/vuejs/vue/issues/1953#issuecomment-567855890
-      if (this.$children.some(
-        child => child.$options.name === 'org-card' &&
-                 Object.keys(child.validationErrors).length !== 0)) {
+      if (this.$children.some(child =>
+        child.$options.name === 'org-card' && (
+          Object.keys(child.validationErrors).length !== 0 ||
+          child.$children.some(child2 => child2.$options.name === 'org-fqdns' && child2.commitVeto)
+        )
+      )) {
         this.commitPendingOrgsErrorMsg = 'Some field(s) failed validation.'
         // console.log(this.$children.filter(c => c.$options.name === 'org-card').map(c => c.validationErrors))
         return

@@ -11,10 +11,14 @@
           <div v-if="editable" class="form-group">
             <label class="col-sm-2 control-label">FQDN</label>
             <div class="col-sm-10">
-              <input type="text" v-model.trim="fqdnObj.fqdn" v-on:input="update" class="col-sm-10 form-control"/>
+              <input type="text" v-model.trim="fqdnObj.fqdn" v-on:input="updateFqdn(index), update()" class="col-sm-10 form-control"/>
             </div>
             <validation-error v-bind:errorMessage="errorMessages[index]"
-                              class="col-sm-8 col-sm-offset-4"/>
+                              class="col-sm-10 col-sm-offset-2"/>
+            <div v-show="showOverrideCheckbox[index]" class="help-block col-sm-10 col-sm-offset-2">
+              This doesn't look like a complete FQDN. Use anyway?
+              <input type="checkbox" v-model="overrideArray[index]"/> Yes
+            </div>
           </div>
           <div v-else>
             {{ fqdnObj.fqdn }}
@@ -90,10 +94,14 @@
 <script>
 import orgAnnotations from './OrgAnnotations.vue'
 import validationError from './ValidationError.vue'
-import { unfilterArray, mapFilteredIndices } from '../../util/unfilterArray.js'
+import { getFilteredIndices, unfilterWithIndices, mapFilteredIndices } from '../../util/unfilterArray.js'
 import { validateAndNormalizeDomain, getDomainRelation } from '../../util/idna.js'
 
+import psl from 'psl'
+
 var nextId = 0
+
+const isIncompleteFqdn = fqdn => psl.get(fqdn) === null
 
 const isNonEmpty = fqdnObj =>
   fqdnObj.fqdn !== '' ||
@@ -133,8 +141,12 @@ module.exports = {
     }
   },
   data () {
+    var value = this.value
+    var fqdns = value.map(x => x.fqdn || null)
     return {
-      internalValue: JSON.parse(JSON.stringify(this.value)),
+      internalValue: JSON.parse(JSON.stringify(value)),
+      overrideArray: fqdns.map(isIncompleteFqdn),
+      initialFqdns: fqdns,
       uniqueId: null,
       importData: '',
       importComment: ''
@@ -149,6 +161,12 @@ module.exports = {
     },
     errorMessages () {
       return mapFilteredIndices(this.internalValue, isNonEmpty, i => this.errorFn(`${i}/fqdn`))
+    },
+    showOverrideCheckbox () {
+      return this.internalValue.map((v, i) => isNonEmpty(v) && !this.errorMessages[i] && isIncompleteFqdn(v.fqdn))
+    },
+    commitVeto () { // Used by Contacts.vue
+      return this.editable && this.showOverrideCheckbox.some((v, i) => v && !this.overrideArray[i])
     },
     nonEmptyValues () {
       return this.internalValue.filter(isNonEmpty)
@@ -188,12 +206,19 @@ module.exports = {
   methods: {
     deleteMe (index) {
       this.internalValue.splice(index, 1)
+      this.overrideArray.splice(index, 1)
+      this.initialFqdns.splice(index, -1)
     },
     newFqdn (template) {
       this.internalValue.push(template)
+      this.overrideArray.push(false)
+      this.initialFqdns.push(null)
     },
     update () {
       this.$emit('input', this.nonEmptyValues)
+    },
+    updateFqdn (index) {
+      this.overrideArray[index] = this.internalValue[index].fqdn === this.initialFqdns[index]
     },
     getUid () {
       var uid = this.uniqueId
@@ -206,7 +231,7 @@ module.exports = {
       if (processed.errors.length > 0) return
       var comment = this.importComment.trim()
       for (var el of processed.fqdns.map(fqdn => ({fqdn, comment, annotations: []})).filter(isNonEmpty)) {
-        this.internalValue.push(el)
+        this.newFqdn(el)
       }
       this.update()
       this.importData = ''
@@ -220,7 +245,14 @@ module.exports = {
   },
   watch: {
     value (newValue) {
-      this.internalValue = JSON.parse(JSON.stringify(unfilterArray(this.internalValue, newValue, isNonEmpty)))
+      var filteredIndices = getFilteredIndices(this.internalValue, isNonEmpty)
+      if (this.internalValue.length - filteredIndices.length !== newValue.length) {
+        this.internalValue = JSON.parse(JSON.stringify(newValue))
+        this.overrideArray = Array(newValue.length).fill(false)
+        this.initialFqdns = Array(newValue.length).fill(null)
+      } else {
+        this.internalValue = JSON.parse(JSON.stringify(unfilterWithIndices(this.internalValue, newValue, filteredIndices)))
+      }
       if (!newValue.every(isNonEmpty)) this.update()
     }
   },

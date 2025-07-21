@@ -29,6 +29,35 @@ export const unfilterArray = (oldUnfiltered, newFiltered, filterFn) => {
   }
 }
 
+export const getFilteredIndices = (unfiltered, filterFn) => {
+  var arr = []
+  var l = unfiltered.length
+  for (var i = 0; i < l; ++i) {
+    if (!filterFn(unfiltered[i])) arr.push(i)
+  }
+  return arr
+}
+
+// unfilterWithIndices(a, b, getFilteredIndices(a, f)) is equivalent to
+// unfilterArray(a, b, f)
+export const unfilterWithIndices = (oldUnfiltered, newFiltered, filteredIndices) => {
+  var l = newFiltered.length
+  if (oldUnfiltered.length - filteredIndices.length !== l) return newFiltered
+  var newUnfiltered = Array.from(oldUnfiltered)
+  var i = 0
+  var shift = 0
+  for (var el of filteredIndices) {
+    for (let j = i + shift; j < el; ++i, ++j) {
+      newUnfiltered[j] = newFiltered[i]
+    }
+    ++shift
+  }
+  for (let j = i + shift; i < l; ++i, ++j) {
+    newUnfiltered[j] = newFiltered[i]
+  }
+  return newUnfiltered
+}
+
 export const mapFilteredIndices = (unfiltered, filterFn, indexMapFn) => {
   var unfilteredCount = unfiltered.length
   var arr = new Array(unfilteredCount)
