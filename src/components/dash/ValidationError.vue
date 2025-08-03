@@ -1,5 +1,5 @@
 <template>
-  <div v-show="errorMessage" class="help-block">
+  <div v-show="errorMessage" class="help-block" style="color: maroon;">
     {{ errorMessage }}
   </div>
 </template>

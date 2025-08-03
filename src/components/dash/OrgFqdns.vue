@@ -15,7 +15,8 @@
             </div>
             <validation-error v-bind:errorMessage="errorMessages[index]"
                               class="col-sm-10 col-sm-offset-2"/>
-            <div v-show="showOverrideCheckbox[index]" class="help-block col-sm-10 col-sm-offset-2">
+            <div v-show="showOverrideCheckbox[index]" class="help-block col-sm-10 col-sm-offset-2"
+                 v-bind:style="overrideArray[index] ? {} : {color: 'maroon'}">
               This doesn't look like a complete FQDN. Use anyway?
               <input type="checkbox" v-model="overrideArray[index]"/> Yes
             </div>
