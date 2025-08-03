@@ -168,6 +168,7 @@
       </div><div>
       <org-card v-for="(org, index) of pendingOrgs"
                 class="col-md-6 col-sm-6"
+                v-bind:id="'pending-org-' + index"
                 v-model="pendingOrgs[index]" v-bind:status="pendingOrgIndex[index]"
                 v-bind:annotation-hints="annotationHints"
                 v-bind:orgSchemaDraft="orgSchemaDraft"
@@ -610,7 +611,7 @@ module.exports = {
         this.setErrorMsg(response, 'annotationHintsErrorMsg')
       })
     },
-    newOrg: function () {
+    newOrg () {
       // TODO get a template from the api
       // push it to pendingOrgs
       this.pendingOrgs.push({
@@ -628,8 +629,9 @@ module.exports = {
         'national_certs': []
       })
       this.pendingOrgIndex.push('create')
+      this.highlightPendingOrg(this.pendingOrgs.length - 1)
     },
-    cloneOrg: function (index, event) {
+    cloneOrg (index, event) {
       // console.log('cloneOrg() called with index: ' + index +
       //            ' and argument: ' + JSON.stringify(event))
 
@@ -658,8 +660,9 @@ module.exports = {
       // add to commit queue as CREATE
       this.pendingOrgs.push(newOrg)
       this.pendingOrgIndex.push('create')
+      this.highlightPendingOrg(this.pendingOrgs.length - 1)
     },
-    editOrg: function (index) {
+    editOrg (index) {
       // edit a manual organisation
 
       // TODO: Check if we are already in the queue and if so possibly change
@@ -674,6 +677,7 @@ module.exports = {
           console.log('Selected "edit", but org is already in edit mode.')
           if (this.pendingOrgIndex[index] === 'update') {
             // we are already editing it, doing nothing
+            this.highlightPendingOrg(index)
             return
           }
           if (this.pendingOrgIndex[index] === 'delete') {
@@ -681,24 +685,26 @@ module.exports = {
             // (We have to use splice for Vue to notice the change
             // see https://vuejs.org/v2/guide/list.html#Caveats)
             this.pendingOrgIndex.splice(index, 1, 'update')
+            this.highlightPendingOrg(index)
             return
           }
         }
       }
 
       // deep-copy the org
-      var editOrg = JSON.parse(strMe)
+      var editingOrg = JSON.parse(strMe)
 
       // add it to commit queue as UPDATE
-      this.pendingOrgs.push(editOrg)
+      this.pendingOrgs.push(editingOrg)
       this.pendingOrgIndex.push('update')
+      this.highlightPendingOrg(this.pendingOrgs.length - 1)
     },
-    trashOrg: function (index) {
+    trashOrg (index) {
       // remove a pendingOrg
       this.pendingOrgIndex.splice(index, 1)
       this.pendingOrgs.splice(index, 1)
     },
-    deleteOrg: function (index) {
+    deleteOrg (index) {
       // schedule manual organisation for deletion
 
       // Check if we are already in the queue and if so possibly change
@@ -721,8 +727,24 @@ module.exports = {
       this.pendingOrgs.push(toBeDeletedOrg)
       this.pendingOrgIndex.push('delete')
     },
+    highlightPendingOrg (index) {
+      // scroll to a created/updated pending orgcard and play a highlighting
+      // animation
+      this.$nextTick(function () {
+        const el = document.getElementById('pending-org-' + index).children[0]
+        const {top} = el.getBoundingClientRect()
+        document.documentElement.scroll({
+          top: window.scrollY + top - window.innerHeight * 0.05,
+          behavior: 'smooth'
+        })
+        el.animate(
+          {outline: ['solid #ffa50000', 'solid #ffa500ff', 'solid #ffa50000']},
+          1300
+        )
+      })
+    },
     clearPendingOrgs () {
-      // TODO add some debounce, throttle or other saftey function
+      // TODO add some debounce, throttle or other safety function
       //  like the necessity to press the button twice
       //  right now we just throw away
       this.pendingOrgs = []
@@ -734,7 +756,7 @@ module.exports = {
       }
 
       // TODO clear out empty values for asns, networks, fqdns, annotations
-      // those will fail when commiting
+      // those will fail when committing
 
       // https://github.com/vuejs/vue/issues/1953#issuecomment-567855890
       if (this.$children.some(child =>

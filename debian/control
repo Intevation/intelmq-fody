@@ -21,8 +21,8 @@ Description: Full expanded source of Fody.
  contain most of the sources actually used to build the binary
  package.
  .
- This package contains the full tree witrh all dependencies installed
- turing buid time.  It is installed below /usr/src and mainly intended
+ This package contains the full tree with all dependencies installed
+ during build time.  It is installed below /usr/src and mainly intended
  for reference.
  .
  In nearly all cases you won't need this package to rebuild Fody, just

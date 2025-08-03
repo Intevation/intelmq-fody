@@ -125,7 +125,7 @@ module.exports = {
   data () {
     return {
       internalValue: JSON.parse(JSON.stringify(this.value)),
-      // for knownOrgKeys, the display is handled explicitely
+      // for knownOrgKeys, the display is handled explicitly
       knownOrgKeys: {
         'asns': 0,
         'annotations': 0,
