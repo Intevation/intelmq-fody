@@ -1,3 +1,16 @@
+intelmq-fody (0.11.0) stable; urgency=medium
+
+  * ContactDB:
+    * Search: allow pressing enter to start searching by ASN.
+    * Better search result summary.
+    * Validate all user input with JSON schema.
+    * Scroll to new/updated orgcard and highlight it (#33).
+    * Bulk import for IP addresses and FQDNs.
+    * Validate FQDNs with Public Suffix Lists.
+  * Tests: add workflows for codespell, application build.
+
+ -- Sebastian Wagner <swagner@intevation.de>  Thu, 21 Aug 2025 21:18:20 +0200
+
 intelmq-fody (0.9.6-1) stable; urgency=medium
 
   * ContactDB:

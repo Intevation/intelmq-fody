@@ -1,3 +1,14 @@
+## 0.9.6 to 0.11.0 (JSON Schema validation)
+
+* ContactDB:
+  * Search: allow pressing enter to start searching by ASN.
+  * Better search result summary.
+  * Validate all user input with JSON schema.
+  * Scroll to new/updated orgcard and highlight it (#33).
+  * Bulk import for IP addresses and FQDNs.
+  * Validate FQDNs with Public Suffix Lists.
+* Tests: add workflows for codespell, application build.
+
 ## 0.9.5 to 0.9.6 (ContactDB: Annotation improvements)
 
  * ContactDB:
