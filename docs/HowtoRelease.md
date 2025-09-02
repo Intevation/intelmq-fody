@@ -19,6 +19,8 @@ git tag -s v0.4.3
 git push origin v0.4.3
 ```
 
+And go to GitHub to create a release from the tag.
+
 ### build
 (whatever is necessary, see toplevel Readme)
 
