@@ -213,7 +213,7 @@ import OrgCard from './OrgCard.vue'
 
 import { validateAndNormalizeCIDROrIP } from '../../util/ipParse.js'
 import { validateAndNormalizeDomain } from '../../util/idna.js'
-import { Draft2019, config } from 'json-schema-library'
+import { Draft07, config } from 'json-schema-library'
 
 // customize some of the messages so that they don't contain the
 // pointer (JSON path) that we don't need in Fody. E.g. The message
@@ -242,7 +242,7 @@ module.exports = {
       autoOrgIDs: [],  // list of ids of auto entries we currently show
       autoOrgs: [],
       schemaErrorMsg: '', // !== '' if could not load schema.json
-      orgSchemaDraft: null, // Draft2019 instance
+      orgSchemaDraft: null, // Draft07 instance
       searchErrorMsg: '', // !== '' if invalid search term or getOrdIDs() backend call failed
       loadLimit: 100, // max number of manual- and autoorgs to load
       limited: false,  // if we are only loading some of the search results
@@ -837,7 +837,7 @@ module.exports = {
       // got a valid response
       response.json().then((schema) => {
         // json parsed correctly
-        this.orgSchemaDraft = new Draft2019(schema, {
+        this.orgSchemaDraft = new Draft07(schema, {
           validateFormat: {
             cidr: (node, value) => {
               const { schema, pointer } = node
