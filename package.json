@@ -1,6 +1,6 @@
 {
   "name": "fody",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "A single page web application for intelmq-cb-mailgen setups.",
   "author": "Bernhard E. Reiter <bernhard@intevation.de>",
   "repository": "https://github.com/Intevation/intelmq-fody",

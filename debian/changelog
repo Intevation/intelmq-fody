@@ -1,4 +1,13 @@
-intelmq-fody (0.11.0) stable; urgency=medium
+intelmq-fody (0.11.1-1) stable; urgency=medium
+
+  * ContactDB:
+    * For compatibility with fody-backend on Ubuntu 22.04, use JSON Schema Draft 07 instead of Draft2019.
+  * Documentation:
+    * Add release documentation
+
+ -- Sebastian Wagner <swagner@intevation.de>  Wed, 10 Sep 2025 14:51:30 +0200
+
+intelmq-fody (0.11.0-1) stable; urgency=medium
 
   * ContactDB:
     * Search: allow pressing enter to start searching by ASN.

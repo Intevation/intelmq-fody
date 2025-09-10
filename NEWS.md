@@ -1,3 +1,10 @@
+## 0.11.0 to 0.11.1 (JSON Schema Draft 07)
+
+* ContactDB:
+  * For compatibility with fody-backend on Ubuntu 22.04, use JSON Schema Draft 07 instead of Draft2019.
+* Documentation:
+  * Add release documentation
+
 ## 0.9.6 to 0.11.0 (JSON Schema validation)
 
 * ContactDB:
