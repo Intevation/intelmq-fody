@@ -2,21 +2,21 @@
 
 Use a version that conforms to semantic versioning 2.0.
 
-Change it in the files:
+Change the version number in the files:
 `package.json`
 
-Add new entry to:
+Add new entries to:
  * `NEWS.md`
  * `debian/changelog`,
- e.g. by `dch --newversion 0.6.8  --check-dirname-level 0 --distribution stable`
+ e.g. by `dch --newversion 0.6.8`
 
 and commit.
 
 ### tag version number
-example for v0.4.3:
+example for 0.4.3:
 ```sh
-git tag -s v0.4.3
-git push origin v0.4.3
+git tag -s 0.4.3
+git push origin 0.4.3
 ```
 
 And go to GitHub to create a release from the tag.
