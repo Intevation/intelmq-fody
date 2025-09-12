@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "d3": "^4.7.3",
-    "datatables.net": "^1.10.11",
+    "datatables.net": "^1.13.5",
     "datatables.net-bs": "^1.10.11",
     "font-awesome": "^4.5.7",
     "hideseek": "^0.7.0",
