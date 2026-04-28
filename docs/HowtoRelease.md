@@ -29,6 +29,8 @@ In the mentioned files above, to something like `0.4.4-dev`.
 
 ## Build with cached dependencies (reproducible)
 
+To create reproducible packages (in environments without network access), the package dependencies need to be pre-downloaded.
+
 - Create a `.yarnrc` in the current directory with the following content:
   ```json
   {
@@ -39,3 +41,8 @@ In the mentioned files above, to something like `0.4.4-dev`.
 - Delete existing packages: `rm -r yarn.lock node_modules/`
 - Download the packages: `yarn install`
 - All the required packages are in `./npm-packages-offline-cache/`
+
+For packaging, use
+- the offline cache directory
+- the `.yarnrc` file
+- and - if it contains changes - also update `yarn.lock`
